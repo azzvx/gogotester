@@ -616,6 +616,11 @@ namespace GoGo_Tester
                 Application.DoEvents();
             }
 
+            if (StopGaTest)
+            {
+                pbProgress.Value = 0;
+                lProgress.Text = "0 / 0";
+            }
         }
 
         private delegate void GaProgressHandler(int left);
@@ -643,18 +648,26 @@ namespace GoGo_Tester
         public void GaCopyFiles()
         {
             Directory.CreateDirectory("gatester");
-            Directory.CreateDirectory(@"gatester\certs");
-            File.Copy("python27.exe", @"gatester\python27go.exe", true);
-            File.Copy("python27.dll", @"gatester\python27.dll", true);
-            File.Copy("python27.zip", @"gatester\python27.zip", true);
-            File.Copy("pygeoip-0.3.1.egg", @"gatester\pygeoip-0.3.1.egg", true);
-            File.Copy("proxy.py", @"gatester\proxy.py", true);
-            File.Copy("dnslib-0.8.3.egg", @"gatester\dnslib-0.8.3.egg", true);
-            File.Copy("CA.crt", @"gatester\CA.crt", true);
 
+            var sdir = Application.StartupPath;
+            var tdir = Application.StartupPath + @"\gatester\";
+
+            File.Copy("python27.exe", @"gatester\python27go.exe", true);
+            var fpaths = Directory.GetFiles(sdir);
+            foreach (var fpath in fpaths)
+            {
+                var fname = Path.GetFileName(fpath);
+                if (fname.ToLower() == "python27.exe" || String.Equals(fpath, Application.ExecutablePath, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
+
+                File.Copy(fname, tdir + fname, true);
+            }
+
+            Directory.CreateDirectory(@"gatester\certs");
             foreach (var path in Directory.GetFiles("certs"))
             {
-                File.Copy(path, @"gatester\certs\" + Path.GetFileName(path), true);
+                var fname = Path.GetFileName(path);
+                File.Copy(path, @"gatester\certs\" + fname, true);
             }
         }
 

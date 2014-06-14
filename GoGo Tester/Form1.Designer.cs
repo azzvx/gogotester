@@ -53,7 +53,6 @@
             this.mRemoveAllIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mRemoveIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.msMain = new System.Windows.Forms.MenuStrip();
             this.mStartStdTest = new System.Windows.Forms.ToolStripMenuItem();
@@ -204,17 +203,16 @@
             this.toolStripSeparator1,
             this.mExport,
             this.toolStripSeparator2,
-            this.mRemove,
-            this.toolStripSeparator5});
+            this.mRemove});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(117, 88);
+            this.cmsIpData.Size = new System.Drawing.Size(153, 104);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(116, 22);
+            this.mImport.Size = new System.Drawing.Size(152, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -227,7 +225,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // mExport
             // 
@@ -236,7 +234,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(116, 22);
+            this.mExport.Size = new System.Drawing.Size(152, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -261,7 +259,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mRemove
             // 
@@ -272,7 +270,7 @@
             this.toolStripSeparator8,
             this.mRemoveIpsInClipbord});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(116, 22);
+            this.mRemove.Size = new System.Drawing.Size(152, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -305,11 +303,6 @@
             this.mRemoveIpsInClipbord.Size = new System.Drawing.Size(187, 22);
             this.mRemoveIpsInClipbord.Text = "剪切板中存在的IP(&C)";
             this.mRemoveIpsInClipbord.Click += new System.EventHandler(this.mRemoveIpsInClipbord_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(113, 6);
             // 
             // tableLayoutPanel1
             // 
@@ -535,7 +528,6 @@
         private System.Windows.Forms.ToolStripMenuItem mRemoveSelectedIps;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ProgressBar pbProgress;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem mExportAllIps;
         private System.Windows.Forms.ToolStripMenuItem mRemoveAllIps;
