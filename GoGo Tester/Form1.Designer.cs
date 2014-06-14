@@ -55,6 +55,7 @@
             this.mRemoveIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.msMain = new System.Windows.Forms.MenuStrip();
+            this.mStartRndTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStartStdTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStartGaTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStopTest = new System.Windows.Forms.ToolStripMenuItem();
@@ -334,6 +335,7 @@
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.msMain, 2);
             this.msMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mStartRndTest,
             this.mStartStdTest,
             this.mStartGaTest,
             this.mStopTest});
@@ -343,26 +345,41 @@
             this.msMain.TabIndex = 3;
             this.msMain.Text = "menuStrip1";
             // 
+            // mStartRndTest
+            // 
+            this.mStartRndTest.Name = "mStartRndTest";
+            this.mStartRndTest.Size = new System.Drawing.Size(108, 21);
+            this.mStartRndTest.Tag = "随机从自带的100万IP池中获取指定数量的可用IP。如果指定的数目过于庞大，可能会花费很长时间进行测试。";
+            this.mStartRndTest.Text = "开始随机测试(&R)";
+            this.mStartRndTest.Click += new System.EventHandler(this.mStartRndTest_Click);
+            this.mStartRndTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
+            // 
             // mStartStdTest
             // 
             this.mStartStdTest.Name = "mStartStdTest";
             this.mStartStdTest.Size = new System.Drawing.Size(107, 21);
+            this.mStartStdTest.Tag = "测试IP是否可用。";
             this.mStartStdTest.Text = "开始标准测试(&S)";
             this.mStartStdTest.Click += new System.EventHandler(this.mStartStdTest_Click);
+            this.mStartStdTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // mStartGaTest
             // 
             this.mStartGaTest.Name = "mStartGaTest";
             this.mStartGaTest.Size = new System.Drawing.Size(109, 21);
+            this.mStartGaTest.Tag = "通过GoAgent测试IP是否可用。";
             this.mStartGaTest.Text = "开始代理测试(&G)";
             this.mStartGaTest.Click += new System.EventHandler(this.mStartGaTest_Click);
+            this.mStartGaTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // mStopTest
             // 
             this.mStopTest.Name = "mStopTest";
             this.mStopTest.Size = new System.Drawing.Size(83, 21);
+            this.mStopTest.Tag = "停止所有测试。";
             this.mStopTest.Text = "停止测试(&T)";
             this.mStopTest.Click += new System.EventHandler(this.mStopTest_Click);
+            this.mStopTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // dgvIpData
             // 
@@ -471,7 +488,7 @@
             this.nMaxThreads.TabIndex = 27;
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.Value = new decimal(new int[] {
-            30,
+            40,
             0,
             0,
             0});
@@ -543,6 +560,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.ToolStripMenuItem mStopTest;
         private System.Windows.Forms.CheckBox cbWindow;
+        private System.Windows.Forms.ToolStripMenuItem mStartRndTest;
 
     }
 }

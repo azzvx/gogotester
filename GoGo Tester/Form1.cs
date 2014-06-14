@@ -17,9 +17,327 @@ namespace GoGo_Tester
 {
     public partial class Form1 : Form
     {
+        private List<IpRange> IpRangePoolList = new List<IpRange>();
+
+        private void ImportIpRange(string range)
+        {
+            IpRangePoolList.Add(IpRange.CreateIpRange(range));
+        }
+
         public Form1()
         {
             InitializeComponent();
+
+            ImportIpRange("93.123.23.0-255");
+            ImportIpRange("89.207.224.0-255");
+            ImportIpRange("84.235.77.0-255");
+            ImportIpRange("8.8.8.0-255");
+            ImportIpRange("8.8.4.0-255");
+            ImportIpRange("8.6.48.0-255");
+            ImportIpRange("8.35.200.0-255");
+            ImportIpRange("8.35.192.0-255");
+            ImportIpRange("8.34.216.0-255");
+            ImportIpRange("8.34.208.0-255");
+            ImportIpRange("8.22.56.0-255");
+            ImportIpRange("8.15.202.0-255");
+            ImportIpRange("74.125.90.0-255");
+            ImportIpRange("74.125.88.0-255");
+            ImportIpRange("74.125.76.0-255");
+            ImportIpRange("74.125.74.0-255");
+            ImportIpRange("74.125.73.0-255");
+            ImportIpRange("74.125.72.0-255");
+            ImportIpRange("74.125.70.0-255");
+            ImportIpRange("74.125.68.0-255");
+            ImportIpRange("74.125.63.0-255");
+            ImportIpRange("74.125.62.0-255");
+            ImportIpRange("74.125.58.0-255");
+            ImportIpRange("74.125.54.0-255");
+            ImportIpRange("74.125.45.0-255");
+            ImportIpRange("74.125.43.0-255");
+            ImportIpRange("74.125.42.0-255");
+            ImportIpRange("74.125.41.0-255");
+            ImportIpRange("74.125.40.0-255");
+            ImportIpRange("74.125.37.0-255");
+            ImportIpRange("74.125.36.0-255");
+            ImportIpRange("74.125.31.0-255");
+            ImportIpRange("74.125.30.0-255");
+            ImportIpRange("74.125.29.0-255");
+            ImportIpRange("74.125.28.0-255");
+            ImportIpRange("74.125.27.0-255");
+            ImportIpRange("74.125.26.0-255");
+            ImportIpRange("74.125.25.0-255");
+            ImportIpRange("74.125.246.0-255");
+            ImportIpRange("74.125.245.0-255");
+            ImportIpRange("74.125.244.0-255");
+            ImportIpRange("74.125.24.0-255");
+            ImportIpRange("74.125.239.0-255");
+            ImportIpRange("74.125.238.0-255");
+            ImportIpRange("74.125.237.0-255");
+            ImportIpRange("74.125.236.0-255");
+            ImportIpRange("74.125.235.0-255");
+            ImportIpRange("74.125.234.0-255");
+            ImportIpRange("74.125.233.0-255");
+            ImportIpRange("74.125.232.0-255");
+            ImportIpRange("74.125.231.0-255");
+            ImportIpRange("74.125.230.0-255");
+            ImportIpRange("74.125.23.0-255");
+            ImportIpRange("74.125.229.0-255");
+            ImportIpRange("74.125.228.0-255");
+            ImportIpRange("74.125.227.0-255");
+            ImportIpRange("74.125.226.0-255");
+            ImportIpRange("74.125.225.0-255");
+            ImportIpRange("74.125.224.0-255");
+            ImportIpRange("74.125.22.0-255");
+            ImportIpRange("74.125.21.0-255");
+            ImportIpRange("74.125.207.0-255");
+            ImportIpRange("74.125.206.0-255");
+            ImportIpRange("74.125.205.0-255");
+            ImportIpRange("74.125.204.0-255");
+            ImportIpRange("74.125.203.0-255");
+            ImportIpRange("74.125.201.0-255");
+            ImportIpRange("74.125.200.0-255");
+            ImportIpRange("74.125.20.0-255");
+            ImportIpRange("74.125.198.0-255");
+            ImportIpRange("74.125.196.0-255");
+            ImportIpRange("74.125.195.0-255");
+            ImportIpRange("74.125.194.0-255");
+            ImportIpRange("74.125.193.0-255");
+            ImportIpRange("74.125.192.0-255");
+            ImportIpRange("74.125.191.0-255");
+            ImportIpRange("74.125.190.0-255");
+            ImportIpRange("74.125.19.0-255");
+            ImportIpRange("74.125.189.0-255");
+            ImportIpRange("74.125.188.0-255");
+            ImportIpRange("74.125.187.0-255");
+            ImportIpRange("74.125.186.0-255");
+            ImportIpRange("74.125.185.0-255");
+            ImportIpRange("74.125.184.0-255");
+            ImportIpRange("74.125.183.0-255");
+            ImportIpRange("74.125.182.0-255");
+            ImportIpRange("74.125.181.0-255");
+            ImportIpRange("74.125.180.0-255");
+            ImportIpRange("74.125.18.0-255");
+            ImportIpRange("74.125.179.0-255");
+            ImportIpRange("74.125.178.0-255");
+            ImportIpRange("74.125.177.0-255");
+            ImportIpRange("74.125.176.0-255");
+            ImportIpRange("74.125.17.0-255");
+            ImportIpRange("74.125.16.0-255");
+            ImportIpRange("74.125.151.0-255");
+            ImportIpRange("74.125.150.0-255");
+            ImportIpRange("74.125.149.0-255");
+            ImportIpRange("74.125.148.0-255");
+            ImportIpRange("74.125.143.0-255");
+            ImportIpRange("74.125.142.0-255");
+            ImportIpRange("74.125.141.0-255");
+            ImportIpRange("74.125.140.0-255");
+            ImportIpRange("74.125.139.0-255");
+            ImportIpRange("74.125.138.0-255");
+            ImportIpRange("74.125.137.0-255");
+            ImportIpRange("74.125.136.0-255");
+            ImportIpRange("74.125.135.0-255");
+            ImportIpRange("74.125.134.0-255");
+            ImportIpRange("74.125.133.0-255");
+            ImportIpRange("74.125.132.0-255");
+            ImportIpRange("74.125.131.0-255");
+            ImportIpRange("74.125.130.0-255");
+            ImportIpRange("74.125.129.0-255");
+            ImportIpRange("74.125.128.0-255");
+            ImportIpRange("74.125.125.0-255");
+            ImportIpRange("74.125.123.0-255");
+            ImportIpRange("74.125.122.0-255");
+            ImportIpRange("74.125.121.0-255");
+            ImportIpRange("74.125.120.0-255");
+            ImportIpRange("74.125.119.0-255");
+            ImportIpRange("74.125.118.0-255");
+            ImportIpRange("74.125.117.0-255");
+            ImportIpRange("74.125.116.0-255");
+            ImportIpRange("74.125.0-255.0-255");
+            ImportIpRange("72.14.252.0-255");
+            ImportIpRange("72.14.244.0-255");
+            ImportIpRange("72.14.228.0-255");
+            ImportIpRange("72.14.226.0-255");
+            ImportIpRange("72.14.225.0-255");
+            ImportIpRange("72.14.208.0-255");
+            ImportIpRange("72.14.202.0-255");
+            ImportIpRange("72.14.199.0-255");
+            ImportIpRange("72.14.192.0-255");
+            ImportIpRange("70.32.158.0-255");
+            ImportIpRange("70.32.148.0-255");
+            ImportIpRange("70.32.146.0-255");
+            ImportIpRange("70.32.144.0-255");
+            ImportIpRange("70.32.142.0-255");
+            ImportIpRange("70.32.140.0-255");
+            ImportIpRange("70.32.134.0-255");
+            ImportIpRange("70.32.133.0-255");
+            ImportIpRange("70.32.132.0-255");
+            ImportIpRange("70.32.131.0-255");
+            ImportIpRange("70.32.130.0-255");
+            ImportIpRange("70.32.128.0-255");
+            ImportIpRange("66.249.93.0-255");
+            ImportIpRange("66.249.92.0-255");
+            ImportIpRange("66.249.91.0-255");
+            ImportIpRange("66.249.90.0-255");
+            ImportIpRange("66.249.89.0-255");
+            ImportIpRange("66.249.88.0-255");
+            ImportIpRange("66.249.85.0-255");
+            ImportIpRange("66.249.84.0-255");
+            ImportIpRange("66.249.83.0-255");
+            ImportIpRange("66.249.82.0-255");
+            ImportIpRange("66.249.81.0-255");
+            ImportIpRange("66.249.80.0-255");
+            ImportIpRange("66.249.79.0-255");
+            ImportIpRange("66.249.78.0-255");
+            ImportIpRange("66.249.77.0-255");
+            ImportIpRange("66.249.76.0-255");
+            ImportIpRange("66.249.75.0-255");
+            ImportIpRange("66.249.74.0-255");
+            ImportIpRange("66.249.73.0-255");
+            ImportIpRange("66.249.72.0-255");
+            ImportIpRange("66.249.71.0-255");
+            ImportIpRange("66.249.70.0-255");
+            ImportIpRange("66.249.69.0-255");
+            ImportIpRange("66.249.68.0-255");
+            ImportIpRange("66.249.67.0-255");
+            ImportIpRange("66.249.66.0-255");
+            ImportIpRange("66.249.65.0-255");
+            ImportIpRange("66.249.64.0-255");
+            ImportIpRange("66.249.64.0-255");
+            ImportIpRange("66.102.4.0-255");
+            ImportIpRange("66.102.3.0-255");
+            ImportIpRange("66.102.2.0-255");
+            ImportIpRange("66.102.0-255.0-255");
+            ImportIpRange("64.9.224.0-255");
+            ImportIpRange("64.9.224.0-255");
+            ImportIpRange("64.233.172.0-255");
+            ImportIpRange("64.233.171.0-255");
+            ImportIpRange("64.233.168.0-255");
+            ImportIpRange("64.233.168.0-255");
+            ImportIpRange("64.233.165.0-255");
+            ImportIpRange("64.233.164.0-255");
+            ImportIpRange("64.233.160.0-255");
+            ImportIpRange("64.233.160.0-255");
+            ImportIpRange("63.243.168.0-255");
+            ImportIpRange("62.201.216.0-255");
+            ImportIpRange("41.84.159.0-255");
+            ImportIpRange("41.206.96.0-255");
+            ImportIpRange("23.255.128.0-255");
+            ImportIpRange("23.251.128.0-255");
+            ImportIpRange("23.236.48.0-255");
+            ImportIpRange("23.228.128.0-255");
+            ImportIpRange("217.163.7.0-255");
+            ImportIpRange("216.58.192.0-255");
+            ImportIpRange("216.239.60.0-255");
+            ImportIpRange("216.239.44.0-255");
+            ImportIpRange("216.239.39.0-255");
+            ImportIpRange("216.239.38.0-255");
+            ImportIpRange("216.239.36.0-255");
+            ImportIpRange("216.239.35.0-255");
+            ImportIpRange("216.239.34.0-255");
+            ImportIpRange("216.239.33.0-255");
+            ImportIpRange("216.239.32.0-255");
+            ImportIpRange("216.239.32.0-255");
+            ImportIpRange("216.21.160.0-255");
+            ImportIpRange("212.188.15.0-255");
+            ImportIpRange("209.85.238.0-255");
+            ImportIpRange("209.85.228.0-255");
+            ImportIpRange("209.85.128.0-255");
+            ImportIpRange("207.223.160.0-255");
+            ImportIpRange("199.223.232.0-255");
+            ImportIpRange("199.192.112.0-255");
+            ImportIpRange("197.199.254.0-255");
+            ImportIpRange("197.199.253.0-255");
+            ImportIpRange("193.186.4.0-255");
+            ImportIpRange("193.142.125.0-255");
+            ImportIpRange("192.200.224.0-255");
+            ImportIpRange("192.178.0-255.0-255");
+            ImportIpRange("192.158.28.0-255");
+            ImportIpRange("192.119.21.0-255");
+            ImportIpRange("192.119.20.0-255");
+            ImportIpRange("192.119.16.0-255");
+            ImportIpRange("173.255.112.0-255");
+            ImportIpRange("173.194.99.0-255");
+            ImportIpRange("173.194.98.0-255");
+            ImportIpRange("173.194.97.0-255");
+            ImportIpRange("173.194.96.0-255");
+            ImportIpRange("173.194.79.0-255");
+            ImportIpRange("173.194.78.0-255");
+            ImportIpRange("173.194.77.0-255");
+            ImportIpRange("173.194.76.0-255");
+            ImportIpRange("173.194.75.0-255");
+            ImportIpRange("173.194.74.0-255");
+            ImportIpRange("173.194.73.0-255");
+            ImportIpRange("173.194.72.0-255");
+            ImportIpRange("173.194.71.0-255");
+            ImportIpRange("173.194.70.0-255");
+            ImportIpRange("173.194.69.0-255");
+            ImportIpRange("173.194.68.0-255");
+            ImportIpRange("173.194.67.0-255");
+            ImportIpRange("173.194.66.0-255");
+            ImportIpRange("173.194.65.0-255");
+            ImportIpRange("173.194.64.0-255");
+            ImportIpRange("173.194.47.0-255");
+            ImportIpRange("173.194.46.0-255");
+            ImportIpRange("173.194.45.0-255");
+            ImportIpRange("173.194.44.0-255");
+            ImportIpRange("173.194.43.0-255");
+            ImportIpRange("173.194.42.0-255");
+            ImportIpRange("173.194.41.0-255");
+            ImportIpRange("173.194.40.0-255");
+            ImportIpRange("173.194.39.0-255");
+            ImportIpRange("173.194.38.0-255");
+            ImportIpRange("173.194.37.0-255");
+            ImportIpRange("173.194.36.0-255");
+            ImportIpRange("173.194.35.0-255");
+            ImportIpRange("173.194.34.0-255");
+            ImportIpRange("173.194.33.0-255");
+            ImportIpRange("173.194.32.0-255");
+            ImportIpRange("173.194.142.0-255");
+            ImportIpRange("173.194.141.0-255");
+            ImportIpRange("173.194.140.0-255");
+            ImportIpRange("173.194.136.0-255");
+            ImportIpRange("173.194.127.0-255");
+            ImportIpRange("173.194.126.0-255");
+            ImportIpRange("173.194.124.0-255");
+            ImportIpRange("173.194.121.0-255");
+            ImportIpRange("173.194.120.0-255");
+            ImportIpRange("173.194.119.0-255");
+            ImportIpRange("173.194.118.0-255");
+            ImportIpRange("173.194.117.0-255");
+            ImportIpRange("173.194.113.0-255");
+            ImportIpRange("173.194.112.0-255");
+            ImportIpRange("173.194.0-255.0-255");
+            ImportIpRange("172.253.0-255.0-255");
+            ImportIpRange("172.217.0-255.0-255");
+            ImportIpRange("162.222.176.0-255");
+            ImportIpRange("162.216.148.0-255");
+            ImportIpRange("149.3.177.0-255");
+            ImportIpRange("149.126.86.0-255");
+            ImportIpRange("146.148.0-255.0-255");
+            ImportIpRange("142.250.0-255.0-255");
+            ImportIpRange("130.211.0-255.0-255");
+            ImportIpRange("12.216.80.0-255");
+            ImportIpRange("118.174.27.0-255");
+            ImportIpRange("118.174.26.0-255");
+            ImportIpRange("118.174.25.0-255");
+            ImportIpRange("118.174.24.0-255");
+            ImportIpRange("113.197.106.0-255");
+            ImportIpRange("113.197.105.0-255");
+            ImportIpRange("111.92.162.0-255");
+            ImportIpRange("108.59.80.0-255");
+            ImportIpRange("108.177.0-255.0-255");
+            ImportIpRange("108.170.192.0-255");
+            ImportIpRange("107.188.128.0-255");
+            ImportIpRange("107.178.192.0-255");
+            ImportIpRange("107.167.160.0-255");
+            ImportIpRange("103.25.178.0-255");
+            ImportIpRange("103.246.187.0-255");
+            ImportIpRange("1.179.253.0-255");
+            ImportIpRange("1.179.252.0-255");
+            ImportIpRange("1.179.251.0-255");
+            ImportIpRange("1.179.250.0-255");
+            ImportIpRange("1.179.249.0-255");
+            ImportIpRange("1.179.248.0-255");
         }
 
         private readonly Regex rxMatchIp =
@@ -32,19 +350,24 @@ namespace GoGo_Tester
         public static Queue<object> TestQueue = new Queue<object>();
 
         private readonly Timer StdTestTimer = new Timer();
+        private readonly Timer RndTestTimer = new Timer();
         private string GaHost;
         private int GaPort;
         public static string ValidIps;
 
         private static Random random = new Random();
         public static int TestTimeout = 6000;
-        public static int MaxThreads = 30;
-
+        public static int MaxThreads = 40;
 
         private bool GaIsTesting;
         private bool StdIsTesting;
+        private bool RndIsTesting;
 
         private Process proxyProcess;
+        private IniFile IniFile;
+        private ProcessStartInfo GaStartInfo;
+
+        public bool StopGaTest;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -60,9 +383,9 @@ namespace GoGo_Tester
             dgvIpData.DataSource = IpTable;
             dgvIpData.Columns[0].Width = 100;
             dgvIpData.Columns[0].HeaderText = "地址";
-            dgvIpData.Columns[1].Width = 60;
+            dgvIpData.Columns[1].Width = 80;
             dgvIpData.Columns[1].HeaderText = "标准测试";
-            dgvIpData.Columns[2].Width = 60;
+            dgvIpData.Columns[2].Width = 80;
             dgvIpData.Columns[2].HeaderText = "代理测试";
 
             /// Std
@@ -70,6 +393,53 @@ namespace GoGo_Tester
 
             StdTestTimer.Interval = 50;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
+
+            RndTestTimer.Interval = 50;
+            RndTestTimer.Elapsed += RndTestTimerElapsed;
+
+        }
+
+        private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            var testCount = TestQueue.Count;
+            var waitCount = dgvIpData.RowCount;
+
+            SetRndProgress(testCount, waitCount);
+
+            if (testCount < MaxThreads && waitCount < Form2.RandomNumber)
+            {
+                string addr;
+                do
+                {
+                    IpRange iprange = IpRangePoolList[random.Next(0, IpRangePoolList.Count)];
+                    addr = iprange.GetRandomIp();
+                } while (WaitQueue.Contains(addr));
+
+
+                var thread = new Thread(() =>
+                {
+                    Monitor.Enter(TestQueue);
+                    TestQueue.Enqueue(0);
+                    Monitor.Exit(TestQueue);
+
+                    var result = StdTestProcess(addr, TestTimeout);
+                    if (result.ok)
+                    {
+                        ImportIp(addr);
+                        SetStdTestResult(result);
+                    }
+
+                    Monitor.Enter(TestQueue);
+                    TestQueue.Dequeue();
+                    Monitor.Exit(TestQueue);
+                });
+                thread.Start();
+            }
+            else if (testCount == 0 && waitCount == Form2.RandomNumber)
+            {
+                RndIsTesting = false;
+                RndTestTimer.Stop();
+            }
         }
 
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
@@ -82,7 +452,18 @@ namespace GoGo_Tester
             if (waitCount > 0 && testCount < MaxThreads)
             {
                 var addr = WaitQueue.Dequeue();
-                var thread = new Thread(() => StdTestProcess(addr, TestTimeout, random));
+                var thread = new Thread(() =>
+                {
+                    Monitor.Enter(TestQueue);
+                    TestQueue.Enqueue(0);
+                    Monitor.Exit(TestQueue);
+
+                    SetStdTestResult(StdTestProcess(addr, TestTimeout));
+
+                    Monitor.Enter(TestQueue);
+                    TestQueue.Dequeue();
+                    Monitor.Exit(TestQueue);
+                });
                 thread.Start();
             }
             else if (waitCount == 0 && testCount == 0)
@@ -92,12 +473,11 @@ namespace GoGo_Tester
             }
         }
 
-        private delegate void SetProgressHandler(int testCount, int waitCount);
         private void SetStdProgress(int testCount, int waitCount)
         {
             if (InvokeRequired)
             {
-                Invoke(new SetProgressHandler(SetStdProgress), new object[] { testCount, waitCount });
+                Invoke(new MethodInvoker(() => SetStdProgress(testCount, waitCount)));
             }
             else
             {
@@ -105,17 +485,34 @@ namespace GoGo_Tester
                 lProgress.Text = testCount + " / " + waitCount;
             }
         }
-
-        private void StdTestProcess(string addr, int timeout, Random ran)
+        private void SetRndProgress(int testCount, int waitCount)
         {
-            Monitor.Enter(TestQueue);
-            TestQueue.Enqueue(0);
-            Monitor.Exit(TestQueue);
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() => SetRndProgress(testCount, waitCount)));
+            }
+            else
+            {
+                pbProgress.Value = waitCount;
+                lProgress.Text = testCount + " / " + waitCount;
+            }
+        }
+        struct TestResult
+        {
+            public string addr;
+            public bool ok;
+            public string msg;
+        }
+
+
+        private TestResult StdTestProcess(string addr, int timeout)
+        {
+            TestResult result;
 
             var sbd = new StringBuilder();
 
             for (int i = 0; i < 150; i++)
-                sbd.Append(ran.Next().ToString("D10"));
+                sbd.Append(random.Next().ToString("D10"));
 
             var url = "https://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
 
@@ -134,37 +531,49 @@ namespace GoGo_Tester
                 {
                     if (resp.Server == "gws")
                     {
-                        SetStdTestResult(addr, "_OK " + stopwatch.ElapsedMilliseconds.ToString("D4"));
+                        result = new TestResult()
+                        {
+                            addr = addr,
+                            ok = true,
+                            msg = "_OK " + stopwatch.ElapsedMilliseconds.ToString("D4")
+                        };
                     }
                     else
                     {
-                        SetStdTestResult(addr, "Invalid");
+                        result = new TestResult()
+                          {
+                              addr = addr,
+                              ok = false,
+                              msg = "Invalid"
+                          };
                     }
                     resp.Close();
                 }
             }
             catch (Exception ex)
             {
-                SetStdTestResult(addr, "Failed");
+                result = new TestResult()
+                         {
+                             addr = addr,
+                             ok = false,
+                             msg = "Failed"
+                         };
             }
             stopwatch.Stop();
-
-            Monitor.Enter(TestQueue);
-            TestQueue.Dequeue();
-            Monitor.Exit(TestQueue);
+            return result;
         }
 
-        private void SetStdTestResult(string addr, string result)
+        private void SetStdTestResult(TestResult result)
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => SetStdTestResult(addr, result)));
+                Invoke(new MethodInvoker(() => SetStdTestResult(result)));
             }
             else
             {
-                var rows = SelectByIP(addr);
+                var rows = SelectByIP(result.addr);
                 if (rows.Length > 0)
-                    rows[0][1] = result;
+                    rows[0][1] = result.msg;
             }
         }
         public void SetGaTestResult(string addr, string result)
@@ -245,11 +654,39 @@ namespace GoGo_Tester
         {
             var control = sender as Control;
 
-            lTip.Text = control.Tag.ToString();
+            if (control != null)
+            {
+                lTip.Text = control.Tag.ToString();
+            }
+            else
+            {
+                var menu = sender as ToolStripMenuItem;
+                if (menu != null)
+                {
+                    lTip.Text = menu.Tag.ToString();
+                }
+            }
+
         }
+
+        private bool IsTesting()
+        {
+            if (StdIsTesting || GaIsTesting || RndIsTesting)
+            {
+                MessageBox.Show("有测试正在进行，无法完成操作！");
+                return true;
+            }
+            return false;
+        }
+
 
         private void bAddIpRange_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             var str = tbIpRange.Text.Trim();
             tbIpRange.ResetText();
             if (str == "")
@@ -261,53 +698,19 @@ namespace GoGo_Tester
 
             foreach (var range in ranges)
             {
-                var cope = range.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (cope.Length != 4)
-                    continue;
-
-                var start = new int[4];
-                var end = new int[4];
-                var copeValid = 0;
-                for (int i = 0; i < 4; i++)
+                var iprange = IpRange.CreateIpRange(range);
+                if (iprange == null)
                 {
-                    var se = cope[i].Split(@"-\|/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
-                    if (se.Length == 2)
-                    {
-                        try
-                        {
-                            start[i] = Convert.ToInt32(se[0].Trim());
-                            end[i] = Convert.ToInt32(se[1].Trim());
-                        }
-                        catch (Exception) { break; }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            start[i] = Convert.ToInt32(cope[i].Trim());
-                            end[i] = Convert.ToInt32(cope[i].Trim());
-                        }
-                        catch (Exception) { break; }
-
-                    }
-                    start[i] = start[i] > 255 ? 255 : start[i];
-                    end[i] = end[i] > 255 ? 255 : end[i];
-
-                    copeValid++;
+                    continue;
                 }
 
-                if (copeValid != 4)
-                    continue;
-
-                for (int a = start[0]; start[0] <= a && a <= end[0]; a++)
+                for (int a = iprange.cope[0, 0]; a <= iprange.cope[0, 1]; a++)
                 {
-                    for (int b = start[1]; start[1] <= b && b <= end[1]; b++)
+                    for (int b = iprange.cope[1, 0]; b <= iprange.cope[1, 1]; b++)
                     {
-                        for (int c = start[2]; start[2] <= c && c <= end[2]; c++)
+                        for (int c = iprange.cope[2, 0]; c <= iprange.cope[2, 1]; c++)
                         {
-                            for (int d = start[3]; start[3] <= d && d <= end[3]; d++)
+                            for (int d = iprange.cope[3, 0]; d <= iprange.cope[3, 1]; d++)
                             {
                                 ImportIp(a + "." + b + "." + c + "." + d);
                             }
@@ -328,6 +731,11 @@ namespace GoGo_Tester
 
         private void mImportIpsInClipbord_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             var str = "";
             try
             {
@@ -356,6 +764,12 @@ namespace GoGo_Tester
 
         private void mStartStdTest_Click(object sender, EventArgs e)
         {
+            if (RndIsTesting)
+            {
+                MessageBox.Show("正在运行随机测试！");
+                return;
+            }
+
             if (GaIsTesting)
             {
                 MessageBox.Show("正在运行代理测试！");
@@ -379,6 +793,8 @@ namespace GoGo_Tester
             }
 
             pbProgress.Maximum = rows.Length;
+            pbProgress.Value = 0;
+
             foreach (var row in rows)
             {
                 WaitQueue.Enqueue(row[0].ToString());
@@ -397,6 +813,11 @@ namespace GoGo_Tester
 
         private void mRemoveAllIps_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             RemoveAllIps();
         }
 
@@ -462,6 +883,11 @@ namespace GoGo_Tester
         }
         private void mExportSelectedIps_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             var cells = GetSelectdIpCells();
 
             if (cells.Length == 0)
@@ -488,6 +914,7 @@ namespace GoGo_Tester
         private void mStopTest_Click(object sender, EventArgs e)
         {
             StdTestTimer.Stop();
+            RndTestTimer.Stop();
             StopGaTest = true;
 
             pbProgress.Value = 0;
@@ -496,6 +923,11 @@ namespace GoGo_Tester
 
         private void mExportAllIps_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             var cells = GetAllIpCells();
 
             if (cells.Length == 0)
@@ -513,6 +945,11 @@ namespace GoGo_Tester
 
         private void mRemoveSelectedIps_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             foreach (DataGridViewRow row in dgvIpData.SelectedRows)
             {
                 dgvIpData.Rows.Remove(row);
@@ -521,6 +958,11 @@ namespace GoGo_Tester
 
         private void mRemoveIpsInClipbord_Click(object sender, EventArgs e)
         {
+            if (IsTesting())
+            {
+                return;
+            }
+
             var str = "";
             try
             {
@@ -548,6 +990,12 @@ namespace GoGo_Tester
 
         private void mStartGaTest_Click(object sender, EventArgs e)
         {
+            if (RndIsTesting)
+            {
+                MessageBox.Show("正在运行随机测试！");
+                return;
+            }
+
             if (StdIsTesting)
             {
                 MessageBox.Show("正在运行标准测试！");
@@ -570,6 +1018,7 @@ namespace GoGo_Tester
             }
 
             pbProgress.Maximum = rows.Length;
+            pbProgress.Value = 0;
             foreach (var row in rows)
             {
                 WaitQueue.Enqueue(row[0].ToString());
@@ -605,16 +1054,16 @@ namespace GoGo_Tester
             var thread = new Thread(GaTestLoop);
             thread.Start();
 
-            while (GaIsTesting)
-            {
-                Application.DoEvents();
-            }
+            //while (GaIsTesting)
+            //{
+            //    Application.DoEvents();
+            //}
 
-            if (StopGaTest)
-            {
-                pbProgress.Value = 0;
-                lProgress.Text = "0 / 0";
-            }
+            //if (StopGaTest)
+            //{
+            //    pbProgress.Value = 0;
+            //    lProgress.Text = "0 / 0";
+            //}
         }
 
         private delegate void GaProgressHandler(int left);
@@ -631,13 +1080,6 @@ namespace GoGo_Tester
                 lProgress.Text = left + " / " + pbProgress.Maximum;
             }
         }
-
-
-        private IniFile IniFile;
-        private ProcessStartInfo GaStartInfo;
-
-        public bool StopGaTest;
-
 
         public void GaCopyFiles()
         {
@@ -664,7 +1106,6 @@ namespace GoGo_Tester
                 File.Copy(path, @"gatester\certs\" + fname, true);
             }
         }
-
 
         public void GaTestLoop()
         {
@@ -767,6 +1208,134 @@ namespace GoGo_Tester
             GaStartInfo.Arguments = @"gatester\proxy.py";
             GaStartInfo.FileName = @"gatester\python27go.exe";
             GaStartInfo.UseShellExecute = false;
+        }
+
+        private void mStartRndTest_Click(object sender, EventArgs e)
+        {
+            if (GaIsTesting)
+            {
+                MessageBox.Show("正在运行代理测试！");
+                return;
+            }
+
+            if (StdIsTesting)
+            {
+                MessageBox.Show("正在运行标准测试！");
+                return;
+            }
+
+            if (RndIsTesting)
+            {
+                MessageBox.Show("随机测试已运行！");
+                return;
+            }
+
+            if (MessageBox.Show(this, "随机测试前会清除IP列表，是否继续操作？", "请确认操作！", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            var form = new Form2();
+            form.ShowDialog(this);
+
+            if (Form2.RandomNumber == 0)
+            {
+                return;
+            }
+
+            pbProgress.Maximum = Form2.RandomNumber;
+            pbProgress.Value = 0;
+
+            RemoveAllIps();
+
+            RndIsTesting = true;
+            RndTestTimer.Start();
+        }
+    }
+
+
+    class IpRange
+    {
+        private IpRange() { }
+
+        public int[,] cope = new int[4, 2];
+
+        public string GetRandomIp()
+        {
+            var sbd = new StringBuilder();
+            sbd.Append(rand.Next(cope[0, 0], cope[0, 1] + 1));
+            sbd.Append(".");
+            sbd.Append(rand.Next(cope[1, 0], cope[1, 1] + 1));
+            sbd.Append(".");
+            sbd.Append(rand.Next(cope[2, 0], cope[2, 1] + 1));
+            sbd.Append(".");
+            sbd.Append(rand.Next(cope[3, 0], cope[3, 1] + 1));
+            return sbd.ToString();
+        }
+
+        private static Random rand = new Random();
+        private static int SetRange(int val)
+        {
+            val = val > 0 ? val : 0;
+            val = val < 255 ? val : 255;
+            return val;
+        }
+        public static IpRange CreateIpRange(string range)
+        {
+            try
+            {
+                var cope = range.Split(new[] { '.' });
+
+                if (cope.Length != 4)
+                {
+                    return null;
+                }
+
+                var iprange = new IpRange();
+                int swap;
+                for (int i = 0; i < 4; i++)
+                {
+                    var str = cope[i].Trim();
+                    if (str.Length == 0)
+                    {
+                        iprange.cope[i, 0] = 0;
+                        iprange.cope[i, 1] = 0;
+
+                    }
+                    else
+                    {
+                        var sps = str.Split(@"-\|/".ToCharArray());
+
+                        switch (sps.Length)
+                        {
+                            case 1:
+                                iprange.cope[i, 0] = iprange.cope[i, 1] = SetRange(Convert.ToInt32(sps[0]));
+                                break;
+                            case 2:
+                                iprange.cope[i, 0] = SetRange(Convert.ToInt32(sps[0]));
+                                iprange.cope[i, 1] = SetRange(Convert.ToInt32(sps[1]));
+                                if (iprange.cope[i, 0] > iprange.cope[i, 1])
+                                {
+                                    swap = iprange.cope[i, 1];
+                                    iprange.cope[i, 1] = iprange.cope[i, 0];
+                                    iprange.cope[i, 0] = swap;
+                                }
+                                break;
+                            default:
+                                iprange.cope[i, 0] = 0;
+                                iprange.cope[i, 1] = 0;
+                                break;
+                        }
+                    }
+                }
+
+                return iprange;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
