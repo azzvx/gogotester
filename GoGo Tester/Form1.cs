@@ -406,7 +406,7 @@ namespace GoGo_Tester
 
             SetRndProgress(testCount, waitCount);
 
-            if (testCount < MaxThreads && waitCount < Form2.RandomNumber)
+            if (waitCount < Form2.RandomNumber && testCount < MaxThreads)
             {
                 string addr;
                 do
@@ -414,7 +414,6 @@ namespace GoGo_Tester
                     IpRange iprange = IpRangePoolList[random.Next(0, IpRangePoolList.Count)];
                     addr = iprange.GetRandomIp();
                 } while (WaitQueue.Contains(addr));
-
 
                 var thread = new Thread(() =>
                 {
@@ -435,7 +434,7 @@ namespace GoGo_Tester
                 });
                 thread.Start();
             }
-            else if (testCount == 0 && waitCount == Form2.RandomNumber)
+            else if (testCount == 0)
             {
                 RndIsTesting = false;
                 RndTestTimer.Stop();
@@ -916,6 +915,10 @@ namespace GoGo_Tester
             StdTestTimer.Stop();
             RndTestTimer.Stop();
             StopGaTest = true;
+            StdIsTesting = false;
+            GaIsTesting = false;
+            RndIsTesting = false;
+
 
             pbProgress.Value = 0;
             lProgress.Text = "0 / 0";
