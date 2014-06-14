@@ -148,11 +148,8 @@ namespace GoGo_Tester
                     {
                         strs.Add(row[1] + " = " + row[2]);
                     }
-
-
                 }
             }
-
             File.WriteAllLines(path ?? IniPath, strs.ToArray());
         }
 

@@ -139,8 +139,8 @@
             this.tbIpRange.Name = "tbIpRange";
             this.tbIpRange.Size = new System.Drawing.Size(457, 21);
             this.tbIpRange.TabIndex = 1;
-            this.tbIpRange.Tag = "允许添加IP段，格式 0-255.0-255.0-255.0-255 代表所有IP， 173.0-255.0-255.0-255 代表 173 段所有 IP ，其" +
-    "它同理。不同IP段请用除 \'.\'和\'-\'以外的符号分隔。";
+            this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255。 173.0-255.0\\255.0/255 代表 173 段所有 IP ，其它同理。不同IP段" +
+    "请用除\'. - \\ / \'以外的符号分隔。";
             this.tbIpRange.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // bAddIpRange
@@ -205,14 +205,14 @@
             this.toolStripSeparator2,
             this.mRemove});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(153, 104);
+            this.cmsIpData.Size = new System.Drawing.Size(117, 82);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(152, 22);
+            this.mImport.Size = new System.Drawing.Size(116, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -225,7 +225,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
             // 
             // mExport
             // 
@@ -234,7 +234,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(152, 22);
+            this.mExport.Size = new System.Drawing.Size(116, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -259,7 +259,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // mRemove
             // 
@@ -270,7 +270,7 @@
             this.toolStripSeparator8,
             this.mRemoveIpsInClipbord});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(152, 22);
+            this.mRemove.Size = new System.Drawing.Size(116, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -471,7 +471,7 @@
             this.nMaxThreads.TabIndex = 27;
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.Value = new decimal(new int[] {
-            24,
+            30,
             0,
             0,
             0});

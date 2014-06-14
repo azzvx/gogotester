@@ -38,7 +38,7 @@ namespace GoGo_Tester
 
         private static Random random = new Random();
         public static int TestTimeout = 6000;
-        public static int MaxThreads = 24;
+        public static int MaxThreads = 30;
 
 
         private bool GaIsTesting;
@@ -74,14 +74,15 @@ namespace GoGo_Tester
 
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            int waitCount = WaitQueue.Count;
-            int testCount = TestQueue.Count;
+            var testCount = TestQueue.Count;
+            var waitCount = WaitQueue.Count;
 
             SetStdProgress(testCount, waitCount);
 
             if (waitCount > 0 && testCount < MaxThreads)
             {
-                var thread = new Thread(() => StdTestProcess(WaitQueue.Dequeue(), TestTimeout, random));
+                var addr = WaitQueue.Dequeue();
+                var thread = new Thread(() => StdTestProcess(addr, TestTimeout, random));
                 thread.Start();
             }
             else if (waitCount == 0 && testCount == 0)
@@ -118,59 +119,46 @@ namespace GoGo_Tester
 
             var url = "https://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
 
-            var reqt = (HttpWebRequest)WebRequest.Create(url);
-            reqt.Timeout = timeout;
-            reqt.Method = "HEAD";
-            reqt.AllowAutoRedirect = false;
-            reqt.KeepAlive = false;
-            reqt.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            req.Timeout = timeout;
+            req.Method = "HEAD";
+            req.AllowAutoRedirect = false;
+            req.KeepAlive = false;
+            req.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
+
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             try
             {
-                using (var respt = (HttpWebResponse)reqt.GetResponse())
+                using (var resp = (HttpWebResponse)req.GetResponse())
                 {
-                    if (respt.Server == "gws")
+                    if (resp.Server == "gws")
                     {
-                        var req = (HttpWebRequest)WebRequest.Create(url);
-                        req.Timeout = timeout;
-                        req.Method = "HEAD";
-                        req.AllowAutoRedirect = false;
-                        req.KeepAlive = false;
-                        req.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
-
-                        var stopwatch = new Stopwatch();
-                        stopwatch.Start();
-
-                        using (var resp = (HttpWebResponse)req.GetResponse())
-                        {
-                            SetStdTestResult(addr, "_OK " + stopwatch.ElapsedMilliseconds.ToString("D4"));
-                            resp.Close();
-                        }
-                        stopwatch.Stop();
+                        SetStdTestResult(addr, "_OK " + stopwatch.ElapsedMilliseconds.ToString("D4"));
                     }
                     else
                     {
                         SetStdTestResult(addr, "Invalid");
                     }
-
-                    respt.Close();
+                    resp.Close();
                 }
             }
             catch (Exception ex)
             {
-                SetStdTestResult(addr, "Invalid");
+                SetStdTestResult(addr, "Failed");
             }
+            stopwatch.Stop();
 
             Monitor.Enter(TestQueue);
             TestQueue.Dequeue();
             Monitor.Exit(TestQueue);
         }
 
-        private delegate void SetResultHandler(string addr, string result);
         private void SetStdTestResult(string addr, string result)
         {
             if (InvokeRequired)
             {
-                Invoke(new SetResultHandler(SetStdTestResult), new object[] { addr, result });
+                Invoke(new MethodInvoker(() => SetStdTestResult(addr, result)));
             }
             else
             {
@@ -183,7 +171,7 @@ namespace GoGo_Tester
         {
             if (InvokeRequired)
             {
-                Invoke(new SetResultHandler(SetGaTestResult), new object[] { addr, result });
+                Invoke(new MethodInvoker(() => SetGaTestResult(addr, result)));
             }
             else
             {
@@ -195,15 +183,23 @@ namespace GoGo_Tester
 
         private void ImportIp(string addr)
         {
-            try
+            if (InvokeRequired)
             {
-                var row = IpTable.NewRow();
-                row[0] = addr;
-                row[1] = "n/a";
-                row[2] = "n/a";
-                IpTable.Rows.Add(row);
+                Invoke(new MethodInvoker(() => ImportIp(addr)));
             }
-            catch (Exception) { }
+            else
+            {
+                try
+                {
+                    var row = IpTable.NewRow();
+                    row[0] = addr;
+                    row[1] = "n/a";
+                    row[2] = "n/a";
+                    IpTable.Rows.Add(row);
+                }
+                catch (Exception) { }
+            }
+
         }
 
         private void RemoveIp(string addr)
@@ -261,7 +257,8 @@ namespace GoGo_Tester
                 return;
             }
 
-            var ranges = str.Split(@"`~!?@#$%^&*()=+\|/,<>;:'，。；：“”‘’？、".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var ranges = str.Split(@"`~!?@#$%^&*()=+,<>;:'，。；：“”‘’？、".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
             foreach (var range in ranges)
             {
                 var cope = range.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
@@ -274,19 +271,16 @@ namespace GoGo_Tester
                 var copeValid = 0;
                 for (int i = 0; i < 4; i++)
                 {
-                    if (cope[i].Contains("-"))
-                    {
-                        var se = cope[i].Split('-');
-                        if (se.Length != 2)
-                            break;
+                    var se = cope[i].Split(@"-\|/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
+                    if (se.Length == 2)
+                    {
                         try
                         {
                             start[i] = Convert.ToInt32(se[0].Trim());
                             end[i] = Convert.ToInt32(se[1].Trim());
                         }
                         catch (Exception) { break; }
-
                     }
                     else
                     {
@@ -731,10 +725,9 @@ namespace GoGo_Tester
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                        SetGaTestResult(addr, "Invalid");
+                        SetGaTestResult(addr, "Failed");
                     }
                     stopwatch.Stop();
-
 
                     process.Kill();
                     process.WaitForExit();
