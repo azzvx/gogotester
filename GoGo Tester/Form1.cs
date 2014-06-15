@@ -1037,6 +1037,18 @@ namespace GoGo_Tester
             return cells.ToArray();
         }
 
+        private string BuildIpString(string[] strs)
+        {
+            var sbd = new StringBuilder(strs[0]);
+
+            for (int i = 1; i < strs.Length; i++)
+            {
+                sbd.Append("|" + strs[i]);
+            }
+
+            return sbd.ToString();
+        }
+
         private string BuildIpString(DataGridViewCell[] cells)
         {
             var sbd = new StringBuilder(cells[0].Value.ToString());
@@ -1403,6 +1415,79 @@ namespace GoGo_Tester
 
             RndIsTesting = true;
             RndTestTimer.Start();
+        }
+
+        private void mApplyToUserConfig_Click(object sender, EventArgs e)
+        {
+            if (IsTesting())
+            {
+                return;
+            }
+
+            if (!File.Exists("proxy.py"))
+            {
+                MessageBox.Show("请将本程序放入GOAgent目录内！");
+                return;
+            }
+
+            var vstd = GetStdValidIps();
+            var vga = GetGaValidIps();
+            List<string> vfinal;
+            if (vstd.Count > 0 && vga.Count > 0)
+            {
+                vfinal = new List<string>();
+                foreach (var str in vstd)
+                {
+                    if (vga.Contains(str))
+                    {
+                        vfinal.Add(str);
+                    }
+                }
+
+            }
+            else if (vstd.Count == 0)
+            {
+                vfinal = vga;
+            }
+            else
+            {
+                vfinal = vstd;
+            }
+
+            var ipstring = BuildIpString(vfinal.ToArray());
+
+            if (!File.Exists("proxy.user.ini"))
+            {
+                File.WriteAllText("proxy.user.ini", "");
+            }
+
+            var inifile = new IniFile("proxy.user.ini");
+
+            inifile.WriteValue("iplist", "google_cn", ipstring);
+            inifile.WriteValue("iplist", "google_hk", ipstring);
+
+            inifile.WriteFile();
+            MessageBox.Show("已写入proxy.user.ini！重新载入GoAgent就可生效！");
+        }
+        private List<string> GetStdValidIps()
+        {
+            var ls = new List<string>();
+            var rows = SelectByExpr(string.Format("std like '_OK%'"), "std asc");
+            foreach (var row in rows)
+            {
+                ls.Add(row[0].ToString());
+            }
+            return ls;
+        }
+        private List<string> GetGaValidIps()
+        {
+            var ls = new List<string>();
+            var rows = SelectByExpr(string.Format("proxy like '_OK%'"), "std asc, proxy asc");
+            foreach (var row in rows)
+            {
+                ls.Add(row[0].ToString());
+            }
+            return ls;
         }
     }
 

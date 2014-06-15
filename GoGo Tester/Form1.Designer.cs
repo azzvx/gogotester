@@ -53,6 +53,9 @@
             this.mRemoveAllIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mRemoveIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mApply = new System.Windows.Forms.ToolStripMenuItem();
+            this.mApplyToUserConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.msMain = new System.Windows.Forms.MenuStrip();
             this.mStartRndTest = new System.Windows.Forms.ToolStripMenuItem();
@@ -204,9 +207,11 @@
             this.toolStripSeparator1,
             this.mExport,
             this.toolStripSeparator2,
-            this.mRemove});
+            this.mRemove,
+            this.toolStripSeparator3,
+            this.mApply});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(117, 82);
+            this.cmsIpData.Size = new System.Drawing.Size(117, 110);
             // 
             // mImport
             // 
@@ -304,6 +309,26 @@
             this.mRemoveIpsInClipbord.Size = new System.Drawing.Size(187, 22);
             this.mRemoveIpsInClipbord.Text = "剪切板中存在的IP(&C)";
             this.mRemoveIpsInClipbord.Click += new System.EventHandler(this.mRemoveIpsInClipbord_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
+            // 
+            // mApply
+            // 
+            this.mApply.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mApplyToUserConfig});
+            this.mApply.Name = "mApply";
+            this.mApply.Size = new System.Drawing.Size(116, 22);
+            this.mApply.Text = "应用(&A)";
+            // 
+            // mApplyToUserConfig
+            // 
+            this.mApplyToUserConfig.Name = "mApplyToUserConfig";
+            this.mApplyToUserConfig.Size = new System.Drawing.Size(177, 22);
+            this.mApplyToUserConfig.Text = "到用户配置文件(&U)";
+            this.mApplyToUserConfig.Click += new System.EventHandler(this.mApplyToUserConfig_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -561,6 +586,9 @@
         private System.Windows.Forms.ToolStripMenuItem mStopTest;
         private System.Windows.Forms.CheckBox cbWindow;
         private System.Windows.Forms.ToolStripMenuItem mStartRndTest;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem mApply;
+        private System.Windows.Forms.ToolStripMenuItem mApplyToUserConfig;
 
     }
 }
