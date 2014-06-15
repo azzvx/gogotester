@@ -488,10 +488,10 @@ namespace GoGo_Tester
             /// Std
             ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
 
-            StdTestTimer.Interval = 50;
+            StdTestTimer.Interval = 30;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
 
-            RndTestTimer.Interval = 50;
+            RndTestTimer.Interval = 30;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
 
         }
@@ -611,7 +611,6 @@ namespace GoGo_Tester
 
             try
             {
-
                 socket.BeginConnect(addr, 443, x =>
                    {
                        try
@@ -626,6 +625,7 @@ namespace GoGo_Tester
                        socket.Close();
 
                    }, null);
+
                 stopwatch.Start();
 
                 while (!pingOk)

@@ -192,7 +192,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(65, 27);
             this.label3.TabIndex = 8;
-            this.label3.Tag = "标准测试的最大线程数";
+            this.label3.Tag = "随机测试和标准测试的最大线程数";
             this.label3.Text = "最大线程：";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label3.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
@@ -396,7 +396,7 @@
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvIpData.Size = new System.Drawing.Size(728, 300);
             this.dgvIpData.TabIndex = 25;
-            this.dgvIpData.Tag = "表格数据中：标准测试在250ms以内为优秀，代理测试在1000ms以内为优秀。";
+            this.dgvIpData.Tag = "表格数据中：标准测试在50ms以内为优秀，代理测试在1000ms以内为优秀。";
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // lTip
