@@ -435,6 +435,64 @@ namespace GoGo_Tester
             ImportIpRange("1.179.250.0-255");
             ImportIpRange("1.179.249.0-255");
             ImportIpRange("1.179.248.0-255");
+            ///
+            ImportIpRange("77.66.9.64-123");
+            ImportIpRange("62.116.207.0-63");
+            ImportIpRange("66.185.84.0-255");
+            ImportIpRange("149.3.177.0-255");
+            ImportIpRange("195.249.20.192-255");
+            ImportIpRange("64.15.127.0-255");
+            ImportIpRange("64.15.126.0-255");
+            ImportIpRange("64.15.125.0-255");
+            ImportIpRange("64.15.124.0-255");
+            ImportIpRange("64.15.123.0-255");
+            ImportIpRange("64.15.122.0-255");
+            ImportIpRange("64.15.121.0-255");
+            ImportIpRange("64.15.120.0-255");
+            ImportIpRange("64.15.119.0-255");
+            ImportIpRange("64.15.118.0-255");
+            ImportIpRange("64.15.117.0-255");
+            ImportIpRange("64.15.116.0-255");
+            ImportIpRange("64.15.115.0-255");
+            ImportIpRange("64.15.114.0-255");
+            ImportIpRange("64.15.113.0-255");
+            ImportIpRange("64.15.112.0-255");
+            ImportIpRange("208.65.155.0-255");
+            ImportIpRange("208.65.154.0-255");
+            ImportIpRange("208.65.153.0-255");
+            ImportIpRange("208.65.152.0-255");
+            ImportIpRange("208.117.255.0-255");
+            ImportIpRange("208.117.254.0-255");
+            ImportIpRange("208.117.253.0-255");
+            ImportIpRange("208.117.252.0-255");
+            ImportIpRange("208.117.251.0-255");
+            ImportIpRange("208.117.250.0-255");
+            ImportIpRange("208.117.249.0-255");
+            ImportIpRange("208.117.248.0-255");
+            ImportIpRange("208.117.247.0-255");
+            ImportIpRange("208.117.246.0-255");
+            ImportIpRange("208.117.245.0-255");
+            ImportIpRange("208.117.244.0-255");
+            ImportIpRange("208.117.243.0-255");
+            ImportIpRange("208.117.242.0-255");
+            ImportIpRange("208.117.241.0-255");
+            ImportIpRange("208.117.240.0-255");
+            ImportIpRange("208.117.239.0-255");
+            ImportIpRange("208.117.238.0-255");
+            ImportIpRange("208.117.237.0-255");
+            ImportIpRange("208.117.236.0-255");
+            ImportIpRange("208.117.235.0-255");
+            ImportIpRange("208.117.234.0-255");
+            ImportIpRange("208.117.233.0-255");
+            ImportIpRange("208.117.232.0-255");
+            ImportIpRange("208.117.231.0-255");
+            ImportIpRange("208.117.230.0-255");
+            ImportIpRange("208.117.229.0-255");
+            ImportIpRange("208.117.228.0-255");
+            ImportIpRange("208.117.227.0-255");
+            ImportIpRange("208.117.226.0-255");
+            ImportIpRange("208.117.225.0-255");
+            ImportIpRange("208.117.224.0-255");
         }
 
         private readonly Regex rxMatchIp =
@@ -493,6 +551,12 @@ namespace GoGo_Tester
 
             RndTestTimer.Interval = 30;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
+
+            MessageBox.Show(this,
+@"测试得到的结果请不要重复扫描，这是一种挑衅行为。
+
+一般iplist在使用的时候good_ipaddrs并不是固定不动的，而是一个动态的值，因为ISP（注意是ISP而不是墙）会临时性的重置有些IP。
+所以good_ipaddrs存在一个最好的情况（比如good_ipaddrs=200）和最差的情况（比如good_ipaddrs=30），只要最差的情况依然能够正常上网（小段黄字是正常的），那么这个iplist就是好用的。");
 
         }
 
