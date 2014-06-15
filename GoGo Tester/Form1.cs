@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -28,6 +29,40 @@ namespace GoGo_Tester
         {
             InitializeComponent();
 
+            ImportIpRange("93.123.23.1-59");
+            ImportIpRange("197.199.253.1-59");
+            ImportIpRange("197.199.254.1-59");
+            ImportIpRange("218.189.25.129-.187");
+            ImportIpRange("218.253.0.76-187");
+            ImportIpRange("149.126.86.1-59");
+            ImportIpRange("111.92.162.4-59");
+            ImportIpRange("62.201.216.196-251");
+            ImportIpRange("218.176.242.4-251");
+            ImportIpRange("41.84.159.12-30");
+            ImportIpRange("121.78.74.68-123");
+            ImportIpRange("41.206.96.1-251");
+            ImportIpRange("88.159.13.196-251");
+            ImportIpRange("193.90.147.0-123");
+            ImportIpRange("103.25.178.4-59");
+            ImportIpRange("178.45.251.4-123 ");
+            ImportIpRange("84.235.77.1-251");
+            ImportIpRange("213.240.44.5-27");
+            ImportIpRange("203.116.165.129-255");
+            ImportIpRange("203.117.34.132-187");
+            ImportIpRange("62.197.198.193-251");
+            ImportIpRange("87.244.198.161-187");
+            ImportIpRange("123.205.250.68-190");
+            ImportIpRange("123.205.251.68-123");
+            ImportIpRange("163.28.116.1-59");
+            ImportIpRange("163.28.83.143-187");
+            ImportIpRange("202.39.143.1-123");
+            ImportIpRange("203.211.0.4-59");
+            ImportIpRange("203.66.124.129-251");
+            ImportIpRange("210.61.221.65-187");
+            ImportIpRange("60.199.175.1-187");
+            ImportIpRange("61.219.131.65-251");
+            ImportIpRange("118.174.25.4-251");
+            ///
             ImportIpRange("210.153.73.20-59");
             ImportIpRange("210.153.73.84-123 ");
             ImportIpRange("106.162.192.148-187");
@@ -46,7 +81,7 @@ namespace GoGo_Tester
             ImportIpRange("111.168.255.84-123");
             ImportIpRange("111.168.255.148-187");
             ImportIpRange("203.165.13-14.210-251");
-            ImportIpRange("222.222.22.2");
+            ///
             ImportIpRange("66.185.84.0-255");
             ImportIpRange("24.156.131.0-255");
             ImportIpRange("88.159.13.0-255");
@@ -89,7 +124,7 @@ namespace GoGo_Tester
             ImportIpRange("111.92.162.0-255");
             ImportIpRange("203.117.34.0-255");
             ImportIpRange("197.199.254.0-255");
-
+            ///
             ImportIpRange("93.123.23.0-255");
             ImportIpRange("89.207.224.0-255");
             ImportIpRange("84.235.77.0-255");
@@ -568,6 +603,62 @@ namespace GoGo_Tester
 
         private TestResult StdTestProcess(string addr, int timeout)
         {
+            bool pingOk = false;
+            long pingTime = 0;
+
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var stopwatch = new Stopwatch();
+
+            try
+            {
+
+                socket.BeginConnect(addr, 443, x =>
+                   {
+                       try
+                       {
+                           socket.EndConnect(x);
+                           pingTime = stopwatch.ElapsedMilliseconds;
+                           pingOk = true;
+                       }
+                       catch (Exception) { }
+
+                       stopwatch.Stop();
+                       socket.Close();
+
+                   }, null);
+                stopwatch.Start();
+
+                while (!pingOk)
+                {
+                    if (stopwatch.ElapsedMilliseconds > TestTimeout)
+                    {
+                        stopwatch.Stop();
+                        socket.Close();
+
+                        return new TestResult()
+                        {
+                            addr = addr,
+                            ok = false,
+                            msg = "Timeout"
+                        };
+                    }
+
+                    Thread.Sleep(20);
+                }
+            }
+            catch (Exception)
+            {
+                stopwatch.Stop();
+                socket.Close();
+
+                return new TestResult()
+                {
+                    addr = addr,
+                    ok = false,
+                    msg = "Failed"
+                };
+            }
+
             TestResult result;
 
             var sbd = new StringBuilder();
@@ -584,8 +675,6 @@ namespace GoGo_Tester
             req.KeepAlive = false;
             req.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
             try
             {
                 using (var resp = (HttpWebResponse)req.GetResponse())
@@ -596,7 +685,7 @@ namespace GoGo_Tester
                         {
                             addr = addr,
                             ok = true,
-                            msg = "_OK " + stopwatch.ElapsedMilliseconds.ToString("D4")
+                            msg = "_OK " + pingTime.ToString("D4")
                         };
                     }
                     else
@@ -620,7 +709,7 @@ namespace GoGo_Tester
                              msg = "Failed"
                          };
             }
-            stopwatch.Stop();
+
             return result;
         }
 
