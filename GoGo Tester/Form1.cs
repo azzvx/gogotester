@@ -496,6 +496,13 @@ namespace GoGo_Tester
 
         }
 
+        private static int SetRange(int val, int min, int max)
+        {
+            val = val > min ? val : min;
+            val = val < max ? val : max;
+            return val;
+        }
+
         private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
             var testCount = TestQueue.Count;
@@ -503,7 +510,7 @@ namespace GoGo_Tester
 
             SetRndProgress(testCount, waitCount);
 
-            if (waitCount < Form2.RandomNumber && testCount < MaxThreads)
+            if (RndIsTesting && waitCount < Form2.RandomNumber && testCount < MaxThreads)
             {
                 string addr;
                 do
@@ -545,7 +552,7 @@ namespace GoGo_Tester
 
             SetStdProgress(testCount, waitCount);
 
-            if (waitCount > 0 && testCount < MaxThreads)
+            if (StdIsTesting && waitCount > 0 && testCount < MaxThreads)
             {
                 var addr = WaitQueue.Dequeue();
                 var thread = new Thread(() =>
@@ -577,7 +584,7 @@ namespace GoGo_Tester
             }
             else
             {
-                pbProgress.Value = pbProgress.Maximum - waitCount - testCount;
+                pbProgress.Value = SetRange(pbProgress.Maximum - waitCount - testCount, 0, pbProgress.Maximum);
                 lProgress.Text = testCount + " / " + waitCount;
             }
         }
@@ -589,7 +596,7 @@ namespace GoGo_Tester
             }
             else
             {
-                pbProgress.Value = waitCount;
+                pbProgress.Value = SetRange(waitCount, 0, pbProgress.Maximum);
                 lProgress.Text = testCount + " / " + waitCount;
             }
         }
@@ -1063,13 +1070,9 @@ namespace GoGo_Tester
         }
         private void mStopTest_Click(object sender, EventArgs e)
         {
-            StdTestTimer.Stop();
-            RndTestTimer.Stop();
             StopGaTest = true;
             StdIsTesting = false;
-            GaIsTesting = false;
             RndIsTesting = false;
-
 
             pbProgress.Value = 0;
             lProgress.Text = "0 / 0";
@@ -1207,17 +1210,6 @@ namespace GoGo_Tester
 
             var thread = new Thread(GaTestLoop);
             thread.Start();
-
-            //while (GaIsTesting)
-            //{
-            //    Application.DoEvents();
-            //}
-
-            //if (StopGaTest)
-            //{
-            //    pbProgress.Value = 0;
-            //    lProgress.Text = "0 / 0";
-            //}
         }
 
         private delegate void GaProgressHandler(int left);
@@ -1230,7 +1222,7 @@ namespace GoGo_Tester
             }
             else
             {
-                pbProgress.Value = pbProgress.Maximum - left;
+                pbProgress.Value = SetRange(pbProgress.Maximum - left, 0, pbProgress.Maximum);
                 lProgress.Text = left + " / " + pbProgress.Maximum;
             }
         }
