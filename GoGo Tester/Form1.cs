@@ -17,16 +17,78 @@ namespace GoGo_Tester
 {
     public partial class Form1 : Form
     {
-        private List<IpRange> IpRangePoolList = new List<IpRange>();
+        private List<IpRange> IpRangePool = new List<IpRange>();
 
         private void ImportIpRange(string range)
         {
-            IpRangePoolList.Add(IpRange.CreateIpRange(range));
+            IpRangePool.Add(IpRange.CreateIpRange(range));
         }
 
         public Form1()
         {
             InitializeComponent();
+
+            ImportIpRange("210.153.73.20-59");
+            ImportIpRange("210.153.73.84-123 ");
+            ImportIpRange("106.162.192.148-187");
+            ImportIpRange("106.162.198.84-123");
+            ImportIpRange("106.162.216.20-59");
+            ImportIpRange("106.162.216.84-123");
+            ImportIpRange("210.139.253.20-59");
+            ImportIpRange("210.139.253.84-123");
+            ImportIpRange("210.139.253.148-187");
+            ImportIpRange("210.139.253.212-251");
+            ImportIpRange("218.176.242.20-59");
+            ImportIpRange("218.176.242.84-123");
+            ImportIpRange("218.176.242.148-187");
+            ImportIpRange("218.176.242.212-251 ");
+            ImportIpRange("111.168.255.20-59");
+            ImportIpRange("111.168.255.84-123");
+            ImportIpRange("111.168.255.148-187");
+            ImportIpRange("203.165.13-14.210-251");
+            ImportIpRange("222.222.22.2");
+            ImportIpRange("66.185.84.0-255");
+            ImportIpRange("24.156.131.0-255");
+            ImportIpRange("88.159.13.0-255");
+            ImportIpRange("1.179.248.0-255");
+            ImportIpRange("69.17.141.0-255");
+            ImportIpRange("59.78.209.0-255");
+            ImportIpRange("202.106.93.0-255");
+            ImportIpRange("202.69.26.0-255");
+            ImportIpRange("121.194.0.0-255");
+            ImportIpRange("192.86.102.0-255");
+            ImportIpRange("108.166.34.0-255");
+            ImportIpRange("119.147.146.0-255");
+            ImportIpRange("124.160.89.0-255");
+            ImportIpRange("119.57.55.0-255");
+            ImportIpRange("58.240.77.0-255");
+            ImportIpRange("58.205.224.0-255");
+            ImportIpRange("121.195.178.0-255");
+            ImportIpRange("108.166.34.0-255");
+            ImportIpRange("110.75.151.0-255");
+            ImportIpRange("192.193.133.0-255");
+            ImportIpRange("118.174.25.0-255");
+            ImportIpRange("61.219.131.0-255");
+            ImportIpRange("111.92.162.0-255");
+            ImportIpRange("66.185.84.0-255");
+            ImportIpRange("24.156.131.0-255");
+            ImportIpRange("88.159.13.0-255");
+            ImportIpRange("1.179.248.0-255");
+            ImportIpRange("69.17.141.0-255");
+            ImportIpRange("123.205.250.0-255");
+            ImportIpRange("84.235.77.0-255");
+            ImportIpRange("60.199.175.0-255");
+            ImportIpRange("65.55.58.0-255");
+            ImportIpRange("210.61.221.0-255");
+            ImportIpRange("192.30.252.0-255");
+            ImportIpRange("193.90.147.0-255");
+            ImportIpRange("41.206.96.0-255");
+            ImportIpRange("62.201.216.0-255");
+            ImportIpRange("118.174.25.0-255");
+            ImportIpRange("61.219.131.0-255");
+            ImportIpRange("111.92.162.0-255");
+            ImportIpRange("203.117.34.0-255");
+            ImportIpRange("197.199.254.0-255");
 
             ImportIpRange("93.123.23.0-255");
             ImportIpRange("89.207.224.0-255");
@@ -411,7 +473,7 @@ namespace GoGo_Tester
                 string addr;
                 do
                 {
-                    IpRange iprange = IpRangePoolList[random.Next(0, IpRangePoolList.Count)];
+                    IpRange iprange = IpRangePool[random.Next(0, IpRangePool.Count)];
                     addr = iprange.GetRandomIp();
                 } while (WaitQueue.Contains(addr));
 
@@ -549,7 +611,7 @@ namespace GoGo_Tester
                     resp.Close();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = new TestResult()
                          {
