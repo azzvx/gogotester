@@ -444,7 +444,7 @@ namespace GoGo_Tester
         private readonly DataTable IpTable = new DataTable();
 
         public static Queue<string> WaitQueue = new Queue<string>();
-        public static Queue<object> TestQueue = new Queue<object>();
+        public static Queue<int> TestQueue = new Queue<int>();
 
         private readonly Timer StdTestTimer = new Timer();
         private readonly Timer RndTestTimer = new Timer();
@@ -561,7 +561,8 @@ namespace GoGo_Tester
                     TestQueue.Enqueue(0);
                     Monitor.Exit(TestQueue);
 
-                    SetStdTestResult(StdTestProcess(addr, TestTimeout));
+                    var result = StdTestProcess(addr, TestTimeout);
+                    SetStdTestResult(result);
 
                     Monitor.Enter(TestQueue);
                     TestQueue.Dequeue();
@@ -610,7 +611,6 @@ namespace GoGo_Tester
 
         private TestResult StdTestProcess(string addr, int timeout)
         {
-            bool pingOk = false;
             long pingTime = 0;
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -618,24 +618,20 @@ namespace GoGo_Tester
 
             try
             {
-                socket.BeginConnect(addr, 443, x =>
-                   {
-                       try
-                       {
-                           socket.EndConnect(x);
-                           pingTime = stopwatch.ElapsedMilliseconds;
-                           pingOk = true;
-                       }
-                       catch (Exception) { }
+                var ar = socket.BeginConnect(addr, 443, x =>
+                     {
+                         try
+                         {
+                             socket.EndConnect(x);
+                             pingTime = stopwatch.ElapsedMilliseconds;
+                         }
+                         catch (Exception) { }
 
-                       stopwatch.Stop();
-                       socket.Close();
-
-                   }, null);
+                     }, null);
 
                 stopwatch.Start();
 
-                while (!pingOk)
+                while (!ar.IsCompleted)
                 {
                     if (stopwatch.ElapsedMilliseconds > TestTimeout)
                     {
@@ -652,10 +648,24 @@ namespace GoGo_Tester
 
                     Thread.Sleep(20);
                 }
+
+                stopwatch.Stop();
+
+                if (!socket.Connected)
+                {
+                    socket.Close();
+                    return new TestResult()
+                    {
+                        addr = addr,
+                        ok = false,
+                        msg = "Failed"
+                    };
+                }
+
+                socket.Close();
             }
             catch (Exception)
             {
-                stopwatch.Stop();
                 socket.Close();
 
                 return new TestResult()
@@ -728,7 +738,7 @@ namespace GoGo_Tester
             }
             else
             {
-                var rows = SelectByIP(result.addr);
+                var rows = SelectByIp(result.addr);
                 if (rows.Length > 0)
                     rows[0][1] = result.msg;
             }
@@ -741,7 +751,7 @@ namespace GoGo_Tester
             }
             else
             {
-                var rows = SelectByIP(addr);
+                var rows = SelectByIp(addr);
                 if (rows.Length > 0)
                     rows[0][2] = result;
             }
@@ -770,7 +780,7 @@ namespace GoGo_Tester
 
         private void RemoveIp(string addr)
         {
-            var row = SelectByIP(addr);
+            var row = SelectByIp(addr);
             if (row.Length > 0)
             {
                 IpTable.Rows.Remove(row[0]);
@@ -786,12 +796,12 @@ namespace GoGo_Tester
 
             return IpTable.Select(expr, order);
         }
-        private DataRow[] SelectByIP(string addr, string order = null)
+        private DataRow[] SelectByIp(string addr, string order = null)
         {
 
             if (InvokeRequired)
             {
-                return (DataRow[])Invoke(new MethodInvoker(() => SelectByIP(addr, order)));
+                return (DataRow[])Invoke(new MethodInvoker(() => SelectByIp(addr, order)));
             }
 
             return IpTable.Select(string.Format("addr = '{0}'", addr), order);
@@ -801,7 +811,7 @@ namespace GoGo_Tester
         {
             if (InvokeRequired)
             {
-                return (DataRow[])Invoke(new MethodInvoker(() => SelectByIP(key, order)));
+                return (DataRow[])Invoke(new MethodInvoker(() => SelectByIp(key, order)));
             }
 
             return IpTable.Select(string.Format("{0} = 'n/a'", key), order);
@@ -1073,9 +1083,6 @@ namespace GoGo_Tester
             StopGaTest = true;
             StdIsTesting = false;
             RndIsTesting = false;
-
-            pbProgress.Value = 0;
-            lProgress.Text = "0 / 0";
         }
 
         private void mExportAllIps_Click(object sender, EventArgs e)

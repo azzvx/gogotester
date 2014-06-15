@@ -96,7 +96,7 @@
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(588, 55);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(336, 55);
             this.tableLayoutPanel5.TabIndex = 15;
             // 
             // tbUrl
@@ -104,7 +104,7 @@
             this.tbUrl.Dock = System.Windows.Forms.DockStyle.Top;
             this.tbUrl.Location = new System.Drawing.Point(74, 31);
             this.tbUrl.Name = "tbUrl";
-            this.tbUrl.Size = new System.Drawing.Size(457, 21);
+            this.tbUrl.Size = new System.Drawing.Size(205, 21);
             this.tbUrl.TabIndex = 6;
             this.tbUrl.Tag = "（如无必要请勿修改）代理测试时代理请求的测试网址，可以随意指定，但最好是一个网站的主页或一级页面。";
             this.tbUrl.Text = "https://www.google.com";
@@ -138,7 +138,7 @@
             this.tbIpRange.Dock = System.Windows.Forms.DockStyle.Top;
             this.tbIpRange.Location = new System.Drawing.Point(74, 3);
             this.tbIpRange.Name = "tbIpRange";
-            this.tbIpRange.Size = new System.Drawing.Size(457, 21);
+            this.tbIpRange.Size = new System.Drawing.Size(205, 21);
             this.tbIpRange.TabIndex = 1;
             this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255。 173.0-255.0\\255.0/255 代表 173 段所有 IP ，其它同理。不同IP段" +
     "请用除\'. - \\ / \'以外的符号分隔。";
@@ -149,7 +149,7 @@
             this.bAddIpRange.AutoSize = true;
             this.bAddIpRange.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bAddIpRange.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bAddIpRange.Location = new System.Drawing.Point(537, 3);
+            this.bAddIpRange.Location = new System.Drawing.Point(285, 3);
             this.bAddIpRange.Name = "bAddIpRange";
             this.bAddIpRange.Size = new System.Drawing.Size(48, 22);
             this.bAddIpRange.TabIndex = 2;
@@ -161,7 +161,7 @@
             // 
             this.cbWindow.AutoSize = true;
             this.cbWindow.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cbWindow.Location = new System.Drawing.Point(537, 31);
+            this.cbWindow.Location = new System.Drawing.Point(285, 31);
             this.cbWindow.Name = "cbWindow";
             this.cbWindow.Size = new System.Drawing.Size(48, 21);
             this.cbWindow.TabIndex = 7;
@@ -328,7 +328,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(734, 438);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(482, 438);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // msMain
@@ -341,7 +341,7 @@
             this.mStopTest});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
-            this.msMain.Size = new System.Drawing.Size(734, 25);
+            this.msMain.Size = new System.Drawing.Size(482, 25);
             this.msMain.TabIndex = 3;
             this.msMain.Text = "menuStrip1";
             // 
@@ -394,7 +394,7 @@
             this.dgvIpData.ReadOnly = true;
             this.dgvIpData.RowTemplate.Height = 23;
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIpData.Size = new System.Drawing.Size(728, 300);
+            this.dgvIpData.Size = new System.Drawing.Size(476, 300);
             this.dgvIpData.TabIndex = 25;
             this.dgvIpData.Tag = "表格数据中：标准测试在50ms以内为优秀，代理测试在1000ms以内为优秀。";
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
@@ -407,7 +407,7 @@
             this.lTip.Location = new System.Drawing.Point(3, 408);
             this.lTip.Name = "lTip";
             this.lTip.Padding = new System.Windows.Forms.Padding(3);
-            this.lTip.Size = new System.Drawing.Size(728, 30);
+            this.lTip.Size = new System.Drawing.Size(476, 30);
             this.lTip.TabIndex = 12;
             this.lTip.Text = "Tip\r\nTip";
             // 
@@ -416,7 +416,7 @@
             this.pbProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbProgress.Location = new System.Drawing.Point(3, 28);
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(588, 10);
+            this.pbProgress.Size = new System.Drawing.Size(336, 10);
             this.pbProgress.Step = 1;
             this.pbProgress.TabIndex = 23;
             // 
@@ -424,7 +424,7 @@
             // 
             this.lProgress.AutoSize = true;
             this.lProgress.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lProgress.Location = new System.Drawing.Point(597, 25);
+            this.lProgress.Location = new System.Drawing.Point(345, 25);
             this.lProgress.Name = "lProgress";
             this.lProgress.Size = new System.Drawing.Size(134, 12);
             this.lProgress.TabIndex = 24;
@@ -445,7 +445,7 @@
             this.tableLayoutPanel2.Controls.Add(this.label4, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(597, 350);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(345, 350);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -498,7 +498,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(740, 444);
+            this.ClientSize = new System.Drawing.Size(488, 444);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(3);
