@@ -22,7 +22,11 @@ namespace GoGo_Tester
 
         private void ImportIpRange(string range)
         {
-            IpRangePool.Add(IpRange.CreateIpRange(range));
+            var iprange = IpRange.CreateIpRange(range);
+            if (iprange != null)
+            {
+                IpRangePool.Add(iprange);
+            }
         }
 
         public Form1()
@@ -493,6 +497,80 @@ namespace GoGo_Tester
             ImportIpRange("208.117.226.0-255");
             ImportIpRange("208.117.225.0-255");
             ImportIpRange("208.117.224.0-255");
+            /// 6-16 感谢 westmin...@gmail.com
+            ImportIpRange("213.252.15.0-31");
+            ImportIpRange("213.31.219.80-87");
+            ImportIpRange("195.229.194.88-95");
+            ImportIpRange("195.205.170.64-79");
+            ImportIpRange("212.162.51.64-127");
+            ImportIpRange("83.141.89.124-127");
+            ImportIpRange("195.244.106.0-255");
+            ImportIpRange("217.33.127.208-223");
+            ImportIpRange("89.96.249.160-175");
+            ImportIpRange("89.207.224.0-255");
+            ImportIpRange("89.207.225.0-255");
+            ImportIpRange("89.207.226.0-255");
+            ImportIpRange("89.207.227.0-255");
+            ImportIpRange("89.207.228.0-255");
+            ImportIpRange("89.207.229.0-255");
+            ImportIpRange("89.207.230.0-255");
+            ImportIpRange("89.207.231.0-255");
+            ImportIpRange("217.28.250.44-47");
+            ImportIpRange("217.149.45.16-31");
+            ImportIpRange("193.142.125.0-255");
+            ImportIpRange("194.110.194.0-255");
+            ImportIpRange("193.200.222.0-255");
+            ImportIpRange("83.220.157.100-103");
+            ImportIpRange("193.186.4.0-255");
+            ImportIpRange("80.227.152.32-39");
+            ImportIpRange("212.181.117.144-159");
+            ImportIpRange("78.8.8.176-191");
+            ImportIpRange("217.28.253.32-33");
+            ImportIpRange("195.100.224.112-127");
+            ImportIpRange("213.187.184.68-71");
+            ImportIpRange("77.109.131.208-223");
+            ImportIpRange("84.233.219.144-159");
+            ImportIpRange("93.94.217.0-31");
+            ImportIpRange("93.94.218.0-31");
+            ImportIpRange("195.244.120.144-159");
+            ImportIpRange("81.93.175.232-239");
+            ImportIpRange("80.239.168.192-255");
+            ImportIpRange("217.30.152.192-223");
+            ImportIpRange("194.78.20.16-31");
+            ImportIpRange("85.182.250.0-63");
+            ImportIpRange("85.182.250.64-127");
+            ImportIpRange("62.20.124.48-63");
+            ImportIpRange("212.154.168.224-255");
+            ImportIpRange("217.193.96.38");
+            ImportIpRange("195.65.133.128-135");
+            ImportIpRange("92.45.86.16-31");
+            ImportIpRange("194.78.99.0-255");
+            ImportIpRange("85.182.250.128-191");
+            ImportIpRange("77.40.222.224-231");
+            ImportIpRange("213.186.229.0-63");
+            ImportIpRange("193.92.133.0-63");
+            ImportIpRange("94.40.70.0-63");
+            ImportIpRange("193.120.166.64-127");
+            ImportIpRange("194.100.132.128-143");
+            ImportIpRange("94.200.103.64-71");
+            ImportIpRange("195.141.3.24-27");
+            ImportIpRange("80.231.69.0-63");
+            ImportIpRange("83.100.221.224-255");
+            ImportIpRange("213.240.44.0-31");
+            ImportIpRange("86.127.118.128-191");
+            ImportIpRange("87.244.198.160-191");
+            ImportIpRange("93.183.211.192-255");
+            ImportIpRange("84.235.77.0-255");
+            ImportIpRange("195.76.16.136-143");
+            ImportIpRange("195.81.83.176-191");
+            ImportIpRange("80.80.3.176-191");
+            ImportIpRange("195.81.83.192-207");
+            ImportIpRange("178.60.128.1-63");
+            ImportIpRange("62.116.207.0-63");
+            ImportIpRange("88.159.13.192-255");
+            ImportIpRange("81.175.29.128-191");
+            ImportIpRange("80.228.65.128-191");
+            ImportIpRange("210.242.125.20-59");
         }
 
         private readonly Regex rxMatchIp =
@@ -553,10 +631,10 @@ namespace GoGo_Tester
             RndTestTimer.Elapsed += RndTestTimerElapsed;
 
             MessageBox.Show(this,
-@"测试得到的结果请不要重复扫描，这是一种挑衅行为。
+@"测试得到的结果请不要重复扫描，这会导致IP被重置，增加结果的不准确性。
 
 一般iplist在使用的时候good_ipaddrs并不是固定不动的，而是一个动态的值，因为ISP（注意是ISP而不是墙）会临时性的重置有些IP。
-所以good_ipaddrs存在一个最好的情况（比如good_ipaddrs=200）和最差的情况（比如good_ipaddrs=30），只要最差的情况依然能够正常上网（小段黄字是正常的），那么这个iplist就是好用的。");
+所以good_ipaddrs存在一个最好的情况（比如good_ipaddrs=200）和最差的情况（比如good_ipaddrs=30），只要最差的情况依然能够正常上网（出现黄字是正常的，因为有些IP临时失效），那么这个iplist就是好用的。");
 
         }
 
