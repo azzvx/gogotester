@@ -1444,7 +1444,7 @@ namespace GoGo_Tester
                     var process = new Process { StartInfo = GaStartInfo };
                     process.Start();
 
-                    Thread.Sleep(200);
+                    Thread.Sleep(500);
 
                     var req = (HttpWebRequest)WebRequest.Create(url);
                     req.Timeout = TestTimeout;
