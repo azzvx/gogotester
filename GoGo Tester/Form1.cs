@@ -45,7 +45,7 @@ namespace GoGo_Tester
         private static Random random = new Random();
         public static int PingTimeout = 1000;
         public static int TestTimeout = 4000;
-        public static int MaxThreads = 12;
+        public static int MaxThreads = 10;
 
         private bool StdIsTesting;
         private bool RndIsTesting;
@@ -78,10 +78,10 @@ namespace GoGo_Tester
             /// Std
             ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
 
-            StdTestTimer.Interval = 30;
+            StdTestTimer.Interval = 25;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
 
-            RndTestTimer.Interval = 30;
+            RndTestTimer.Interval = 25;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
         }
 
@@ -812,7 +812,7 @@ namespace GoGo_Tester
 
             MessageBox.Show("已写入proxy.user.ini！重新载入GoAgent就可生效！");
         }
-        
+
         private string[] GetStdValidIps()
         {
             var ls = new List<string>();

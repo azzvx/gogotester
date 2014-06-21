@@ -169,13 +169,23 @@
             // 
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
             this.nMaxThreads.Location = new System.Drawing.Point(74, 3);
+            this.nMaxThreads.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nMaxThreads.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nMaxThreads.Name = "nMaxThreads";
             this.nMaxThreads.Size = new System.Drawing.Size(79, 21);
             this.nMaxThreads.TabIndex = 27;
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nMaxThreads.Value = new decimal(new int[] {
-            12,
+            10,
             0,
             0,
             0});
@@ -289,7 +299,7 @@
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(152, 22);
+            this.mImport.Size = new System.Drawing.Size(116, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -302,7 +312,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
             // 
             // mExport
             // 
@@ -311,7 +321,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(152, 22);
+            this.mExport.Size = new System.Drawing.Size(116, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -336,7 +346,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // mRemove
             // 
@@ -347,7 +357,7 @@
             this.toolStripSeparator8,
             this.mRemoveIpsInClipbord});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(152, 22);
+            this.mRemove.Size = new System.Drawing.Size(116, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -384,7 +394,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
             // 
             // mApply
             // 
@@ -393,20 +403,20 @@
             this.toolStripSeparator5,
             this.mApplyValidIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(152, 22);
+            this.mApply.Size = new System.Drawing.Size(116, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
             // 
             this.mApplySelectedIpsToUserConfig.Name = "mApplySelectedIpsToUserConfig";
-            this.mApplySelectedIpsToUserConfig.Size = new System.Drawing.Size(222, 22);
+            this.mApplySelectedIpsToUserConfig.Size = new System.Drawing.Size(223, 22);
             this.mApplySelectedIpsToUserConfig.Text = "选中的IP到用户配置文件(&S)";
             this.mApplySelectedIpsToUserConfig.Click += new System.EventHandler(this.mApplySelectedIpsToUserConfig_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(219, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(220, 6);
             // 
             // mApplyValidIpsToUserConfig
             // 
