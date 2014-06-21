@@ -291,6 +291,11 @@ namespace GoGo_Tester
             ImportIpRange("94.200.103.64-71");
             ImportIpRange("94.40.70.0-63");
             ImportIpRange("95.143.84.128-191");
+			//new ip range
+			ImportIpRange("61.19.1-2.0-127");
+			ImportIpRange("61.19.8.0-127");
+			ImportIpRange("113.21.24.0-127");
+			ImportIpRange("119.81.145.120-127");
         }
     }
 }
