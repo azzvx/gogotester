@@ -170,7 +170,7 @@
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
             this.nMaxThreads.Location = new System.Drawing.Point(74, 3);
             this.nMaxThreads.Maximum = new decimal(new int[] {
-            1000,
+            240,
             0,
             0,
             0});
@@ -233,13 +233,18 @@
             // 
             this.nPingTimeout.Dock = System.Windows.Forms.DockStyle.Top;
             this.nPingTimeout.Increment = new decimal(new int[] {
-            20,
+            10,
             0,
             0,
             0});
             this.nPingTimeout.Location = new System.Drawing.Point(230, 3);
             this.nPingTimeout.Maximum = new decimal(new int[] {
             10000,
+            0,
+            0,
+            0});
+            this.nPingTimeout.Minimum = new decimal(new int[] {
+            10,
             0,
             0,
             0});
@@ -266,6 +271,11 @@
             this.nTestTimeout.Location = new System.Drawing.Point(386, 3);
             this.nTestTimeout.Maximum = new decimal(new int[] {
             10000,
+            0,
+            0,
+            0});
+            this.nTestTimeout.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
             0});

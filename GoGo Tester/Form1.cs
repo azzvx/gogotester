@@ -18,7 +18,7 @@ namespace GoGo_Tester
 {
     public partial class Form1 : Form
     {
-        struct TestResult
+        class TestResult
         {
             public string addr;
             public bool ok;
@@ -194,6 +194,8 @@ namespace GoGo_Tester
 
         private TestResult StdTestProcess(string addr)
         {
+            TestResult result = null;
+            bool endSocket = false;
             long pingTime = 0;
 
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -201,7 +203,7 @@ namespace GoGo_Tester
 
             try
             {
-                var ar = socket.BeginConnect(addr, 443, x =>
+                socket.BeginConnect(addr, 443, x =>
                      {
                          try
                          {
@@ -210,34 +212,32 @@ namespace GoGo_Tester
                          }
                          catch (Exception) { }
 
+                         endSocket = true;
                      }, null);
 
                 stopwatch.Start();
 
-                while (!ar.IsCompleted)
+                while (!endSocket)
                 {
                     if (stopwatch.ElapsedMilliseconds > PingTimeout)
                     {
-                        stopwatch.Stop();
-                        socket.Close();
-
-                        return new TestResult()
+                        result = new TestResult()
                         {
                             addr = addr,
                             ok = false,
                             msg = "Timeout"
                         };
+
+                        break;
                     }
 
                     Thread.Sleep(20);
                 }
 
-                stopwatch.Stop();
 
                 if (!socket.Connected)
                 {
-                    socket.Close();
-                    return new TestResult()
+                    result = new TestResult()
                     {
                         addr = addr,
                         ok = false,
@@ -245,21 +245,25 @@ namespace GoGo_Tester
                     };
                 }
 
+                stopwatch.Stop();
                 socket.Close();
             }
             catch (Exception)
             {
-                socket.Close();
-
-                return new TestResult()
+                result = new TestResult()
                 {
                     addr = addr,
                     ok = false,
                     msg = "Failed"
                 };
+
+                socket.Close();
             }
 
-            TestResult result;
+            if (result != null)
+            {
+                return result;
+            }
 
             var sbd = new StringBuilder();
 
@@ -779,7 +783,7 @@ namespace GoGo_Tester
 
             if (!File.Exists("proxy.py"))
             {
-                MessageBox.Show("请将本程序放入GOAgent目录内！");
+                MessageBox.Show("请将本程序放入GoAgent目录内！");
                 return;
             }
 
