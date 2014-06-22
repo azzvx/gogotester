@@ -44,6 +44,16 @@ namespace GoGo_Tester
             val = val < 255 ? val : 255;
             return val;
         }
+
+        private static int SetRange(string val)
+        {
+            try
+            {
+                return SetRange(Convert.ToInt32(val));
+            }
+            catch (Exception) { }
+            return 0;
+        }
         public static IpRange CreateIpRange(string range)
         {
             try
@@ -59,42 +69,44 @@ namespace GoGo_Tester
                 int swap;
                 for (int i = 0; i < 4; i++)
                 {
-                    var str = cope[i].Trim();
-                    if (str.Length == 0)
-                    {
-                        iprange.Cope[i, 0] = 0;
-                        iprange.Cope[i, 1] = 0;
+                    var sps = cope[i].Trim().Split(@"-\|/".ToCharArray());
 
+                    for (int j = 0; j < sps.Length; j++)
+                        sps[j] = sps[j].Trim();
+
+                    if (sps.Length > 1)
+                    {
+                        if (sps[0].Length == 0)
+                            sps[0] = "0";
+
+                        if (sps[1].Length == 0)
+                            sps[1] = "255";
+
+                        iprange.Cope[i, 0] = SetRange(sps[0]);
+                        iprange.Cope[i, 1] = SetRange(sps[1]);
+
+                        if (iprange.Cope[i, 0] > iprange.Cope[i, 1])
+                        {
+                            swap = iprange.Cope[i, 1];
+                            iprange.Cope[i, 1] = iprange.Cope[i, 0];
+                            iprange.Cope[i, 0] = swap;
+                        }
                     }
                     else
                     {
-                        var sps = str.Split(@"-\|/".ToCharArray());
-
-                        switch (sps.Length)
+                        if (sps[0].Length == 0)
                         {
-                            case 1:
-                                iprange.Cope[i, 0] = iprange.Cope[i, 1] = SetRange(Convert.ToInt32(sps[0]));
-                                break;
-                            case 2:
-                                iprange.Cope[i, 0] = SetRange(Convert.ToInt32(sps[0]));
-                                iprange.Cope[i, 1] = SetRange(Convert.ToInt32(sps[1]));
-                                if (iprange.Cope[i, 0] > iprange.Cope[i, 1])
-                                {
-                                    swap = iprange.Cope[i, 1];
-                                    iprange.Cope[i, 1] = iprange.Cope[i, 0];
-                                    iprange.Cope[i, 0] = swap;
-                                }
-                                break;
-                            default:
-                                iprange.Cope[i, 0] = 0;
-                                iprange.Cope[i, 1] = 0;
-                                break;
+                            iprange.Cope[i, 0] = 0;
+                            iprange.Cope[i, 1] = 255;
+                        }
+                        else
+                        {
+                            iprange.Cope[i, 0] = iprange.Cope[i, 1] = SetRange(sps[0]);
                         }
                     }
                 }
 
                 return iprange;
-
             }
             catch (Exception)
             {
