@@ -186,7 +186,7 @@ namespace GoGo_Tester
             ImportIpRange("199.223.232-239.0-255");
             ImportIpRange("202.39.143.1-123");
             ImportIpRange("203.116.165.129-255");
-            ImportIpRange("203.117.34.132-187");
+            ImportIpRange("203.117.34-37.132-187");
             ImportIpRange("203.165.13-14.210-251");
             ImportIpRange("203.211.0.4-59");
             ImportIpRange("203.66.124.129-251");
@@ -291,11 +291,21 @@ namespace GoGo_Tester
             ImportIpRange("94.200.103.64-71");
             ImportIpRange("94.40.70.0-63");
             ImportIpRange("95.143.84.128-191");
-			//new ip range
-			ImportIpRange("61.19.1-2.0-127");
-			ImportIpRange("61.19.8.0-127");
-			ImportIpRange("113.21.24.0-127");
-			ImportIpRange("119.81.145.120-127");
+            //ip range
+            ImportIpRange("61.19.1-2.0-127");
+            ImportIpRange("61.19.8.0-127");
+            ImportIpRange("113.21.24.0-127");
+            ImportIpRange("119.81.145.120-127");
+            //thx for alienwaresky
+            ImportIpRange("118.143.88.16-123");
+            ImportIpRange("202.86.162.20-187");
+            ImportIpRange("139.175.107.20-187");
+            ImportIpRange("223.26.69.16-59");
+            ImportIpRange("220.255.5-6.20-251");
+            ImportIpRange("202.65.246.84-123");
+            ImportIpRange("103.1.139.148-251");
+            ImportIpRange("116.92.194.148-187");
+            ImportIpRange("58.145.238.20-59");
         }
     }
 }
