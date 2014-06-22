@@ -170,7 +170,7 @@
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
             this.nMaxThreads.Location = new System.Drawing.Point(74, 3);
             this.nMaxThreads.Maximum = new decimal(new int[] {
-            240,
+            1000,
             0,
             0,
             0});
