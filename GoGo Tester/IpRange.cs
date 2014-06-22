@@ -306,6 +306,9 @@ namespace GoGo_Tester
             ImportIpRange("103.1.139.148-251");
             ImportIpRange("116.92.194.148-187");
             ImportIpRange("58.145.238.20-59");
+            //
+            ImportIpRange("41.201.128.20-59");
+            ImportIpRange("41.201.164.20-59");
         }
     }
 }
