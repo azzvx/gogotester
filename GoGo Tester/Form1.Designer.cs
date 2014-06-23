@@ -547,7 +547,7 @@
             this.lProgress.Name = "lProgress";
             this.lProgress.Size = new System.Drawing.Size(134, 12);
             this.lProgress.TabIndex = 24;
-            this.lProgress.Tag = "标准测试：线程数 / 剩余数 ； 代理测试 剩余数 / 总数";
+            this.lProgress.Tag = "随机测试 线程数 / 完成数；标准测试：线程数 / 剩余数";
             this.lProgress.Text = "0 / 0";
             this.lProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lProgress.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
