@@ -307,7 +307,6 @@ namespace GoGo_Tester
             ImportIpRange("61.19.1-2.0-127");
             ImportIpRange("61.19.8.0-127");
             ImportIpRange("113.21.24.0-127");
-            ImportIpRange("119.81.145.120-127");
             //thx for alienwaresky
             ImportIpRange("118.143.88.16-123");
             ImportIpRange("202.86.162.20-187");
@@ -321,6 +320,9 @@ namespace GoGo_Tester
             //
             ImportIpRange("41.201.128.20-59");
             ImportIpRange("41.201.164.20-59");
+            //OpenerDNS
+            //ImportIpRange("119.81.145.120-127");
+            //ImportIpRange("119.81.142.202");
         }
     }
 }

@@ -43,7 +43,7 @@ namespace GoGo_Tester
         private readonly Timer RndTestTimer = new Timer();
 
         private static Random random = new Random();
-        public static int PingTimeout = 1000;
+        public static int PingTimeout = 500;
         public static int TestTimeout = 4000;
         public static int MaxThreads = 10;
 
@@ -70,9 +70,9 @@ namespace GoGo_Tester
             IpTable.Columns.Add(new DataColumn("std", typeof(string)));
 
             dgvIpData.DataSource = IpTable;
-            dgvIpData.Columns[0].Width = 100;
+            dgvIpData.Columns[0].Width = 160;
             dgvIpData.Columns[0].HeaderText = "地址";
-            dgvIpData.Columns[1].Width = 80;
+            dgvIpData.Columns[1].Width = 100;
             dgvIpData.Columns[1].HeaderText = "标准测试";
 
             /// Std
@@ -90,6 +90,14 @@ namespace GoGo_Tester
             val = val > min ? val : min;
             val = val < max ? val : max;
             return val;
+        }
+
+        private void SetAllNa()
+        {
+            foreach (var row in IpTable.Select())
+            {
+                row[1] = "n/a";
+            }
         }
 
         private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
@@ -118,7 +126,7 @@ namespace GoGo_Tester
                     if (result.ok)
                     {
                         ImportIp(addr);
-                        SetStdTestResult(result);
+                        SetTestResult(result);
                     }
 
                     Monitor.Enter(TestQueue);
@@ -151,7 +159,7 @@ namespace GoGo_Tester
                     Monitor.Exit(TestQueue);
 
                     var result = StdTestProcess(addr);
-                    SetStdTestResult(result);
+                    SetTestResult(result);
 
                     Monitor.Enter(TestQueue);
                     TestQueue.Dequeue();
@@ -317,11 +325,11 @@ namespace GoGo_Tester
             return result;
         }
 
-        private void SetStdTestResult(TestResult result)
+        private void SetTestResult(TestResult result)
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => SetStdTestResult(result)));
+                Invoke(new MethodInvoker(() => SetTestResult(result)));
             }
             else
             {
@@ -522,7 +530,20 @@ namespace GoGo_Tester
 
             if (rows.Length == 0)
             {
-                MessageBox.Show("没有要测试的IP！");
+                if (MessageBox.Show(this, "没有发现未测试的IP！是否重复测试已测试的IP？某些地区重复测试会导致IP被封锁！", "请确认操作", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.OK)
+                {
+                    SetAllNa();
+                    rows = SelectNa();
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (rows.Length == 0)
+            {
+                MessageBox.Show("没有发现要测试的IP！");
                 return;
             }
 
@@ -787,7 +808,7 @@ namespace GoGo_Tester
                 return;
             }
 
-            var vips = GetStdValidIps();
+            var vips = GetValidIps();
 
             if (vips.Length == 0)
             {
@@ -811,14 +832,13 @@ namespace GoGo_Tester
 
             inifile.WriteValue("iplist", "google_cn", ipstr);
             inifile.WriteValue("iplist", "google_hk", ipstr);
-            inifile.WriteValue("iplist", "google_talk", ipstr);
 
             inifile.WriteFile();
 
             MessageBox.Show("已写入proxy.user.ini！重新载入GoAgent就可生效！");
         }
 
-        private string[] GetStdValidIps()
+        private string[] GetValidIps()
         {
             var ls = new List<string>();
             var rows = SelectByExpr(string.Format("std like '_OK%'"), "std asc");
@@ -827,6 +847,12 @@ namespace GoGo_Tester
                 ls.Add(row[0].ToString());
             }
             return ls.ToArray();
+        }
+
+        private DataRow[] GetInvalidIps()
+        {
+            var rows = SelectByExpr(string.Format("std <> 'n/a' and std not like '_OK%'"));
+            return rows;
         }
 
         private void mApplySelectedIpsToUserConfig_Click(object sender, EventArgs e)
@@ -853,6 +879,20 @@ namespace GoGo_Tester
             var ipstr = BuildIpString(cells);
 
             ApplyToUserConfig(ipstr);
+        }
+
+        private void mRemoveInvalidIps_Click(object sender, EventArgs e)
+        {
+            if (IsTesting())
+            {
+                return;
+            }
+
+            var rows = GetInvalidIps();
+            foreach (var row in rows)
+            {
+                IpTable.Rows.Remove(row);
+            }
         }
     }
 }

@@ -69,6 +69,8 @@
             this.lTip = new System.Windows.Forms.Label();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.lProgress = new System.Windows.Forms.Label();
+            this.mRemoveInvalidIps = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxThreads)).BeginInit();
@@ -254,7 +256,7 @@
             this.nPingTimeout.Tag = "";
             this.nPingTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nPingTimeout.Value = new decimal(new int[] {
-            1000,
+            500,
             0,
             0,
             0});
@@ -309,7 +311,7 @@
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(116, 22);
+            this.mImport.Size = new System.Drawing.Size(152, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -322,7 +324,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // mExport
             // 
@@ -331,7 +333,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(116, 22);
+            this.mExport.Size = new System.Drawing.Size(152, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -356,7 +358,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mRemove
             // 
@@ -365,9 +367,11 @@
             this.toolStripSeparator4,
             this.mRemoveAllIps,
             this.toolStripSeparator8,
-            this.mRemoveIpsInClipbord});
+            this.mRemoveIpsInClipbord,
+            this.toolStripSeparator7,
+            this.mRemoveInvalidIps});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(116, 22);
+            this.mRemove.Size = new System.Drawing.Size(152, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -404,7 +408,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // mApply
             // 
@@ -413,7 +417,7 @@
             this.toolStripSeparator5,
             this.mApplyValidIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(116, 22);
+            this.mApply.Size = new System.Drawing.Size(152, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
@@ -552,6 +556,18 @@
             this.lProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lProgress.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
+            // mRemoveInvalidIps
+            // 
+            this.mRemoveInvalidIps.Name = "mRemoveInvalidIps";
+            this.mRemoveInvalidIps.Size = new System.Drawing.Size(187, 22);
+            this.mRemoveInvalidIps.Text = "无效的IP(&I)";
+            this.mRemoveInvalidIps.Click += new System.EventHandler(this.mRemoveInvalidIps_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(184, 6);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -623,6 +639,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem mApplySelectedIpsToUserConfig;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
 
     }
 }
