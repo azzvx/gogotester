@@ -832,6 +832,7 @@ namespace GoGo_Tester
 
             inifile.WriteValue("iplist", "google_cn", ipstr);
             inifile.WriteValue("iplist", "google_hk", ipstr);
+            inifile.WriteValue("iplist", "google_talk", ipstr);
 
             inifile.WriteFile();
 
