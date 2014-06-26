@@ -36,6 +36,7 @@ namespace GoGo_Tester
 
         private readonly DataTable IpTable = new DataTable();
 
+        public static Queue<int> CacheQueue = new Queue<int>();
         public static Queue<string> WaitQueue = new Queue<string>();
         public static Queue<int> TestQueue = new Queue<int>();
 
@@ -104,17 +105,23 @@ namespace GoGo_Tester
         {
             var testCount = TestQueue.Count;
             var waitCount = dgvIpData.RowCount;
+            var failedCount = CacheQueue.Count;
 
-            SetRndProgress(testCount, waitCount);
+            SetRndProgress(testCount, waitCount, failedCount);
 
             if (RndIsTesting && waitCount < Form2.RandomNumber && testCount < MaxThreads)
             {
+                Monitor.Enter(CacheQueue);
                 string addr;
+                int hcode;
                 do
                 {
                     IpRange iprange = IpRange.Pool[random.Next(0, IpRange.Pool.Count)];
                     addr = iprange.GetRandomIp();
-                } while (WaitQueue.Contains(addr));
+                    hcode = addr.GetHashCode();
+                } while (CacheQueue.Contains(hcode));
+                CacheQueue.Enqueue(hcode);
+                Monitor.Exit(CacheQueue);
 
                 var thread = new Thread(() =>
                 {
@@ -187,16 +194,16 @@ namespace GoGo_Tester
             }
         }
 
-        private void SetRndProgress(int testCount, int waitCount)
+        private void SetRndProgress(int testCount, int waitCount, int failedCount)
         {
             if (InvokeRequired)
             {
-                Invoke(new MethodInvoker(() => SetRndProgress(testCount, waitCount)));
+                Invoke(new MethodInvoker(() => SetRndProgress(testCount, waitCount, failedCount)));
             }
             else
             {
                 pbProgress.Value = SetRange(waitCount, 0, pbProgress.Maximum);
-                lProgress.Text = testCount + " / " + waitCount;
+                lProgress.Text = testCount + " / " + waitCount + " / " + failedCount;
             }
         }
 
@@ -790,6 +797,7 @@ namespace GoGo_Tester
             pbProgress.Value = 0;
 
             RemoveAllIps();
+            CacheQueue.Clear();
 
             RndIsTesting = true;
             RndTestTimer.Start();
