@@ -40,6 +40,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.nPingTimeout = new System.Windows.Forms.NumericUpDown();
             this.nTestTimeout = new System.Windows.Forms.NumericUpDown();
+            this.cbHighSpeed = new System.Windows.Forms.CheckBox();
             this.cmsIpData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mImport = new System.Windows.Forms.ToolStripMenuItem();
             this.mImportIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,12 +68,11 @@
             this.mStartRndTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStartStdTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStopTest = new System.Windows.Forms.ToolStripMenuItem();
+            this.mSetTestProxy = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvIpData = new System.Windows.Forms.DataGridView();
             this.lTip = new System.Windows.Forms.Label();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.lProgress = new System.Windows.Forms.Label();
-            this.mSetTestProxy = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbHighSpeed = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxThreads)).BeginInit();
@@ -126,8 +126,8 @@
             this.tbIpRange.Name = "tbIpRange";
             this.tbIpRange.Size = new System.Drawing.Size(280, 21);
             this.tbIpRange.TabIndex = 1;
-            this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255。 173.0-255.0\\255.0/255 代表 173 段所有 IP ，其它同理。不同IP段" +
-    "请用除\'. - \\ / \'以外的符号分隔。";
+            this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255 , 左边或者右边留空代表采用其最值。 173.0-255.0\\255.0/255 或 173.." +
+    "0-./255 代表 173 段所有 IP ，其它同理。不同IP段请用除\'. - \\ / \'以外的符号分隔。";
             this.tbIpRange.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // bAddIpRange
@@ -190,7 +190,7 @@
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nMaxThreads.Value = new decimal(new int[] {
-            10,
+            8,
             0,
             0,
             0});
@@ -220,6 +220,7 @@
             this.label1.Tag = "Ping的延时。";
             this.label1.Text = "最大延时：";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label1.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // label4
             // 
@@ -259,7 +260,7 @@
             this.nPingTimeout.Tag = "";
             this.nPingTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nPingTimeout.Value = new decimal(new int[] {
-            500,
+            600,
             0,
             0,
             0});
@@ -295,6 +296,22 @@
             0,
             0});
             this.nTestTimeout.ValueChanged += new System.EventHandler(this.nTestTimeout_ValueChanged);
+            // 
+            // cbHighSpeed
+            // 
+            this.cbHighSpeed.AutoSize = true;
+            this.cbHighSpeed.Checked = true;
+            this.cbHighSpeed.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbHighSpeed.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cbHighSpeed.Location = new System.Drawing.Point(425, 3);
+            this.cbHighSpeed.Name = "cbHighSpeed";
+            this.cbHighSpeed.Size = new System.Drawing.Size(48, 22);
+            this.cbHighSpeed.TabIndex = 28;
+            this.cbHighSpeed.Tag = "（如果长时间未能获得IP，请取消选中再测试）高速模式以亚洲区IP为主，搜索IP速度较快。非高速模式则以美国区IP为主，搜索IP速度较慢。";
+            this.cbHighSpeed.Text = "高速";
+            this.cbHighSpeed.UseVisualStyleBackColor = true;
+            this.cbHighSpeed.CheckedChanged += new System.EventHandler(this.cbHighSpeed_CheckedChanged);
+            this.cbHighSpeed.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // cmsIpData
             // 
@@ -520,6 +537,13 @@
             this.mStopTest.Click += new System.EventHandler(this.mStopTest_Click);
             this.mStopTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
+            // mSetTestProxy
+            // 
+            this.mSetTestProxy.Name = "mSetTestProxy";
+            this.mSetTestProxy.Size = new System.Drawing.Size(107, 21);
+            this.mSetTestProxy.Text = "设置测试代理(&P)";
+            this.mSetTestProxy.Click += new System.EventHandler(this.mSetTestProxy_Click);
+            // 
             // dgvIpData
             // 
             this.dgvIpData.AllowUserToAddRows = false;
@@ -571,29 +595,6 @@
             this.lProgress.Text = "0 / 0";
             this.lProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lProgress.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
-            // 
-            // mSetTestProxy
-            // 
-            this.mSetTestProxy.Name = "mSetTestProxy";
-            this.mSetTestProxy.Size = new System.Drawing.Size(107, 21);
-            this.mSetTestProxy.Text = "设置测试代理(&P)";
-            this.mSetTestProxy.Click += new System.EventHandler(this.mSetTestProxy_Click);
-            // 
-            // cbHighSpeed
-            // 
-            this.cbHighSpeed.AutoSize = true;
-            this.cbHighSpeed.Checked = true;
-            this.cbHighSpeed.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHighSpeed.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cbHighSpeed.Location = new System.Drawing.Point(425, 3);
-            this.cbHighSpeed.Name = "cbHighSpeed";
-            this.cbHighSpeed.Size = new System.Drawing.Size(48, 22);
-            this.cbHighSpeed.TabIndex = 28;
-            this.cbHighSpeed.Tag = "高速模式以亚洲区IP为主，搜索IP速度较快。非高速模式则以美国区IP为主，搜索IP速度较慢。";
-            this.cbHighSpeed.Text = "高速";
-            this.cbHighSpeed.UseVisualStyleBackColor = true;
-            this.cbHighSpeed.CheckedChanged += new System.EventHandler(this.cbHighSpeed_CheckedChanged);
-            this.cbHighSpeed.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // Form1
             // 

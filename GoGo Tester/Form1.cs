@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
+using System.Media;
 using System.Net;
 using System.Net.Cache;
 using System.Net.Sockets;
@@ -44,9 +45,9 @@ namespace GoGo_Tester
         private readonly Timer RndTestTimer = new Timer();
 
         private static Random random = new Random();
-        public static int PingTimeout = 500;
+        public static int PingTimeout = 600;
         public static int TestTimeout = 4000;
-        public static int MaxThreads = 10;
+        public static int MaxThreads = 8;
 
         private bool StdIsTesting;
         private bool RndIsTesting;
@@ -148,8 +149,12 @@ namespace GoGo_Tester
             }
             else if (testCount == 0)
             {
-                RndIsTesting = false;
                 RndTestTimer.Stop();
+                if (RndIsTesting)
+                {
+                    PlaySound();
+                }
+                RndIsTesting = false;
             }
         }
 
@@ -180,8 +185,25 @@ namespace GoGo_Tester
             }
             else if (waitCount == 0 && testCount == 0)
             {
-                StdIsTesting = false;
                 StdTestTimer.Stop();
+                if (StdIsTesting)
+                {
+                    PlaySound();
+                }
+                StdIsTesting = false;
+            }
+        }
+
+        private void PlaySound()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(PlaySound));
+            }
+            else
+            {
+                var sp = new SoundPlayer { Stream = Resources.Windows_Ding };
+                sp.Play();
             }
         }
 
