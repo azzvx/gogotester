@@ -114,14 +114,27 @@ namespace GoGo_Tester
             }
         }
 
-        public static List<IpRange> Pool = new List<IpRange>();
+        public static List<IpRange> PoolB = new List<IpRange>();
+        public static List<IpRange> PoolC = new List<IpRange>();
 
-        private static void ImportIpRange(string range)
+        private static void ImportIpRange(string str)
         {
-            var iprange = IpRange.CreateIpRange(range);
-            if (iprange != null)
+            var range = CreateIpRange(str);
+
+            if (range != null)
             {
-                Pool.Add(iprange);
+                for (int a = range.Cope[0, 0]; a <= range.Cope[0, 1]; a++)
+                {
+                    for (int b = range.Cope[1, 0]; b <= range.Cope[1, 1]; b++)
+                    {
+                        PoolB.Add(CreateIpRange(string.Format("{0}.{1}.{2}-{3}.{4}-{5}", a, b, range.Cope[2, 0], range.Cope[2, 1], range.Cope[3, 0], range.Cope[3, 1])));
+
+                        for (int c = range.Cope[2, 0]; c <= range.Cope[2, 1]; c++)
+                        {
+                            PoolC.Add(CreateIpRange(string.Format("{0}.{1}.{2}.{3}-{4}", a, b, c, range.Cope[3, 0], range.Cope[3, 1])));
+                        }
+                    }
+                }
             }
         }
         static IpRange()

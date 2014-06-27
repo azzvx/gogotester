@@ -51,11 +51,15 @@ namespace GoGo_Tester
         private bool StdIsTesting;
         private bool RndIsTesting;
 
+        private bool HighSpeed = true;
+
+        public static bool TestWithProxy = false;
+        public static WebProxy TestProxy = new WebProxy("192.168.1.1", 8080);
 
         private void Form1_Load(object sender, EventArgs e)
         {
             int count = 0;
-            foreach (var range in IpRange.Pool)
+            foreach (var range in IpRange.PoolB)
             {
                 count += range.Count;
             }
@@ -116,7 +120,7 @@ namespace GoGo_Tester
                 int hcode;
                 do
                 {
-                    IpRange iprange = IpRange.Pool[random.Next(0, IpRange.Pool.Count)];
+                    IpRange iprange = HighSpeed ? IpRange.PoolB[random.Next(0, IpRange.PoolB.Count)] : IpRange.PoolC[random.Next(0, IpRange.PoolC.Count)];
                     addr = iprange.GetRandomIp();
                     hcode = addr.GetHashCode();
                 } while (CacheQueue.Contains(hcode));
@@ -207,61 +211,56 @@ namespace GoGo_Tester
             }
         }
 
-        private TestResult StdTestProcess(string addr)
+        private string GenMixedUrl(string head, string addr)
         {
-            TestResult result = null;
-            bool endSocket = false;
-            long pingTime = 0;
+            var sbd = new StringBuilder(1500);
 
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            for (int i = 0; i < 150; i++)
+                sbd.Append(random.Next().ToString("D10"));
+
+            var url = head + "://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
+            return url;
+        }
+        private TestResult StdTestProcessWithProxy(string addr)
+        {
+            TestResult result;
+
             var stopwatch = new Stopwatch();
 
+            var url = GenMixedUrl("http", addr);
+
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            req.Timeout = TestTimeout;
+            req.Method = "HEAD";
+            req.Proxy = TestProxy;
+            req.AllowAutoRedirect = false;
+            req.KeepAlive = false;
+            req.CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
+            stopwatch.Start();
             try
             {
-                socket.BeginConnect(addr, 443, x =>
-                     {
-                         try
-                         {
-                             socket.EndConnect(x);
-                             pingTime = stopwatch.ElapsedMilliseconds;
-                         }
-                         catch (Exception) { }
-
-                         endSocket = true;
-                     }, null);
-
-                stopwatch.Start();
-
-                while (!endSocket)
+                using (var resp = (HttpWebResponse)req.GetResponse())
                 {
-                    if (stopwatch.ElapsedMilliseconds > PingTimeout)
+                    if (resp.Server == "gws")
+                    {
+                        result = new TestResult()
+                        {
+                            addr = addr,
+                            ok = true,
+                            msg = "_OK P " + stopwatch.ElapsedMilliseconds.ToString("D4")
+                        };
+                    }
+                    else
                     {
                         result = new TestResult()
                         {
                             addr = addr,
                             ok = false,
-                            msg = "Timeout"
+                            msg = "Invalid"
                         };
-
-                        break;
                     }
-
-                    Thread.Sleep(20);
+                    resp.Close();
                 }
-
-
-                if (!socket.Connected)
-                {
-                    result = new TestResult()
-                    {
-                        addr = addr,
-                        ok = false,
-                        msg = "Invalid"
-                    };
-                }
-
-                stopwatch.Stop();
-                socket.Close();
             }
             catch (Exception)
             {
@@ -271,21 +270,71 @@ namespace GoGo_Tester
                     ok = false,
                     msg = "Failed"
                 };
-
-                socket.Close();
             }
+            stopwatch.Stop();
+            return result;
+        }
+
+        private TestResult StdTestProcess(string addr)
+        {
+            if (TestWithProxy)
+            {
+                return StdTestProcessWithProxy(addr);
+            }
+
+            TestResult result = null;
+            long pingTime = 0;
+
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            try
+            {
+                var ar = socket.BeginConnect(addr, 443, null, null);
+
+                var success = ar.AsyncWaitHandle.WaitOne(PingTimeout, true);
+
+                if (!success)
+                {
+                    result = new TestResult()
+                    {
+                        addr = addr,
+                        ok = false,
+                        msg = "Timeout"
+                    };
+                }
+                else if (!socket.Connected)
+                {
+                    result = new TestResult()
+                    {
+                        addr = addr,
+                        ok = false,
+                        msg = "Invalid"
+                    };
+                }
+                else
+                {
+                    pingTime = stopwatch.ElapsedMilliseconds;
+                }
+            }
+            catch (Exception)
+            {
+                result = new TestResult()
+                {
+                    addr = addr,
+                    ok = false,
+                    msg = "Failed"
+                };
+            }
+            stopwatch.Stop();
+            socket.Close();
 
             if (result != null)
-            {
                 return result;
-            }
 
-            var sbd = new StringBuilder();
-
-            for (int i = 0; i < 150; i++)
-                sbd.Append(random.Next().ToString("D10"));
-
-            var url = "https://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
+            var url = GenMixedUrl("https", addr);
 
             var req = (HttpWebRequest)WebRequest.Create(url);
             req.Timeout = TestTimeout;
@@ -902,6 +951,17 @@ namespace GoGo_Tester
             {
                 IpTable.Rows.Remove(row);
             }
+        }
+
+        private void mSetTestProxy_Click(object sender, EventArgs e)
+        {
+            var form = new Form3();
+            form.ShowDialog(this);
+        }
+
+        private void cbHighSpeed_CheckedChanged(object sender, EventArgs e)
+        {
+            HighSpeed = cbHighSpeed.Checked;
         }
     }
 }

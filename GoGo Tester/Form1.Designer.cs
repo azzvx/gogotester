@@ -71,6 +71,8 @@
             this.lTip = new System.Windows.Forms.Label();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.lProgress = new System.Windows.Forms.Label();
+            this.mSetTestProxy = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbHighSpeed = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxThreads)).BeginInit();
@@ -86,22 +88,23 @@
             // 
             this.tableLayoutPanel5.AutoSize = true;
             this.tableLayoutPanel5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel5.ColumnCount = 3;
+            this.tableLayoutPanel5.ColumnCount = 4;
             this.tableLayoutPanel1.SetColumnSpan(this.tableLayoutPanel5, 2);
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel5.Controls.Add(this.label5, 0, 0);
             this.tableLayoutPanel5.Controls.Add(this.tbIpRange, 1, 0);
             this.tableLayoutPanel5.Controls.Add(this.bAddIpRange, 2, 0);
             this.tableLayoutPanel5.Controls.Add(this.tableLayoutPanel2, 0, 1);
+            this.tableLayoutPanel5.Controls.Add(this.cbHighSpeed, 3, 0);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 344);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel5.Size = new System.Drawing.Size(476, 61);
             this.tableLayoutPanel5.TabIndex = 15;
             // 
@@ -121,7 +124,7 @@
             this.tbIpRange.Dock = System.Windows.Forms.DockStyle.Top;
             this.tbIpRange.Location = new System.Drawing.Point(74, 3);
             this.tbIpRange.Name = "tbIpRange";
-            this.tbIpRange.Size = new System.Drawing.Size(334, 21);
+            this.tbIpRange.Size = new System.Drawing.Size(280, 21);
             this.tbIpRange.TabIndex = 1;
             this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255。 173.0-255.0\\255.0/255 代表 173 段所有 IP ，其它同理。不同IP段" +
     "请用除\'. - \\ / \'以外的符号分隔。";
@@ -132,7 +135,7 @@
             this.bAddIpRange.AutoSize = true;
             this.bAddIpRange.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bAddIpRange.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bAddIpRange.Location = new System.Drawing.Point(414, 3);
+            this.bAddIpRange.Location = new System.Drawing.Point(360, 3);
             this.bAddIpRange.Name = "bAddIpRange";
             this.bAddIpRange.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.bAddIpRange.Size = new System.Drawing.Size(59, 22);
@@ -146,7 +149,7 @@
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel2.ColumnCount = 6;
-            this.tableLayoutPanel5.SetColumnSpan(this.tableLayoutPanel2, 3);
+            this.tableLayoutPanel5.SetColumnSpan(this.tableLayoutPanel2, 4);
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
@@ -482,7 +485,8 @@
             this.msMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mStartRndTest,
             this.mStartStdTest,
-            this.mStopTest});
+            this.mStopTest,
+            this.mSetTestProxy});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
             this.msMain.Size = new System.Drawing.Size(482, 25);
@@ -568,6 +572,29 @@
             this.lProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lProgress.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
+            // mSetTestProxy
+            // 
+            this.mSetTestProxy.Name = "mSetTestProxy";
+            this.mSetTestProxy.Size = new System.Drawing.Size(107, 21);
+            this.mSetTestProxy.Text = "设置测试代理(&P)";
+            this.mSetTestProxy.Click += new System.EventHandler(this.mSetTestProxy_Click);
+            // 
+            // cbHighSpeed
+            // 
+            this.cbHighSpeed.AutoSize = true;
+            this.cbHighSpeed.Checked = true;
+            this.cbHighSpeed.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbHighSpeed.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cbHighSpeed.Location = new System.Drawing.Point(425, 3);
+            this.cbHighSpeed.Name = "cbHighSpeed";
+            this.cbHighSpeed.Size = new System.Drawing.Size(48, 22);
+            this.cbHighSpeed.TabIndex = 28;
+            this.cbHighSpeed.Tag = "高速模式以亚洲区IP为主，搜索IP速度较快。非高速模式则以美国区IP为主，搜索IP速度较慢。";
+            this.cbHighSpeed.Text = "高速";
+            this.cbHighSpeed.UseVisualStyleBackColor = true;
+            this.cbHighSpeed.CheckedChanged += new System.EventHandler(this.cbHighSpeed_CheckedChanged);
+            this.cbHighSpeed.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -641,6 +668,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
+        private System.Windows.Forms.ToolStripMenuItem mSetTestProxy;
+        private System.Windows.Forms.CheckBox cbHighSpeed;
 
     }
 }
