@@ -126,8 +126,8 @@
             this.tbIpRange.Name = "tbIpRange";
             this.tbIpRange.Size = new System.Drawing.Size(280, 21);
             this.tbIpRange.TabIndex = 1;
-            this.tbIpRange.Tag = "允许添加IP段，格式 0-255 或 0/255 或 0\\255 , 左边或者右边留空代表采用其最值。 173.0-255.0\\255.0/255 或 173.." +
-    "0-./255 代表 173 段所有 IP ，其它同理。不同IP段请用除\'. - \\ / \'以外的符号分隔。";
+            this.tbIpRange.Tag = "允许添加IP段，格式 0-255 , 左边或者右边留空代表采用其最值。 173.0-255.0-255.0-255 或 173..0-.-255 代表 173 段" +
+    "所有 IP ，其它同理。不同IP段请用除\'. -\'以外的符号分隔。";
             this.tbIpRange.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // bAddIpRange
@@ -324,14 +324,14 @@
             this.toolStripSeparator3,
             this.mApply});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(117, 110);
+            this.cmsIpData.Size = new System.Drawing.Size(153, 132);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(116, 22);
+            this.mImport.Size = new System.Drawing.Size(152, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -344,7 +344,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // mExport
             // 
@@ -353,7 +353,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(116, 22);
+            this.mExport.Size = new System.Drawing.Size(152, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -378,7 +378,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mRemove
             // 
@@ -391,7 +391,7 @@
             this.toolStripSeparator7,
             this.mRemoveInvalidIps});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(116, 22);
+            this.mRemove.Size = new System.Drawing.Size(152, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -440,7 +440,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // mApply
             // 
@@ -449,27 +449,32 @@
             this.toolStripSeparator5,
             this.mApplyValidIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(116, 22);
+            this.mApply.Size = new System.Drawing.Size(152, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
             // 
             this.mApplySelectedIpsToUserConfig.Name = "mApplySelectedIpsToUserConfig";
             this.mApplySelectedIpsToUserConfig.Size = new System.Drawing.Size(223, 22);
+            this.mApplySelectedIpsToUserConfig.Tag = "只支持IPv4。";
             this.mApplySelectedIpsToUserConfig.Text = "选中的IP到用户配置文件(&S)";
             this.mApplySelectedIpsToUserConfig.Click += new System.EventHandler(this.mApplySelectedIpsToUserConfig_Click);
+            this.mApplySelectedIpsToUserConfig.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(220, 6);
+            this.toolStripSeparator5.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // mApplyValidIpsToUserConfig
             // 
             this.mApplyValidIpsToUserConfig.Name = "mApplyValidIpsToUserConfig";
             this.mApplyValidIpsToUserConfig.Size = new System.Drawing.Size(223, 22);
+            this.mApplyValidIpsToUserConfig.Tag = "只支持IPv4。";
             this.mApplyValidIpsToUserConfig.Text = "可用的IP到用户配置文件(&V)";
             this.mApplyValidIpsToUserConfig.Click += new System.EventHandler(this.mApplyValidIpsToUserConfig_Click);
+            this.mApplyValidIpsToUserConfig.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // tableLayoutPanel1
             // 

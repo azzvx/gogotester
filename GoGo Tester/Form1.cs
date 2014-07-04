@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ namespace GoGo_Tester
     {
         class TestResult
         {
-            public string addr;
+            public IPAddress addr;
             public bool ok;
             public string msg;
         }
@@ -32,16 +33,16 @@ namespace GoGo_Tester
         }
 
         private readonly Regex rxMatchIPv4 =
-            new Regex(@"(?<=[^\d])((25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})(?=[^\d])", RegexOptions.Compiled);
+            new Regex(@"(?<!:)((2(5[0-5]|[0-4]\d)|1?\d?\d)\.){3}(2(5[0-5]|[0-4]\d)|1?\d?\d)", RegexOptions.Compiled);
         private readonly Regex rxMatchIPv6 =
-           new Regex(@"((25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})",
+           new Regex(@"(:|[\da-f]{1,4})(:?:[\da-f]{1,4})+(::)?",
                RegexOptions.Compiled);
 
         private readonly DataTable IpTable = new DataTable();
 
-        public static Queue<int> CacheQueue = new Queue<int>();
-        public static Queue<string> WaitQueue = new Queue<string>();
-        public static Queue<int> TestQueue = new Queue<int>();
+        public static Queue<IPAddress> CacheQueue = new Queue<IPAddress>();
+        public static Queue<IPAddress> WaitQueue = new Queue<IPAddress>();
+        public static Queue<int> TestCountQueue = new Queue<int>();
 
         private readonly Timer StdTestTimer = new Timer();
         private readonly Timer RndTestTimer = new Timer();
@@ -59,64 +60,10 @@ namespace GoGo_Tester
         public static bool TestWithProxy = false;
         public static WebProxy TestProxy = new WebProxy("192.168.1.1", 8080);
 
-        class MyStruct
-        {
-            public uint start;
-            public uint end;
-            public string cty;
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
-            //var strs = File.ReadAllLines(@"Z:\ip.txt");
-            //var cts = new Stack<MyStruct>();
-
-            //foreach (var str in strs)
-            //{
-            //    var sps = str.Split('\t');
-            //    var next = new MyStruct()
-            //    {
-            //        start = Convert.ToUInt32(sps[0]),
-            //        end = Convert.ToUInt32(sps[1]),
-            //        cty = sps[2].Trim()
-            //    };
-
-            //    if (cts.Count == 0)
-            //    {
-            //        cts.Push(next);
-            //    }
-            //    else
-            //    {
-            //        var prev = cts.Peek();
-            //        if (next.cty == prev.cty && next.start - prev.end == 1)
-            //        {
-            //            cts.Peek().end = next.end;
-            //        }
-            //        else
-            //        {
-            //            cts.Push(next);
-            //        }
-            //    }
-            //}
-            //List<string> ls = new List<string>(cts.Count);
-            //foreach (var ms in cts)
-            //{
-            //    ls.Add(ms.start + "\t" + ms.end + "\t" + ms.cty);
-            //}
-            //File.WriteAllLines(@"Z:\1.txt", ls.ToArray());
-
-
-
-
-
-
-
-
-
-
-
             int count = 0;
-            foreach (var range in IpRange.PoolB)
+            foreach (var range in IpRange.Pool4B)
             {
                 count += range.Count;
             }
@@ -164,7 +111,7 @@ namespace GoGo_Tester
 
         private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            var testCount = TestQueue.Count;
+            var testCount = TestCountQueue.Count;
             var waitCount = dgvIpData.RowCount;
             var failedCount = CacheQueue.Count;
 
@@ -173,22 +120,20 @@ namespace GoGo_Tester
             if (RndIsTesting && waitCount < Form2.RandomNumber && testCount < MaxThreads)
             {
                 Monitor.Enter(CacheQueue);
-                string addr;
-                int hcode;
+                IPAddress addr;
                 do
                 {
-                    IpRange iprange = HighSpeed ? IpRange.PoolB[random.Next(0, IpRange.PoolB.Count)] : IpRange.PoolC[random.Next(0, IpRange.PoolC.Count)];
+                    IpRange iprange = HighSpeed ? IpRange.Pool4B[random.Next(0, IpRange.Pool4B.Count)] : IpRange.Pool4C[random.Next(0, IpRange.Pool4C.Count)];
                     addr = iprange.GetRandomIp();
-                    hcode = addr.GetHashCode();
-                } while (CacheQueue.Contains(hcode));
-                CacheQueue.Enqueue(hcode);
+                } while (CacheQueue.Contains(addr));
+                CacheQueue.Enqueue(addr);
                 Monitor.Exit(CacheQueue);
 
                 var thread = new Thread(() =>
                 {
-                    Monitor.Enter(TestQueue);
-                    TestQueue.Enqueue(0);
-                    Monitor.Exit(TestQueue);
+                    Monitor.Enter(TestCountQueue);
+                    TestCountQueue.Enqueue(0);
+                    Monitor.Exit(TestCountQueue);
 
                     var result = StdTestProcess(addr);
                     if (result.ok)
@@ -197,9 +142,9 @@ namespace GoGo_Tester
                         SetTestResult(result);
                     }
 
-                    Monitor.Enter(TestQueue);
-                    TestQueue.Dequeue();
-                    Monitor.Exit(TestQueue);
+                    Monitor.Enter(TestCountQueue);
+                    TestCountQueue.Dequeue();
+                    Monitor.Exit(TestCountQueue);
                 });
                 thread.Start();
             }
@@ -216,7 +161,7 @@ namespace GoGo_Tester
 
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            var testCount = TestQueue.Count;
+            var testCount = TestCountQueue.Count;
             var waitCount = WaitQueue.Count;
 
             SetStdProgress(testCount, waitCount);
@@ -226,16 +171,16 @@ namespace GoGo_Tester
                 var addr = WaitQueue.Dequeue();
                 var thread = new Thread(() =>
                 {
-                    Monitor.Enter(TestQueue);
-                    TestQueue.Enqueue(0);
-                    Monitor.Exit(TestQueue);
+                    Monitor.Enter(TestCountQueue);
+                    TestCountQueue.Enqueue(0);
+                    Monitor.Exit(TestCountQueue);
 
                     var result = StdTestProcess(addr);
                     SetTestResult(result);
 
-                    Monitor.Enter(TestQueue);
-                    TestQueue.Dequeue();
-                    Monitor.Exit(TestQueue);
+                    Monitor.Enter(TestCountQueue);
+                    TestCountQueue.Dequeue();
+                    Monitor.Exit(TestCountQueue);
                 });
                 thread.Start();
             }
@@ -289,17 +234,27 @@ namespace GoGo_Tester
             }
         }
 
-        private string GenMixedUrl(string head, string addr)
+        private string GenMixedUrl(string head, IPAddress addr)
         {
-            var sbd = new StringBuilder(1500);
+            string url;
 
-            for (int i = 0; i < 150; i++)
-                sbd.Append(random.Next().ToString("D10"));
+            if (addr.AddressFamily == AddressFamily.InterNetwork)
+            {
+                var sbd = new StringBuilder(1500);
 
-            var url = head + "://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
+                for (int i = 0; i < 150; i++)
+                    sbd.Append(random.Next().ToString("D10"));
+                url = head + "://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
+            }
+            else
+            {
+                string addrStr = string.Format("[{0}]", addr);
+                url = "http://" + addrStr;
+            }
+
             return url;
         }
-        private TestResult StdTestProcessWithProxy(string addr)
+        private TestResult StdTestProcessWithProxy(IPAddress addr)
         {
             TestResult result;
 
@@ -353,7 +308,7 @@ namespace GoGo_Tester
             return result;
         }
 
-        private TestResult StdTestProcess(string addr)
+        private TestResult StdTestProcess(IPAddress addr)
         {
             if (TestWithProxy)
             {
@@ -363,7 +318,7 @@ namespace GoGo_Tester
             TestResult result = null;
             long pingTime = 0;
 
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var socket = new Socket(addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
@@ -425,7 +380,7 @@ namespace GoGo_Tester
             {
                 using (var resp = (HttpWebResponse)req.GetResponse())
                 {
-                    if (resp.Server == "gws")
+                    if (resp.Server == "gws" || resp.Server == "sffe")
                     {
                         result = new TestResult()
                         {
@@ -446,7 +401,7 @@ namespace GoGo_Tester
                     resp.Close();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result = new TestResult()
                          {
@@ -473,7 +428,7 @@ namespace GoGo_Tester
             }
         }
 
-        private void ImportIp(string addr)
+        private void ImportIp(IPAddress addr)
         {
             if (InvokeRequired)
             {
@@ -493,7 +448,8 @@ namespace GoGo_Tester
 
         }
 
-        private void RemoveIp(string addr)
+
+        private void RemoveIp(IPAddress addr)
         {
             var row = SelectByIp(addr);
             if (row.Length > 0)
@@ -512,10 +468,8 @@ namespace GoGo_Tester
             return IpTable.Select(expr, order);
         }
 
-        private DataRow[] SelectByIp(string addr)
+        private DataRow[] SelectByIp(IPAddress addr)
         {
-
-            
             if (InvokeRequired)
             {
                 return (DataRow[])Invoke(new MethodInvoker(() => SelectByIp(addr)));
@@ -577,7 +531,7 @@ namespace GoGo_Tester
                 return;
             }
 
-            var ranges = str.Split(@"`~!?@#$%^&*()=+,<>;:'，。；：“”‘’？、".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var ranges = str.Split(@"`\|/~!?@#$%^&*()=+,<>;:'，。；：“”‘’？、".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var range in ranges)
             {
@@ -595,7 +549,11 @@ namespace GoGo_Tester
                         {
                             for (int d = iprange.Cope[3, 0]; d <= iprange.Cope[3, 1]; d++)
                             {
-                                ImportIp(a + "." + b + "." + c + "." + d);
+                                try
+                                {
+                                    ImportIp(IPAddress.Parse(a + "." + b + "." + c + "." + d));
+                                }
+                                catch (Exception) { }
                             }
                         }
                     }
@@ -606,7 +564,7 @@ namespace GoGo_Tester
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             RemoveAllIps();
-            while (TestQueue.Count > 0)
+            while (TestCountQueue.Count > 0)
             {
                 Application.DoEvents();
             }
@@ -636,11 +594,17 @@ namespace GoGo_Tester
                 return;
             }
 
-            var mc = rxMatchIPv4.Matches(str);
+            var ips = GetIpsInText(str);
 
-            foreach (Match m in mc)
+            if (ips.Length == 0)
             {
-                ImportIp(m.Value);
+                MessageBox.Show("剪切板内没有IP！");
+                return;
+            }
+
+            foreach (var ip in ips)
+            {
+                ImportIp(ip);
             }
         }
 
@@ -656,6 +620,11 @@ namespace GoGo_Tester
             if (StdIsTesting)
             {
                 MessageBox.Show("标准测试已运行！");
+                return;
+            }
+
+            if (IpTable.Rows.Count == 0)
+            {
                 return;
             }
 
@@ -687,7 +656,7 @@ namespace GoGo_Tester
 
             foreach (var row in rows)
             {
-                WaitQueue.Enqueue(row[0].ToString());
+                WaitQueue.Enqueue(IPAddress.Parse(row[0].ToString()));
             }
 
             StdIsTesting = true;
@@ -886,11 +855,9 @@ namespace GoGo_Tester
                 return;
             }
 
-            var mc = rxMatchIPv4.Matches(str);
-
-            foreach (Match m in mc)
+            foreach (var ip in GetIpsInText(str))
             {
-                RemoveIp(m.Value);
+                RemoveIp(ip);
             }
         }
 
@@ -991,6 +958,36 @@ namespace GoGo_Tester
             var rows = SelectByExpr(string.Format("std <> 'n/a' and std not like '_OK%'"));
             return rows;
         }
+
+        private IPAddress[] GetIpsInText(string str)
+        {
+            var ls = new List<IPAddress>();
+
+            var hset = new HashSet<string>();
+            var mcv4 = rxMatchIPv4.Matches(str);
+            foreach (Match m in mcv4)
+            {
+                if (hset.Add(m.Value))
+                {
+                    try { ls.Add(IPAddress.Parse(m.Value)); }
+                    catch (Exception) { }
+                }
+            }
+
+            hset.Clear();
+            var mcv6 = rxMatchIPv6.Matches(str);
+            foreach (Match m in mcv6)
+            {
+                if (hset.Add(m.Value))
+                {
+                    try { ls.Add(IPAddress.Parse(m.Value)); }
+                    catch (Exception) { }
+                }
+            }
+
+            return ls.ToArray();
+        }
+
 
         private void mApplySelectedIpsToUserConfig_Click(object sender, EventArgs e)
         {
