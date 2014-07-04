@@ -332,7 +332,8 @@ namespace GoGo_Tester
             ImportIpRange("58.145.238.20-59");
             //
             ImportIpRange("41.201.128.20-59");
-            ImportIpRange("41.201.164.20-59");
+            ImportIpRange("41.201.164.20-59");			
+			ImportIpRange("222.255.120.15-59");
             //OpenerDNS
             //ImportIpRange("119.81.145.120-127");
             //ImportIpRange("119.81.142.202");

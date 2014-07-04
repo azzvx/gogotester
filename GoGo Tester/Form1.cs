@@ -31,9 +31,11 @@ namespace GoGo_Tester
             InitializeComponent();
         }
 
-        private readonly Regex rxMatchIp =
-            new Regex(@"((25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})",
-                RegexOptions.Compiled);
+        private readonly Regex rxMatchIPv4 =
+            new Regex(@"(?<=[^\d])((25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})(?=[^\d])", RegexOptions.Compiled);
+        private readonly Regex rxMatchIPv6 =
+           new Regex(@"((25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1\d\d|\d{1,2})",
+               RegexOptions.Compiled);
 
         private readonly DataTable IpTable = new DataTable();
 
@@ -57,8 +59,62 @@ namespace GoGo_Tester
         public static bool TestWithProxy = false;
         public static WebProxy TestProxy = new WebProxy("192.168.1.1", 8080);
 
+        class MyStruct
+        {
+            public uint start;
+            public uint end;
+            public string cty;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            //var strs = File.ReadAllLines(@"Z:\ip.txt");
+            //var cts = new Stack<MyStruct>();
+
+            //foreach (var str in strs)
+            //{
+            //    var sps = str.Split('\t');
+            //    var next = new MyStruct()
+            //    {
+            //        start = Convert.ToUInt32(sps[0]),
+            //        end = Convert.ToUInt32(sps[1]),
+            //        cty = sps[2].Trim()
+            //    };
+
+            //    if (cts.Count == 0)
+            //    {
+            //        cts.Push(next);
+            //    }
+            //    else
+            //    {
+            //        var prev = cts.Peek();
+            //        if (next.cty == prev.cty && next.start - prev.end == 1)
+            //        {
+            //            cts.Peek().end = next.end;
+            //        }
+            //        else
+            //        {
+            //            cts.Push(next);
+            //        }
+            //    }
+            //}
+            //List<string> ls = new List<string>(cts.Count);
+            //foreach (var ms in cts)
+            //{
+            //    ls.Add(ms.start + "\t" + ms.end + "\t" + ms.cty);
+            //}
+            //File.WriteAllLines(@"Z:\1.txt", ls.ToArray());
+
+
+
+
+
+
+
+
+
+
+
             int count = 0;
             foreach (var range in IpRange.PoolB)
             {
@@ -459,6 +515,7 @@ namespace GoGo_Tester
         private DataRow[] SelectByIp(string addr)
         {
 
+            
             if (InvokeRequired)
             {
                 return (DataRow[])Invoke(new MethodInvoker(() => SelectByIp(addr)));
@@ -579,7 +636,7 @@ namespace GoGo_Tester
                 return;
             }
 
-            var mc = rxMatchIp.Matches(str);
+            var mc = rxMatchIPv4.Matches(str);
 
             foreach (Match m in mc)
             {
@@ -829,7 +886,7 @@ namespace GoGo_Tester
                 return;
             }
 
-            var mc = rxMatchIp.Matches(str);
+            var mc = rxMatchIPv4.Matches(str);
 
             foreach (Match m in mc)
             {
@@ -911,7 +968,7 @@ namespace GoGo_Tester
 
             inifile.WriteValue("iplist", "google_cn", ipstr);
             inifile.WriteValue("iplist", "google_hk", ipstr);
-            inifile.WriteValue("iplist", "google_talk", ipstr);
+            //    inifile.WriteValue("iplist", "google_talk", ipstr);
 
             inifile.WriteFile();
 
