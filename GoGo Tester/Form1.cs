@@ -171,6 +171,7 @@ namespace GoGo_Tester
                 var addr = WaitQueue.Dequeue();
                 var thread = new Thread(() =>
                 {
+
                     Monitor.Enter(TestCountQueue);
                     TestCountQueue.Enqueue(0);
                     Monitor.Exit(TestCountQueue);
@@ -346,6 +347,7 @@ namespace GoGo_Tester
                         ok = false,
                         msg = "Invalid"
                     };
+                    socket.EndConnect(ar);
                 }
                 else
                 {
@@ -362,6 +364,8 @@ namespace GoGo_Tester
                 };
             }
             stopwatch.Stop();
+        
+            socket.Shutdown(SocketShutdown.Both);
             socket.Close();
 
             if (result != null)
@@ -378,7 +382,7 @@ namespace GoGo_Tester
 
             try
             {
-                using (var resp = (HttpWebResponse)req.GetResponse())
+                using (var resp = (HttpWebResponse) req.GetResponse())
                 {
                     if (resp.Server == "gws" || resp.Server == "sffe")
                     {
@@ -392,11 +396,11 @@ namespace GoGo_Tester
                     else
                     {
                         result = new TestResult()
-                          {
-                              addr = addr,
-                              ok = false,
-                              msg = "Invalid"
-                          };
+                        {
+                            addr = addr,
+                            ok = false,
+                            msg = "Invalid"
+                        };
                     }
                     resp.Close();
                 }
@@ -404,13 +408,13 @@ namespace GoGo_Tester
             catch (Exception ex)
             {
                 result = new TestResult()
-                         {
-                             addr = addr,
-                             ok = false,
-                             msg = "Failed"
-                         };
+                {
+                    addr = addr,
+                    ok = false,
+                    msg = "Failed"
+                };
             }
-
+            
             return result;
         }
 
