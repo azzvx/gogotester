@@ -324,14 +324,14 @@
             this.toolStripSeparator3,
             this.mApply});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(153, 132);
+            this.cmsIpData.Size = new System.Drawing.Size(117, 110);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(152, 22);
+            this.mImport.Size = new System.Drawing.Size(116, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -344,7 +344,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
             // 
             // mExport
             // 
@@ -353,7 +353,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(152, 22);
+            this.mExport.Size = new System.Drawing.Size(116, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -378,7 +378,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // mRemove
             // 
@@ -391,7 +391,7 @@
             this.toolStripSeparator7,
             this.mRemoveInvalidIps});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(152, 22);
+            this.mRemove.Size = new System.Drawing.Size(116, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -440,7 +440,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
             // 
             // mApply
             // 
@@ -449,7 +449,7 @@
             this.toolStripSeparator5,
             this.mApplyValidIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(152, 22);
+            this.mApply.Size = new System.Drawing.Size(116, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
@@ -564,7 +564,7 @@
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvIpData.Size = new System.Drawing.Size(476, 294);
             this.dgvIpData.TabIndex = 25;
-            this.dgvIpData.Tag = "表格数据中：标准测试在50ms以内为优秀，代理测试在1000ms以内为优秀。";
+            this.dgvIpData.Tag = "表格数据中：标准测试在50ms以内为优秀。";
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // lTip

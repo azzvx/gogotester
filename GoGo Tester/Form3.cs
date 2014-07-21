@@ -13,7 +13,7 @@ namespace GoGo_Tester
 
         private void cbTestWithProxy_CheckedChanged(object sender, EventArgs e)
         {
-            Form1.TestWithProxy = cbTestWithProxy.Checked;
+            Form1.UseProxy = cbTestWithProxy.Checked;
         }
 
         private void bAccept_Click(object sender, EventArgs e)
@@ -35,7 +35,7 @@ namespace GoGo_Tester
 
         private void Form3_Load(object sender, EventArgs e)
         {
-            cbTestWithProxy.Checked = Form1.TestWithProxy;
+            cbTestWithProxy.Checked = Form1.UseProxy;
 
             tbAddr.Text = Form1.TestProxy.Address.Host;
             tbPort.Text = Form1.TestProxy.Address.Port.ToString();
