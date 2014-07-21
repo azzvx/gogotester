@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
@@ -51,7 +52,7 @@ namespace GoGo_Tester
         private static Random random = new Random();
         public static int PingTimeout = 660;
         public static int TestTimeout = 4400;
-        public static int MaxThreads = 8;
+        public static int MaxThreads = 6;
 
         private bool StdIsTesting;
         private bool RndIsTesting;
@@ -83,6 +84,8 @@ namespace GoGo_Tester
             dgvIpData.Columns[0].HeaderText = "地址";
             dgvIpData.Columns[1].Width = 100;
             dgvIpData.Columns[1].HeaderText = "标准测试";
+
+            dgvIpData.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
 
             /// Std
             ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
@@ -1010,6 +1013,21 @@ namespace GoGo_Tester
         private void cbHighSpeed_CheckedChanged(object sender, EventArgs e)
         {
             HighSpeed = cbHighSpeed.Checked;
+        }
+
+        private void dgvIpData_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            Rectangle rectangle = new Rectangle(e.RowBounds.Location.X, e.RowBounds.Location.Y, dgvIpData.RowHeadersWidth - 4, e.RowBounds.Height);
+
+            TextRenderer.DrawText(e.Graphics, (e.RowIndex + 1).ToString(),
+
+            dgvIpData.RowHeadersDefaultCellStyle.Font,
+
+            rectangle,
+
+            dgvIpData.RowHeadersDefaultCellStyle.ForeColor,
+
+            TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
         }
     }
 }
