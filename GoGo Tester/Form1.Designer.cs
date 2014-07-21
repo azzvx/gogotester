@@ -175,6 +175,11 @@
             // 
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
             this.nMaxThreads.Location = new System.Drawing.Point(74, 3);
+            this.nMaxThreads.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
             this.nMaxThreads.Minimum = new decimal(new int[] {
             1,
             0,
@@ -186,7 +191,7 @@
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nMaxThreads.Value = new decimal(new int[] {
-            6,
+            5,
             0,
             0,
             0});
@@ -605,6 +610,7 @@
             this.linkLabel1.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.linkLabel1, 2);
             this.linkLabel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.linkLabel1.LinkColor = System.Drawing.Color.Black;
             this.linkLabel1.Location = new System.Drawing.Point(3, 343);
             this.linkLabel1.Name = "linkLabel1";
@@ -612,6 +618,8 @@
             this.linkLabel1.TabIndex = 26;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "https://code.google.com/p/gogo-tester/";
+            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Black;
+            this.linkLabel1.DoubleClick += new System.EventHandler(this.linkLabel1_DoubleClick);
             // 
             // Form1
             // 

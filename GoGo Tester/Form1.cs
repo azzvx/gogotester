@@ -62,6 +62,8 @@ namespace GoGo_Tester
         public static bool UseProxy = false;
         public static WebProxy TestProxy = new WebProxy("192.168.1.1", 8080);
 
+        private static string UserAgent =
+            "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36";
         private static RequestCachePolicy CachePolicy = new RequestCachePolicy(RequestCacheLevel.NoCacheNoStore);
         private static Stopwatch Watch = new Stopwatch();
 
@@ -90,12 +92,11 @@ namespace GoGo_Tester
             /// Std
             ServicePointManager.ServerCertificateValidationCallback = (o, certificate, chain, errors) => true;
 
-            StdTestTimer.Interval = 25;
+            StdTestTimer.Interval = 200;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
 
-            RndTestTimer.Interval = 25;
+            RndTestTimer.Interval = 200;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
-
 
             Watch.Start();
         }
@@ -250,11 +251,20 @@ namespace GoGo_Tester
 
             if (addr.AddressFamily == AddressFamily.InterNetwork)
             {
-                var sbd = new StringBuilder(1500);
+                var sbd = new StringBuilder();
 
-                for (int i = 0; i < 150; i++)
-                    sbd.Append(random.Next().ToString("D10"));
-                url = head + "://" + addr + "/?" + Convert.ToBase64String(Encoding.UTF8.GetBytes(sbd.ToString()));
+                for (int i = 10; i < 50; i++)
+                {
+                    sbd.Append("?");
+                    sbd.Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(random.Next().ToString())));
+                    sbd.Append("=");
+                    sbd.Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(random.Next().ToString())));
+                }
+
+
+                //for (int i = 0; i < 150; i++)
+                //  sbd.Append(random.Next().ToString("D10"));
+                url = head + "://" + addr + "/" + sbd;//Convert.ToBase64String(Encoding.ASCII.GetBytes(sbd.ToString()));
             }
             else
             {
@@ -282,6 +292,7 @@ namespace GoGo_Tester
             req.AllowAutoRedirect = false;
             req.KeepAlive = false;
             req.CachePolicy = CachePolicy;
+            req.UserAgent = UserAgent;
 
             var stime = Watch.ElapsedMilliseconds;
 
@@ -298,8 +309,6 @@ namespace GoGo_Tester
                     {
                         result.msg = "Invalid";
                     }
-
-                    result.msg += " " + resp.Server;
                 }
             }
             catch (Exception)
@@ -360,13 +369,13 @@ namespace GoGo_Tester
                 return TestWithProxy(addr);
             }
 
-            TestResult result = TestPing(addr, 443, PingTimeout);
+            var result = TestPing(addr, 443, PingTimeout);
 
             if (!result.ok)
             {
                 return result;
             }
-
+           
             Thread.Sleep(100);
 
             var url = GenMixedUrl("https", addr);
@@ -377,6 +386,7 @@ namespace GoGo_Tester
             req.AllowAutoRedirect = false;
             req.KeepAlive = false;
             req.CachePolicy = CachePolicy;
+            req.UserAgent = UserAgent;
 
             try
             {
@@ -386,8 +396,6 @@ namespace GoGo_Tester
                     {
                         result.ok = false;
                     }
-
-                    result.msg += " " + resp.Server;
                 }
             }
             catch (Exception)
@@ -764,6 +772,8 @@ namespace GoGo_Tester
         private void nMaxTest_ValueChanged(object sender, EventArgs e)
         {
             MaxThreads = Convert.ToInt32(nMaxThreads.Value);
+            StdTestTimer.Interval = 1000 / MaxThreads;
+            RndTestTimer.Interval = 1000 / MaxThreads;
         }
 
         private void mStopTest_Click(object sender, EventArgs e)
@@ -1028,6 +1038,11 @@ namespace GoGo_Tester
             dgvIpData.RowHeadersDefaultCellStyle.ForeColor,
 
             TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
+        }
+
+        private void linkLabel1_DoubleClick(object sender, EventArgs e)
+        {
+            Process.Start(linkLabel1.Text);
         }
     }
 }
