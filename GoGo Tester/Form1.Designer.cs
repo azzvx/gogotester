@@ -68,7 +68,9 @@
             this.mStartRndTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStartStdTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStopTest = new System.Windows.Forms.ToolStripMenuItem();
+            this.mOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mSetTestProxy = new System.Windows.Forms.ToolStripMenuItem();
+            this.mClearRndCache = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvIpData = new System.Windows.Forms.DataGridView();
             this.lTip = new System.Windows.Forms.Label();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
@@ -511,7 +513,7 @@
             this.mStartRndTest,
             this.mStartStdTest,
             this.mStopTest,
-            this.mSetTestProxy});
+            this.mOptions});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
             this.msMain.Size = new System.Drawing.Size(458, 25);
@@ -545,12 +547,28 @@
             this.mStopTest.Click += new System.EventHandler(this.mStopTest_Click);
             this.mStopTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
+            // mOptions
+            // 
+            this.mOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mSetTestProxy,
+            this.mClearRndCache});
+            this.mOptions.Name = "mOptions";
+            this.mOptions.Size = new System.Drawing.Size(62, 21);
+            this.mOptions.Text = "选项(&O)";
+            // 
             // mSetTestProxy
             // 
             this.mSetTestProxy.Name = "mSetTestProxy";
-            this.mSetTestProxy.Size = new System.Drawing.Size(107, 21);
+            this.mSetTestProxy.Size = new System.Drawing.Size(188, 22);
             this.mSetTestProxy.Text = "设置测试代理(&P)";
             this.mSetTestProxy.Click += new System.EventHandler(this.mSetTestProxy_Click);
+            // 
+            // mClearRndCache
+            // 
+            this.mClearRndCache.Name = "mClearRndCache";
+            this.mClearRndCache.Size = new System.Drawing.Size(188, 22);
+            this.mClearRndCache.Text = "清除随机测试缓存(&C)";
+            this.mClearRndCache.Click += new System.EventHandler(this.mClearRndCache_Click);
             // 
             // dgvIpData
             // 
@@ -695,9 +713,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
-        private System.Windows.Forms.ToolStripMenuItem mSetTestProxy;
         private System.Windows.Forms.CheckBox cbHighSpeed;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.ToolStripMenuItem mOptions;
+        private System.Windows.Forms.ToolStripMenuItem mSetTestProxy;
+        private System.Windows.Forms.ToolStripMenuItem mClearRndCache;
 
     }
 }

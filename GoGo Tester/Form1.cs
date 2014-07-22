@@ -23,9 +23,9 @@ namespace GoGo_Tester
     {
         class TestResult
         {
-            public IPAddress addr;
-            public bool ok;
-            public string msg;
+            public IPAddress Addr;
+            public bool Ok;
+            public string Msg;
         }
 
         public Form1()
@@ -42,7 +42,7 @@ namespace GoGo_Tester
         private readonly DataTable IpTable = new DataTable();
 
 
-        public static HashSet<IPAddress> TestedSet = new HashSet<IPAddress>();
+        public static HashSet<IPAddress> CacheSet = new HashSet<IPAddress>();
         public static Queue<IPAddress> WaitQueue = new Queue<IPAddress>();
         public static Queue<int> TestCountQueue = new Queue<int>();
 
@@ -98,6 +98,8 @@ namespace GoGo_Tester
             RndTestTimer.Interval = 200;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
 
+            LoadRndTestCache();
+
             Watch.Start();
         }
 
@@ -120,28 +122,27 @@ namespace GoGo_Tester
         {
             var testCount = TestCountQueue.Count;
             var waitCount = dgvIpData.RowCount;
-            var testedCount = TestedSet.Count;
+            var testedCount = CacheSet.Count;
 
             SetRndProgress(testCount, waitCount, testedCount);
 
             if (RndIsTesting && waitCount < Form2.RandomNumber && testCount < MaxThreads)
             {
-                Monitor.Enter(TestedSet);
+                Monitor.Enter(CacheSet);
                 IPAddress addr;
                 do
                 {
                     IpRange iprange = HighSpeed ? IpRange.Pool4B[random.Next(0, IpRange.Pool4B.Count)] : IpRange.Pool4C[random.Next(0, IpRange.Pool4C.Count)];
                     addr = iprange.GetRandomIp();
-                } while (TestedSet.Contains(addr));
-                TestedSet.Add(addr);
-                Monitor.Exit(TestedSet);
+                } while (!CacheSet.Add(addr));
+                Monitor.Exit(CacheSet);
 
                 new Thread(() =>
                 {
                     Enqueue(TestCountQueue);
 
                     var result = TestProcess(addr);
-                    if (result.ok)
+                    if (result.Ok)
                     {
                         ImportIp(addr);
                         SetTestResult(result);
@@ -158,6 +159,7 @@ namespace GoGo_Tester
                     PlaySound();
                 }
                 RndIsTesting = false;
+                SaveRndTestCache();
             }
         }
 
@@ -247,11 +249,11 @@ namespace GoGo_Tester
 
         private string GenMixedUrl(string head, IPAddress addr)
         {
-            string url;
+            var sbd = new StringBuilder(head + "://");
 
             if (addr.AddressFamily == AddressFamily.InterNetwork)
             {
-                var sbd = new StringBuilder();
+                sbd.Append(addr + "/");
 
                 for (int i = 10; i < 50; i++)
                 {
@@ -260,27 +262,21 @@ namespace GoGo_Tester
                     sbd.Append("=");
                     sbd.Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(random.Next().ToString())));
                 }
-
-
-                //for (int i = 0; i < 150; i++)
-                //  sbd.Append(random.Next().ToString("D10"));
-                url = head + "://" + addr + "/" + sbd;//Convert.ToBase64String(Encoding.ASCII.GetBytes(sbd.ToString()));
             }
             else
             {
-                string addrStr = string.Format("[{0}]", addr);
-                url = "http://" + addrStr;
+                sbd.Append("[" + addr + "]");
             }
 
-            return url;
+            return sbd.ToString();
         }
 
         private TestResult TestWithProxy(IPAddress addr)
         {
             var result = new TestResult
             {
-                addr = addr,
-                ok = false
+                Addr = addr,
+                Ok = false
             };
 
             var url = GenMixedUrl("http", addr);
@@ -302,18 +298,18 @@ namespace GoGo_Tester
                 {
                     if (IsValidServer(resp.Server))
                     {
-                        result.ok = true;
-                        result.msg = "_OK P " + (Watch.ElapsedMilliseconds - stime).ToString("D4");
+                        result.Ok = true;
+                        result.Msg = "_OK P " + (Watch.ElapsedMilliseconds - stime).ToString("D4");
                     }
                     else
                     {
-                        result.msg = "Invalid";
+                        result.Msg = "Invalid";
                     }
                 }
             }
             catch (Exception)
             {
-                result.msg = "Failed";
+                result.Msg = "Failed";
             }
 
             return result;
@@ -323,8 +319,8 @@ namespace GoGo_Tester
         {
             var result = new TestResult
             {
-                addr = addr,
-                ok = false,
+                Addr = addr,
+                Ok = false,
             };
 
             var socket = new Socket(addr.AddressFamily, SocketType.Stream, ProtocolType.IP);
@@ -337,24 +333,24 @@ namespace GoGo_Tester
                 {
                     if (socket.Connected)
                     {
-                        result.ok = true;
-                        result.msg = "_OK " + (Watch.ElapsedMilliseconds - stime).ToString("D4");
+                        result.Ok = true;
+                        result.Msg = "_OK " + (Watch.ElapsedMilliseconds - stime).ToString("D4");
 
                         socket.Shutdown(SocketShutdown.Both);
                     }
                     else
                     {
-                        result.msg = "Failed";
+                        result.Msg = "Failed";
                     }
                 }
                 else
                 {
-                    result.msg = "Timeout";
+                    result.Msg = "Timeout";
                 }
             }
             catch (Exception)
             {
-                result.msg = "Errored";
+                result.Msg = "Errored";
             }
 
             socket.Close();
@@ -371,11 +367,11 @@ namespace GoGo_Tester
 
             var result = TestPing(addr, 443, PingTimeout);
 
-            if (!result.ok)
+            if (!result.Ok)
             {
                 return result;
             }
-           
+
             Thread.Sleep(100);
 
             var url = GenMixedUrl("https", addr);
@@ -394,13 +390,13 @@ namespace GoGo_Tester
                 {
                     if (!IsValidServer(resp.Server))
                     {
-                        result.ok = false;
+                        result.Ok = false;
                     }
                 }
             }
             catch (Exception)
             {
-                result.ok = false;
+                result.Ok = false;
             }
 
             return result;
@@ -409,8 +405,7 @@ namespace GoGo_Tester
 
         private static bool IsValidServer(string server)
         {
-            server = server.ToLower();
-            return (server == "gws" || server == "sffe");
+            return (server.Equals("gws", StringComparison.OrdinalIgnoreCase) || server.Equals("sffe", StringComparison.OrdinalIgnoreCase));
         }
 
         private void SetTestResult(TestResult result)
@@ -421,9 +416,9 @@ namespace GoGo_Tester
             }
             else
             {
-                var rows = SelectByIp(result.addr);
+                var rows = SelectByIp(result.Addr);
                 if (rows.Length > 0)
-                    rows[0][1] = result.msg;
+                    rows[0][1] = result.Msg;
             }
         }
 
@@ -1043,6 +1038,77 @@ namespace GoGo_Tester
         private void linkLabel1_DoubleClick(object sender, EventArgs e)
         {
             Process.Start(linkLabel1.Text);
+        }
+
+        private void SaveRndTestCache()
+        {
+            using (var fs = File.Create("gogo_cache", 25000 * 4))
+            {
+                var spChars = new[] { '.' };
+                var count = 0;
+
+                foreach (var addr in CacheSet)
+                {
+                    var sps = addr.ToString().Split(spChars);
+                    if (sps.Length == 4)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            fs.WriteByte(byte.Parse(sps[i]));
+                        }
+
+                        count++;
+                    }
+
+                    if (count >= 25000)
+                    {
+                        fs.Flush();
+                    }
+                }
+
+                if (count > 0)
+                {
+                    fs.Flush();
+                }
+            }
+        }
+
+        private void LoadRndTestCache()
+        {
+            if (!File.Exists("gogo_cache"))
+                return;
+
+            using (var fs = File.OpenRead("gogo_cache"))
+            {
+                var buf = new byte[4];
+                var sbd = new StringBuilder(15);
+
+                for (int i = 0; i < (fs.Length / 4); i++)
+                {
+                    fs.Read(buf, 0, 4);
+                    sbd.Remove(0, sbd.Length);
+                    sbd.Append((int)buf[0]);
+                    for (int j = 1; j < 4; j++)
+                    {
+                        sbd.Append(".");
+                        sbd.Append((int)buf[j]);
+                    }
+
+                    CacheSet.Add(IPAddress.Parse(sbd.ToString()));
+                }
+            }
+        }
+
+        private void mClearRndCache_Click(object sender, EventArgs e)
+        {
+            if (IsTesting())
+            {
+                return;
+            }
+
+            CacheSet.Clear();
+            if (File.Exists("gogo_cache"))
+                File.Delete("gogo_cache");
         }
     }
 }
