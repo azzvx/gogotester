@@ -294,7 +294,7 @@
             this.nTestTimeout.Tag = "";
             this.nTestTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nTestTimeout.Value = new decimal(new int[] {
-            4000,
+            3000,
             0,
             0,
             0});

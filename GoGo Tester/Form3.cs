@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Windows.Forms;
 
 namespace GoGo_Tester
@@ -10,40 +12,65 @@ namespace GoGo_Tester
         {
             InitializeComponent();
         }
+        private void Form3_Load(object sender, EventArgs e)
+        {
+            cbUseProxy.Checked = Config.UseProxy;
+            tbAddr.Text = Config.ProxyTarget.Address.ToString();
+            tbPort.Text = Config.ProxyTarget.Port.ToString();
+
+            cbUseProxyAuth.Checked = Config.UseProxyAuth;
+            tbUser.Text = Config.ProxyAuthUser;
+            tbPswd.Text = Config.ProxyAuthPswd;
+        }
 
         private void cbTestWithProxy_CheckedChanged(object sender, EventArgs e)
         {
-            Form1.UseProxy = cbTestWithProxy.Checked;
+            Config.UseProxy = cbUseProxy.Checked;
         }
+        private void cbUseProxyAuth_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.UseProxyAuth = cbUseProxyAuth.Checked;
+        }
+
 
         private void bAccept_Click(object sender, EventArgs e)
         {
-            if (cbTestWithProxy.Checked)
+            try
             {
-                try
+                if (cbUseProxy.Checked)
                 {
-                    Form1.TestProxy = new WebProxy(tbAddr.Text, Convert.ToInt32(tbPort.Text))
+                    Config.ProxyTarget = new IPEndPoint(IPAddress.Parse(tbAddr.Text.Trim()), Convert.ToInt32(tbPort.Text.Trim()));
+
+                    if (cbUseProxyAuth.Checked)
                     {
-                        Credentials = new NetworkCredential(tbUser.Text, tbPswd.Text)
-                    };
+                        Config.ProxyAuthUser = tbUser.Text.Trim();
+                        Config.ProxyAuthPswd = tbPswd.Text.Trim();
+                        if (Config.ProxyAuthUser == String.Empty || Config.ProxyAuthUser == String.Empty)
+                        {
+                            Config.UseProxyAuth = false;
+                        }
+                        else
+                        {
+                            Config.ProxyAuthBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", tbUser.Text, tbPswd.Text)));
+                        }
+                    }
                 }
-                catch (Exception) { }
             }
-
-            Close();
-        }
-
-        private void Form3_Load(object sender, EventArgs e)
-        {
-            cbTestWithProxy.Checked = Form1.UseProxy;
-
-            tbAddr.Text = Form1.TestProxy.Address.Host;
-            tbPort.Text = Form1.TestProxy.Address.Port.ToString();
-            if (Form1.TestProxy.Credentials != null)
+            catch (Exception)
             {
-                tbUser.Text = ((NetworkCredential)Form1.TestProxy.Credentials).UserName;
-                tbPswd.Text = ((NetworkCredential)Form1.TestProxy.Credentials).Password;
+                MessageBox.Show("存在不正确的信息！");
+                return;
+            }
+
+            if (Config.TestProxy())
+            {
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("无法连接到代理服务器！");
             }
         }
+
     }
 }
