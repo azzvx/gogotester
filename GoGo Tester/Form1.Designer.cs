@@ -68,8 +68,6 @@
             this.mStartRndTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStartStdTest = new System.Windows.Forms.ToolStripMenuItem();
             this.mStopTest = new System.Windows.Forms.ToolStripMenuItem();
-            this.mOptions = new System.Windows.Forms.ToolStripMenuItem();
-            this.mSetTestProxy = new System.Windows.Forms.ToolStripMenuItem();
             this.mClearRndCache = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvIpData = new System.Windows.Forms.DataGridView();
             this.lTip = new System.Windows.Forms.Label();
@@ -108,7 +106,7 @@
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(452, 61);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(472, 61);
             this.tableLayoutPanel5.TabIndex = 15;
             // 
             // label5
@@ -127,7 +125,7 @@
             this.tbIpRange.Dock = System.Windows.Forms.DockStyle.Top;
             this.tbIpRange.Location = new System.Drawing.Point(74, 3);
             this.tbIpRange.Name = "tbIpRange";
-            this.tbIpRange.Size = new System.Drawing.Size(256, 21);
+            this.tbIpRange.Size = new System.Drawing.Size(276, 21);
             this.tbIpRange.TabIndex = 1;
             this.tbIpRange.Tag = "允许添加IP段，格式 0-255 , 左边或者右边留空代表采用其最值。 173.0-255.0-255.0-255 或 173..0-.-255 代表 173 段" +
     "所有 IP ，其它同理。不同IP段请用除\'. -\'以外的符号分隔。";
@@ -138,7 +136,7 @@
             this.bAddIpRange.AutoSize = true;
             this.bAddIpRange.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.bAddIpRange.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bAddIpRange.Location = new System.Drawing.Point(336, 3);
+            this.bAddIpRange.Location = new System.Drawing.Point(356, 3);
             this.bAddIpRange.Name = "bAddIpRange";
             this.bAddIpRange.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
             this.bAddIpRange.Size = new System.Drawing.Size(59, 22);
@@ -170,7 +168,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(446, 27);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(466, 27);
             this.tableLayoutPanel2.TabIndex = 27;
             // 
             // nMaxThreads
@@ -188,7 +186,7 @@
             0,
             0});
             this.nMaxThreads.Name = "nMaxThreads";
-            this.nMaxThreads.Size = new System.Drawing.Size(71, 21);
+            this.nMaxThreads.Size = new System.Drawing.Size(78, 21);
             this.nMaxThreads.TabIndex = 27;
             this.nMaxThreads.Tag = "";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -216,7 +214,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label1.Location = new System.Drawing.Point(151, 0);
+            this.label1.Location = new System.Drawing.Point(158, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 27);
             this.label1.TabIndex = 29;
@@ -229,7 +227,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label4.Location = new System.Drawing.Point(299, 0);
+            this.label4.Location = new System.Drawing.Point(313, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(65, 27);
             this.label4.TabIndex = 10;
@@ -246,7 +244,7 @@
             0,
             0,
             0});
-            this.nPingTimeout.Location = new System.Drawing.Point(222, 3);
+            this.nPingTimeout.Location = new System.Drawing.Point(229, 3);
             this.nPingTimeout.Maximum = new decimal(new int[] {
             6000,
             0,
@@ -258,7 +256,7 @@
             0,
             0});
             this.nPingTimeout.Name = "nPingTimeout";
-            this.nPingTimeout.Size = new System.Drawing.Size(71, 21);
+            this.nPingTimeout.Size = new System.Drawing.Size(78, 21);
             this.nPingTimeout.TabIndex = 30;
             this.nPingTimeout.Tag = "";
             this.nPingTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -277,7 +275,7 @@
             0,
             0,
             0});
-            this.nTestTimeout.Location = new System.Drawing.Point(370, 3);
+            this.nTestTimeout.Location = new System.Drawing.Point(384, 3);
             this.nTestTimeout.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -289,7 +287,7 @@
             0,
             0});
             this.nTestTimeout.Name = "nTestTimeout";
-            this.nTestTimeout.Size = new System.Drawing.Size(73, 21);
+            this.nTestTimeout.Size = new System.Drawing.Size(79, 21);
             this.nTestTimeout.TabIndex = 28;
             this.nTestTimeout.Tag = "";
             this.nTestTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -306,7 +304,7 @@
             this.cbHighSpeed.Checked = true;
             this.cbHighSpeed.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbHighSpeed.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cbHighSpeed.Location = new System.Drawing.Point(401, 3);
+            this.cbHighSpeed.Location = new System.Drawing.Point(421, 3);
             this.cbHighSpeed.Name = "cbHighSpeed";
             this.cbHighSpeed.Size = new System.Drawing.Size(48, 22);
             this.cbHighSpeed.TabIndex = 28;
@@ -503,7 +501,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(458, 355);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(478, 355);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // msMain
@@ -513,10 +511,10 @@
             this.mStartRndTest,
             this.mStartStdTest,
             this.mStopTest,
-            this.mOptions});
+            this.mClearRndCache});
             this.msMain.Location = new System.Drawing.Point(0, 0);
             this.msMain.Name = "msMain";
-            this.msMain.Size = new System.Drawing.Size(458, 25);
+            this.msMain.Size = new System.Drawing.Size(478, 25);
             this.msMain.TabIndex = 3;
             this.msMain.Text = "menuStrip1";
             // 
@@ -547,26 +545,10 @@
             this.mStopTest.Click += new System.EventHandler(this.mStopTest_Click);
             this.mStopTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
-            // mOptions
-            // 
-            this.mOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mSetTestProxy,
-            this.mClearRndCache});
-            this.mOptions.Name = "mOptions";
-            this.mOptions.Size = new System.Drawing.Size(62, 21);
-            this.mOptions.Text = "选项(&O)";
-            // 
-            // mSetTestProxy
-            // 
-            this.mSetTestProxy.Name = "mSetTestProxy";
-            this.mSetTestProxy.Size = new System.Drawing.Size(188, 22);
-            this.mSetTestProxy.Text = "设置测试代理(&P)";
-            this.mSetTestProxy.Click += new System.EventHandler(this.mSetTestProxy_Click);
-            // 
             // mClearRndCache
             // 
             this.mClearRndCache.Name = "mClearRndCache";
-            this.mClearRndCache.Size = new System.Drawing.Size(188, 22);
+            this.mClearRndCache.Size = new System.Drawing.Size(132, 21);
             this.mClearRndCache.Text = "清除随机测试缓存(&C)";
             this.mClearRndCache.Click += new System.EventHandler(this.mClearRndCache_Click);
             // 
@@ -583,7 +565,7 @@
             this.dgvIpData.ReadOnly = true;
             this.dgvIpData.RowTemplate.Height = 23;
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIpData.Size = new System.Drawing.Size(452, 199);
+            this.dgvIpData.Size = new System.Drawing.Size(472, 199);
             this.dgvIpData.TabIndex = 25;
             this.dgvIpData.Tag = "【路由器用户】：如果长时间无法获得IP，请设置【最大线程】=1，【最大延时】=1000。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
@@ -597,7 +579,7 @@
             this.lTip.Location = new System.Drawing.Point(3, 313);
             this.lTip.Name = "lTip";
             this.lTip.Padding = new System.Windows.Forms.Padding(3);
-            this.lTip.Size = new System.Drawing.Size(452, 30);
+            this.lTip.Size = new System.Drawing.Size(472, 30);
             this.lTip.TabIndex = 12;
             this.lTip.Text = "Tip\r\nTip";
             // 
@@ -606,7 +588,7 @@
             this.pbProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbProgress.Location = new System.Drawing.Point(3, 28);
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(312, 10);
+            this.pbProgress.Size = new System.Drawing.Size(332, 10);
             this.pbProgress.Step = 1;
             this.pbProgress.TabIndex = 23;
             // 
@@ -614,7 +596,7 @@
             // 
             this.lProgress.AutoSize = true;
             this.lProgress.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lProgress.Location = new System.Drawing.Point(321, 25);
+            this.lProgress.Location = new System.Drawing.Point(341, 25);
             this.lProgress.Name = "lProgress";
             this.lProgress.Size = new System.Drawing.Size(134, 12);
             this.lProgress.TabIndex = 24;
@@ -632,7 +614,7 @@
             this.linkLabel1.LinkColor = System.Drawing.Color.Black;
             this.linkLabel1.Location = new System.Drawing.Point(3, 343);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(452, 12);
+            this.linkLabel1.Size = new System.Drawing.Size(472, 12);
             this.linkLabel1.TabIndex = 26;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "https://code.google.com/p/gogo-tester/";
@@ -643,7 +625,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 361);
+            this.ClientSize = new System.Drawing.Size(484, 361);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimumSize = new System.Drawing.Size(480, 400);
             this.Name = "Form1";
@@ -715,8 +697,6 @@
         private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
         private System.Windows.Forms.CheckBox cbHighSpeed;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.ToolStripMenuItem mOptions;
-        private System.Windows.Forms.ToolStripMenuItem mSetTestProxy;
         private System.Windows.Forms.ToolStripMenuItem mClearRndCache;
 
     }

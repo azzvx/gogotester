@@ -14,7 +14,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using GoGo_Tester.Properties;
 using Timer = System.Timers.Timer;
 
@@ -30,10 +29,6 @@ namespace GoGo_Tester
             public string PortMsg { get; set; }
             public string HttpMsg { get; set; }
 
-            public bool UseSsl
-            {
-                get { return Target.Port == 443; }
-            }
             public string Protocol
             {
                 get { return Target.Port == 443 ? "https" : "http"; }
@@ -46,9 +41,9 @@ namespace GoGo_Tester
             {
                 get { return Target.Port; }
             }
-            public TestInfomation(IPAddress addr, int port)
+            public TestInfomation(IPAddress addr)
             {
-                Target = new IPEndPoint(addr, port);
+                Target = new IPEndPoint(addr, 443);
                 HttpOk = PortOk = false;
                 PortMsg = HttpMsg = "n/a";
             }
@@ -61,10 +56,11 @@ namespace GoGo_Tester
         }
 
         private static readonly Regex rxMatchIPv4 = new Regex(@"(?<!:)((2(5[0-5]|[0-4]\d)|1?\d?\d)\.){3}(2(5[0-5]|[0-4]\d)|1?\d?\d)", RegexOptions.Compiled);
-         private static readonly Regex rxMatchIPv6 = new Regex(@"(:|[\da-f]{1,4})(:?:[\da-f]{1,4})+(::)?", RegexOptions.Compiled);
+        private static readonly Regex rxMatchIPv6 = new Regex(@"(:|[\da-f]{1,4})(:?:[\da-f]{1,4})+(::)?", RegexOptions.Compiled);
         private static readonly Regex rxServerValid = new Regex(@"server:\s*(gws|sffe)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Random random = new Random();
         private static readonly Stopwatch Watch = new Stopwatch();
+        private static readonly SoundPlayer SoundPlayer = new SoundPlayer { Stream = Resources.Windows_Ding };
 
         private readonly DataTable IpTable = new DataTable();
         private readonly Timer StdTestTimer = new Timer();
@@ -77,17 +73,8 @@ namespace GoGo_Tester
         private bool StdIsTesting;
         private bool RndIsTesting;
 
-
-        private void DebugFunc()
-        {
-            // Config.UseProxy = true;
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            DebugFunc();
-
             int count = IpRange.Pool4B.Sum(range => range.Count);
 
             Text = string.Format("GoGo Tester 2 - Total {0} IPs", count);
@@ -155,7 +142,7 @@ namespace GoGo_Tester
                 {
                     EnCount(CountQueue);
 
-                    var info = TestProcess(new TestInfomation(addr, 443));
+                    var info = TestProcess(new TestInfomation(addr));
                     SetTestResult(info);
 
                     DeCount(CountQueue);
@@ -195,7 +182,7 @@ namespace GoGo_Tester
                 {
                     EnCount(CountQueue);
 
-                    var info = TestProcess(new TestInfomation(addr, 443));
+                    var info = TestProcess(new TestInfomation(addr));
                     if (info.HttpOk)
                     {
                         ImportIp(addr);
@@ -218,7 +205,6 @@ namespace GoGo_Tester
         }
 
 
-        private readonly SoundPlayer SoundPlayer = new SoundPlayer { Stream = Resources.Windows_Ding };
 
         private void PlaySound()
         {
@@ -284,52 +270,37 @@ namespace GoGo_Tester
 
         private TestInfomation TestProcess(TestInfomation info)
         {
-            if (Config.UseProxy && Config.ProxySocket.Connected)
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
-                TestHttpViaProxy(info);
-            }
-            else
-            {
-                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-                {
-                    SendTimeout = Config.SocketTimeout,
-                    ReceiveTimeout = Config.SocketTimeout
-                };
-                socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+                SendTimeout = Config.SocketTimeout,
+                ReceiveTimeout = Config.SocketTimeout
+            };
+            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
-                TestPortViaSocket(socket, info, info.Target);
+            if (TestPortViaSocket(socket, info))
                 TestHttpViaSocket(socket, info);
 
-                socket.Close();
-            }
-
+            socket.Close();
             return info;
         }
-        private bool TestPortViaSocket(Socket socket, TestInfomation info, IPEndPoint target)
+        private bool TestPortViaSocket(Socket socket, TestInfomation info)
         {
             var stime = Watch.ElapsedMilliseconds;
             try
             {
-                if (socket.BeginConnect(target, null, null).AsyncWaitHandle.WaitOne(Config.PingTimeout))
+                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.PingTimeout)
+                    && socket.Connected)
                 {
                     var ctime = Watch.ElapsedMilliseconds - stime;
-
-                    if (socket.Connected)
-                    {
-                        info.PortOk = true;
-                        info.PortMsg = (Config.UseProxy ? "_OK P " : "_OK ") + ctime.ToString("D4");
-                    }
-                    else
-                    {
-                        info.PortMsg = "Invalid";
-                    }
+                    info.PortOk = true;
+                    info.PortMsg = "_OK " + ctime.ToString("D4");
                 }
                 else
                 {
                     info.PortMsg = "Timeout";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 info.PortMsg = "Errored";
             }
@@ -337,21 +308,6 @@ namespace GoGo_Tester
             return info.PortOk;
         }
 
-        private bool TestHttpViaProxy(TestInfomation info)
-        {
-            var url = GetRequestUrl("http", info.Host, 80, false);
-            var header = GetRequestHeaders("HEAD", url, info.Host, 80, false);
-
-            var data = Encoding.UTF8.GetBytes(header);
-
-            var stime = Watch.ElapsedMilliseconds;
-
-            Monitor.Enter(Config.ProxySocket);
-            TestHttpRequest(info, stime, data);
-            Monitor.Exit(Config.ProxySocket);
-
-            return info.HttpOk;
-        }
 
         private bool TestHttpViaSocket(Socket socket, TestInfomation info)
         {
@@ -423,52 +379,14 @@ namespace GoGo_Tester
             }
         }
 
-        private void TestHttpRequest(TestInfomation info, long stime, byte[] data)
-        {
-            try
-            {
-                if (!Config.ProxySocket.Connected)
-                {
-                    Config.ProxySocket.Connect(Config.ProxyTarget);
-                }
-
-                Config.ProxySocket.Send(data);
-
-                var buf = new byte[2048];
-                Config.ProxySocket.Receive(buf);
-
-                var content = Encoding.UTF8.GetString(buf);
-
-                var ctime = Watch.ElapsedMilliseconds - stime;
-                if (rxServerValid.IsMatch(content))
-                {
-                    info.HttpOk = true;
-                    info.HttpMsg = "_OK " + ctime.ToString("D4");
-                }
-                else
-                {
-                    info.HttpMsg = "Invalid";
-                }
-
-            }
-            catch (Exception ex)
-            {
-                info.HttpMsg = "Timeout" + ex.Message;
-            }
-        }
-
-
-        private string GetRequestUrl(string protocol, string host, int port, bool genargs = true)
+        private string GetRequestUrl(string protocol, string host, int port)
         {
             var ubd = new StringBuilder();
-            ubd.Append(string.Format("{0}://{1}", protocol, host));
+            ubd.Append(string.Format("{0}://{1}/", protocol, host));
 
-            if (genargs)
-            {
-                ubd.Append(string.Format("?{0}={1}", random.Next(), random.Next()));
-                for (int i = 10; i < 30; i++)
-                    ubd.Append(string.Format("&{0}={1}", random.Next(), random.Next()));
-            }
+            ubd.Append(string.Format("?{0}={1}", random.Next(), random.Next()));
+            for (int i = 10; i < 30; i++)
+                ubd.Append(string.Format("&{0}={1}", random.Next(), random.Next()));
 
             return ubd.ToString();
         }
@@ -837,11 +755,6 @@ namespace GoGo_Tester
 
         private void mExportSelectedIps_Click(object sender, EventArgs e)
         {
-            //if (IsTesting())
-            //{
-            //    return;
-            //}
-
             var cells = GetSelectdIpCells();
 
             if (cells.Length == 0)
@@ -888,11 +801,6 @@ namespace GoGo_Tester
 
         private void mExportAllIps_Click(object sender, EventArgs e)
         {
-            //if (IsTesting())
-            //{
-            //    return;
-            //}
-
             var cells = GetAllIpCells();
 
             if (cells.Length == 0)
@@ -965,11 +873,6 @@ namespace GoGo_Tester
                 return;
             }
 
-            //if (MessageBox.Show(this, "随机测试前会清除IP列表，是否继续操作？", "请确认操作！", MessageBoxButtons.OKCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Cancel)
-            //{
-            //    return;
-            //}
-
             var form = new Form2();
             form.ShowDialog(this);
 
@@ -981,8 +884,6 @@ namespace GoGo_Tester
             pbProgress.Maximum = Form2.RandomNumber;
             pbProgress.Value = 0;
 
-            //RemoveAllIps();
-            //CacheQueue.Clear();
 
             RndIsTesting = true;
             RndTestTimer.Start();
@@ -1025,7 +926,6 @@ namespace GoGo_Tester
 
             inifile.WriteValue("iplist", "google_cn", ipstr);
             inifile.WriteValue("iplist", "google_hk", ipstr);
-            //    inifile.WriteValue("iplist", "google_talk", ipstr);
 
             inifile.WriteFile();
 
@@ -1117,12 +1017,6 @@ namespace GoGo_Tester
             }
         }
 
-        private void mSetTestProxy_Click(object sender, EventArgs e)
-        {
-            var form = new Form3();
-            form.ShowDialog(this);
-        }
-
         private void cbHighSpeed_CheckedChanged(object sender, EventArgs e)
         {
             Config.HighSpeed = cbHighSpeed.Checked;
@@ -1191,7 +1085,6 @@ namespace GoGo_Tester
                 }
             }
         }
-
         private void mClearRndCache_Click(object sender, EventArgs e)
         {
             if (IsTesting())
@@ -1203,13 +1096,11 @@ namespace GoGo_Tester
             if (File.Exists("gogo_cache"))
                 File.Delete("gogo_cache");
         }
-
         private void dgvIpData_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var bounds = new Rectangle(e.RowBounds.Location.X, e.RowBounds.Location.Y, dgvIpData.RowHeadersWidth - 4, e.RowBounds.Height);
 
             TextRenderer.DrawText(e.Graphics, (e.RowIndex + 1).ToString(), dgvIpData.RowHeadersDefaultCellStyle.Font, bounds, dgvIpData.RowHeadersDefaultCellStyle.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
         }
-
     }
 }
