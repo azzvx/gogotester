@@ -43,7 +43,7 @@ namespace GoGo_Tester
             }
             public TestInfomation(IPAddress addr)
             {
-                Target = new IPEndPoint(addr, 443);
+                Target = new IPEndPoint(addr, addr.AddressFamily == AddressFamily.InterNetwork ? 443 : 80);
                 HttpOk = PortOk = false;
                 PortMsg = HttpMsg = "n/a";
             }
@@ -270,7 +270,7 @@ namespace GoGo_Tester
 
         private TestInfomation TestProcess(TestInfomation info)
         {
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+            var socket = new Socket(info.Target.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
             {
                 SendTimeout = Config.SocketTimeout,
                 ReceiveTimeout = Config.SocketTimeout
@@ -300,9 +300,9 @@ namespace GoGo_Tester
                     info.PortMsg = "Timeout";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                info.PortMsg = "Errored";
+                info.PortMsg = "Error->" + ex.Message;
             }
 
             return info.PortOk;
@@ -343,9 +343,9 @@ namespace GoGo_Tester
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                info.HttpMsg = "Errored";
+                info.HttpMsg = "Error->" + ex.Message;
             }
 
             return info.HttpOk;
@@ -396,12 +396,10 @@ namespace GoGo_Tester
             //http headers
             var sbd = new StringBuilder();
             sbd.AppendLine(string.Format("{0} {1} HTTP/1.1", method, url));
-            sbd.AppendLine(string.Format("Host: {0}", host));
+            // sbd.AppendLine(string.Format("Host: {0}", host));
+            sbd.AppendLine(string.Format("Host: appspot.com"));
 
-            if (close)
-                sbd.AppendLine("Connection: Close");
-            else
-                sbd.AppendLine("Connection: Keep-Alive");
+            sbd.AppendLine("Connection: " + (close ? "Close" : "Keep-Alive"));
 
             foreach (var arg in headers)
                 sbd.AppendLine(arg);
