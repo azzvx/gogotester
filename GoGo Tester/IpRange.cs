@@ -246,7 +246,7 @@ namespace GoGo_Tester
             ImportIpv4Range("217.30.152.192-223");
             ImportIpv4Range("217.33.127.208-223");
             ImportIpv4Range("218.176.242.4-251");
-            ImportIpv4Range("218.189.25.129-.187");
+            ImportIpv4Range("218.189.25.129-187");
             ImportIpv4Range("218.253.0.76-187");
             ImportIpv4Range("23.228.128-191.0-255");
             ImportIpv4Range("23.236.48-63.0-255");
@@ -340,7 +340,7 @@ namespace GoGo_Tester
             ImportIpv4Range("119.81.142.202");
             ImportIpv4Range("23.239.5.106");
             ImportIpv4Range("74.207.242.141");
-			ImportIpv4Range("91.213.30.143-187");
-        }		
+            ImportIpv4Range("91.213.30.143-187");
+        }
     }
 }
