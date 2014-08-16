@@ -101,7 +101,7 @@ namespace GoGo_Tester
             dgvIpData.Columns[0].Width = 160;
             dgvIpData.Columns[0].HeaderText = "地址";
             dgvIpData.Columns[1].Width = 100;
-            dgvIpData.Columns[1].HeaderText = "端口";
+            dgvIpData.Columns[1].HeaderText = "Ping";
             dgvIpData.Columns[2].Width = 100;
             dgvIpData.Columns[2].HeaderText = "HTTP/S";
             dgvIpData.Columns[3].Width = 40;
@@ -194,8 +194,8 @@ namespace GoGo_Tester
                     EnCount(CountQueue);
 
                     var info = TestProcess(new TestInfomation(addr));
-                    // if (info.HttpOk)
-                    if (info.PassCount > 0)
+
+                    if (info.HttpOk)
                     {
                         ImportIp(addr);
                         SetTestResult(info);
@@ -215,8 +215,6 @@ namespace GoGo_Tester
                 SaveRndTestCache();
             }
         }
-
-
 
         private void PlaySound()
         {
@@ -466,8 +464,8 @@ namespace GoGo_Tester
                 var rows = SelectByIp(result.Target.Address);
                 if (rows.Length > 0)
                 {
-                    rows[0][1] = result.PortMsg + result.PortTime.ToString("D4");
-                    rows[0][2] = result.HttpMsg + result.HttpTime.ToString("D4");
+                    rows[0][1] = result.PortMsg + (result.PortOk ? result.PortTime.ToString("D4") : "");
+                    rows[0][2] = result.HttpMsg + (result.HttpOk ? result.HttpTime.ToString("D4") : "");
                     rows[0][3] = result.PassCount.ToString();
                 }
             }
@@ -542,7 +540,7 @@ namespace GoGo_Tester
         {
             foreach (var row in IpTable.Select())
             {
-                row[2] = row[1] = "n/a";
+                row[3] = row[2] = row[1] = "n/a";
             }
         }
 
@@ -1112,6 +1110,12 @@ namespace GoGo_Tester
         {
             if (!File.Exists("gogo_cache"))
                 return;
+
+            if (File.GetCreationTime("gogo_cache").AddDays(7) < DateTime.Now)
+            {
+                File.Delete("gogo_cache");
+                return;
+            }
 
             using (var fs = File.OpenRead("gogo_cache"))
             {
