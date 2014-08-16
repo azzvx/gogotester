@@ -9,6 +9,7 @@ using System.Media;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -25,9 +26,14 @@ namespace GoGo_Tester
         {
             public IPEndPoint Target { get; private set; }
             public bool PortOk { get; set; }
-            public bool HttpOk { get; set; }
+            public long PortTime { get; set; }
+
             public string PortMsg { get; set; }
+            public bool HttpOk { get; set; }
+            public long HttpTime { get; set; }
             public string HttpMsg { get; set; }
+
+            public int PassCount { get; set; }
 
             public string Protocol
             {
@@ -45,7 +51,9 @@ namespace GoGo_Tester
             {
                 Target = new IPEndPoint(addr, addr.AddressFamily == AddressFamily.InterNetwork ? 443 : 80);
                 HttpOk = PortOk = false;
+                PortTime = HttpTime = 0;
                 PortMsg = HttpMsg = "n/a";
+                PassCount = 0;
             }
         }
 
@@ -87,6 +95,7 @@ namespace GoGo_Tester
             });
             IpTable.Columns.Add(new DataColumn("port", typeof(string)));
             IpTable.Columns.Add(new DataColumn("http", typeof(string)));
+            IpTable.Columns.Add(new DataColumn("pass", typeof(string)));
 
             dgvIpData.DataSource = IpTable;
             dgvIpData.Columns[0].Width = 160;
@@ -95,6 +104,8 @@ namespace GoGo_Tester
             dgvIpData.Columns[1].HeaderText = "端口";
             dgvIpData.Columns[2].Width = 100;
             dgvIpData.Columns[2].HeaderText = "HTTP/S";
+            dgvIpData.Columns[3].Width = 40;
+            dgvIpData.Columns[3].HeaderText = "Pass";
 
             StdTestTimer.Interval = 200;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
@@ -183,7 +194,8 @@ namespace GoGo_Tester
                     EnCount(CountQueue);
 
                     var info = TestProcess(new TestInfomation(addr));
-                    if (info.HttpOk)
+                    // if (info.HttpOk)
+                    if (info.PassCount > 0)
                     {
                         ImportIp(addr);
                         SetTestResult(info);
@@ -270,21 +282,39 @@ namespace GoGo_Tester
 
         private TestInfomation TestProcess(TestInfomation info)
         {
-            var socket = new Socket(info.Target.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+            do
             {
-                SendTimeout = Config.SocketTimeout,
-                ReceiveTimeout = Config.SocketTimeout
-            };
-            socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
+                var socket = new Socket(info.Target.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+                {
+                    SendTimeout = Config.SocketTimeout,
+                    ReceiveTimeout = Config.SocketTimeout
+                };
+                socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontLinger, true);
 
-            if (TestPortViaSocket(socket, info))
-                TestHttpViaSocket(socket, info);
+                if (TestPortViaSocket(socket, info) && TestHttpViaSocket(socket, info))
+                {
+                    info.PassCount++;
+                    if (info.PassCount < Config.TestCount)
+                        Thread.Sleep(Config.PingTimeout / 2);
 
-            socket.Close();
+                    socket.Close();
+                }
+                else
+                {
+                    socket.Close();
+
+                    break;
+                }
+
+            } while (info.PassCount < Config.TestCount);
+
             return info;
         }
         private bool TestPortViaSocket(Socket socket, TestInfomation info)
         {
+            if (socket.Connected)
+                return true;
+
             var stime = Watch.ElapsedMilliseconds;
             try
             {
@@ -292,17 +322,22 @@ namespace GoGo_Tester
                     && socket.Connected)
                 {
                     var ctime = Watch.ElapsedMilliseconds - stime;
+
+                    info.PortTime = (info.PortTime + ctime) / 2;
+
                     info.PortOk = true;
-                    info.PortMsg = "_OK " + ctime.ToString("D4");
+                    info.PortMsg = "_OK ";
                 }
                 else
                 {
+                    info.PortOk = false;
                     info.PortMsg = "Timeout";
                 }
             }
             catch (Exception ex)
             {
-                info.PortMsg = "Error->" + ex.Message;
+                info.PortOk = false;
+                info.PortMsg = "Error: " + ex.Message;
             }
 
             return info.PortOk;
@@ -311,25 +346,22 @@ namespace GoGo_Tester
 
         private bool TestHttpViaSocket(Socket socket, TestInfomation info)
         {
-            var url = GetRequestUrl(info.Protocol, info.Host, info.Port);
-            var header = GetRequestHeaders("HEAD", url, info.Host, info.Port);
-
-            var data = Encoding.UTF8.GetBytes(header);
-
             var stime = Watch.ElapsedMilliseconds;
             try
             {
                 using (var nets = new NetworkStream(socket))
                 {
+
                     if (((IPEndPoint)socket.RemoteEndPoint).Port == 443)
                     {
                         using (var ssls = new SslStream(nets, false, (o, xa, ab, s) => true))
                         {
+
                             ssls.AuthenticateAsClient("null");
 
                             if (ssls.IsAuthenticated)
                             {
-                                TestHttpRequest(ssls, info, stime, data);
+                                TestHttpRequest(ssls, info, stime);
                             }
                             else
                             {
@@ -339,43 +371,54 @@ namespace GoGo_Tester
                     }
                     else
                     {
-                        TestHttpRequest(nets, info, stime, data);
+                        TestHttpRequest(nets, info, stime);
                     }
                 }
             }
             catch (Exception ex)
             {
-                info.HttpMsg = "Error->" + ex.Message;
+                info.HttpOk = false;
+                info.HttpMsg = "Error: " + ex.Message;
             }
 
             return info.HttpOk;
         }
 
-        private void TestHttpRequest(Stream stream, TestInfomation info, long stime, byte[] data)
+        private void TestHttpRequest(Stream stream, TestInfomation info, long stime)
         {
             try
             {
-                stream.Write(data, 0, data.Length);
-                stream.Flush();
-
                 using (var sr = new StreamReader(stream))
                 {
+                    var url = GetRequestUrl(info.Protocol, info.Host, info.Port);
+                    var header = GetRequestHeaders("HEAD", url, info.Host, info.Port);
+
+                    var data = Encoding.UTF8.GetBytes(header);
+
+                    stream.Write(data, 0, data.Length);
+                    stream.Flush();
+
                     var content = sr.ReadToEnd();
-                    var ctime = Watch.ElapsedMilliseconds - stime;
+
                     if (rxServerValid.IsMatch(content))
                     {
+                        var ctime = Watch.ElapsedMilliseconds - stime;
+                        info.HttpTime = (info.HttpTime + ctime) / 2;
                         info.HttpOk = true;
-                        info.HttpMsg = "_OK " + ctime.ToString("D4");
+                        info.HttpMsg = "_OK ";
                     }
                     else
                     {
+                        info.HttpOk = false;
                         info.HttpMsg = "Invalid";
                     }
+
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                info.HttpMsg = "Timeout";
+                info.HttpOk = false;
+                info.HttpMsg = "Error: " + ex.Message;
             }
         }
 
@@ -423,8 +466,9 @@ namespace GoGo_Tester
                 var rows = SelectByIp(result.Target.Address);
                 if (rows.Length > 0)
                 {
-                    rows[0][1] = result.PortMsg;
-                    rows[0][2] = result.HttpMsg;
+                    rows[0][1] = result.PortMsg + result.PortTime.ToString("D4");
+                    rows[0][2] = result.HttpMsg + result.HttpTime.ToString("D4");
+                    rows[0][3] = result.PassCount.ToString();
                 }
             }
         }
@@ -452,6 +496,7 @@ namespace GoGo_Tester
                     row[0] = addr;
                     row[1] = "n/a";
                     row[2] = "n/a";
+                    row[3] = "n/a";
                     IpTable.Rows.Add(row);
                 }
                 catch (Exception) { }
@@ -781,9 +826,14 @@ namespace GoGo_Tester
         private void nMaxTest_ValueChanged(object sender, EventArgs e)
         {
             Config.MaxThreads = Convert.ToInt32(nMaxThreads.Value);
-            StdTestTimer.Interval = 1000 / Config.MaxThreads;
-            RndTestTimer.Interval = 1000 / Config.MaxThreads;
+            StdTestTimer.Interval = (1000.0 / Config.MaxThreads);
+            RndTestTimer.Interval = (1000.0 / Config.MaxThreads);
         }
+        private void nTestCount_ValueChanged(object sender, EventArgs e)
+        {
+            Config.TestCount = Convert.ToInt32(nTestCount.Value);
+        }
+
 
         private void mStopTest_Click(object sender, EventArgs e)
         {
@@ -1100,5 +1150,7 @@ namespace GoGo_Tester
 
             TextRenderer.DrawText(e.Graphics, (e.RowIndex + 1).ToString(), dgvIpData.RowHeadersDefaultCellStyle.Font, bounds, dgvIpData.RowHeadersDefaultCellStyle.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
         }
+
+
     }
 }

@@ -74,6 +74,8 @@
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.lProgress = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.nTestCount = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel5.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nMaxThreads)).BeginInit();
@@ -83,6 +85,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.msMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIpData)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nTestCount)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel5
@@ -149,14 +152,18 @@
             // 
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 6;
+            this.tableLayoutPanel2.ColumnCount = 8;
             this.tableLayoutPanel5.SetColumnSpan(this.tableLayoutPanel2, 4);
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.Controls.Add(this.nTestCount, 7, 0);
+            this.tableLayoutPanel2.Controls.Add(this.label2, 6, 0);
             this.tableLayoutPanel2.Controls.Add(this.nMaxThreads, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.label1, 2, 0);
@@ -174,7 +181,7 @@
             // nMaxThreads
             // 
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
-            this.nMaxThreads.Location = new System.Drawing.Point(74, 3);
+            this.nMaxThreads.Location = new System.Drawing.Point(38, 3);
             this.nMaxThreads.Maximum = new decimal(new int[] {
             60,
             0,
@@ -186,9 +193,9 @@
             0,
             0});
             this.nMaxThreads.Name = "nMaxThreads";
-            this.nMaxThreads.Size = new System.Drawing.Size(78, 21);
+            this.nMaxThreads.Size = new System.Drawing.Size(63, 21);
             this.nMaxThreads.TabIndex = 27;
-            this.nMaxThreads.Tag = "";
+            this.nMaxThreads.Tag = "随机测试和标准测试的最大线程数";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nMaxThreads.Value = new decimal(new int[] {
             5,
@@ -203,10 +210,10 @@
             this.label3.Dock = System.Windows.Forms.DockStyle.Left;
             this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(65, 27);
+            this.label3.Size = new System.Drawing.Size(29, 27);
             this.label3.TabIndex = 8;
             this.label3.Tag = "随机测试和标准测试的最大线程数";
-            this.label3.Text = "最大线程：";
+            this.label3.Text = "线程";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label3.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
@@ -214,12 +221,12 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label1.Location = new System.Drawing.Point(158, 0);
+            this.label1.Location = new System.Drawing.Point(107, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(65, 27);
+            this.label1.Size = new System.Drawing.Size(29, 27);
             this.label1.TabIndex = 29;
             this.label1.Tag = "Ping的延时。";
-            this.label1.Text = "最大延时：";
+            this.label1.Text = "Ping";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
@@ -227,12 +234,12 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label4.Location = new System.Drawing.Point(313, 0);
+            this.label4.Location = new System.Drawing.Point(211, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(65, 27);
+            this.label4.Size = new System.Drawing.Size(53, 27);
             this.label4.TabIndex = 10;
             this.label4.Tag = "（如无必要请勿修改）测试的超时时间";
-            this.label4.Text = "测试超时：";
+            this.label4.Text = "测试超时";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label4.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
@@ -244,7 +251,7 @@
             0,
             0,
             0});
-            this.nPingTimeout.Location = new System.Drawing.Point(229, 3);
+            this.nPingTimeout.Location = new System.Drawing.Point(142, 3);
             this.nPingTimeout.Maximum = new decimal(new int[] {
             6000,
             0,
@@ -256,9 +263,9 @@
             0,
             0});
             this.nPingTimeout.Name = "nPingTimeout";
-            this.nPingTimeout.Size = new System.Drawing.Size(78, 21);
+            this.nPingTimeout.Size = new System.Drawing.Size(63, 21);
             this.nPingTimeout.TabIndex = 30;
-            this.nPingTimeout.Tag = "";
+            this.nPingTimeout.Tag = "Ping的延时。";
             this.nPingTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nPingTimeout.Value = new decimal(new int[] {
             600,
@@ -275,7 +282,7 @@
             0,
             0,
             0});
-            this.nTestTimeout.Location = new System.Drawing.Point(384, 3);
+            this.nTestTimeout.Location = new System.Drawing.Point(270, 3);
             this.nTestTimeout.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -287,9 +294,9 @@
             0,
             0});
             this.nTestTimeout.Name = "nTestTimeout";
-            this.nTestTimeout.Size = new System.Drawing.Size(79, 21);
+            this.nTestTimeout.Size = new System.Drawing.Size(63, 21);
             this.nTestTimeout.TabIndex = 28;
-            this.nTestTimeout.Tag = "";
+            this.nTestTimeout.Tag = "（如无必要请勿修改）测试的超时时间";
             this.nTestTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nTestTimeout.Value = new decimal(new int[] {
             3000,
@@ -621,6 +628,44 @@
             this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Black;
             this.linkLabel1.DoubleClick += new System.EventHandler(this.linkLabel1_DoubleClick);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Left;
+            this.label2.Location = new System.Drawing.Point(339, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(53, 27);
+            this.label2.TabIndex = 31;
+            this.label2.Tag = "对每个IP的测试次数";
+            this.label2.Text = "测试次数";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // nTestCount
+            // 
+            this.nTestCount.Dock = System.Windows.Forms.DockStyle.Top;
+            this.nTestCount.Location = new System.Drawing.Point(398, 3);
+            this.nTestCount.Maximum = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.nTestCount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nTestCount.Name = "nTestCount";
+            this.nTestCount.Size = new System.Drawing.Size(65, 21);
+            this.nTestCount.TabIndex = 32;
+            this.nTestCount.Tag = "";
+            this.nTestCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.nTestCount.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.nTestCount.ValueChanged += new System.EventHandler(this.nTestCount_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -646,6 +691,7 @@
             this.msMain.ResumeLayout(false);
             this.msMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvIpData)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nTestCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -698,6 +744,8 @@
         private System.Windows.Forms.CheckBox cbHighSpeed;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ToolStripMenuItem mClearRndCache;
+        private System.Windows.Forms.NumericUpDown nTestCount;
+        private System.Windows.Forms.Label label2;
 
     }
 }
