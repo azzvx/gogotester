@@ -6,6 +6,6 @@
         public static int PingTimeout = 660;
         public static int SocketTimeout = 1650;
         public static int MaxThreads = 5;
-        public static int TestCount = 2;
+        public static int TestCount = 3;
     }
 }

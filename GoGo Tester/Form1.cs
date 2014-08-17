@@ -9,7 +9,6 @@ using System.Media;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Security.Authentication;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -254,30 +253,6 @@ namespace GoGo_Tester
             }
         }
 
-        private string GenMixedUrl(string head, IPAddress addr)
-        {
-            var sbd = new StringBuilder(head + "://");
-
-            if (addr.AddressFamily == AddressFamily.InterNetwork)
-            {
-                sbd.Append(addr + "/");
-
-                for (int i = 10; i < 50; i++)
-                {
-                    sbd.Append("?");
-                    sbd.Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(random.Next().ToString())));
-                    sbd.Append("=");
-                    sbd.Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(random.Next().ToString())));
-                }
-            }
-            else
-            {
-                sbd.Append("[" + addr + "]");
-            }
-
-            return sbd.ToString();
-        }
-
         private TestInfomation TestProcess(TestInfomation info)
         {
             do
@@ -292,8 +267,12 @@ namespace GoGo_Tester
                 if (TestPortViaSocket(socket, info) && TestHttpViaSocket(socket, info))
                 {
                     info.PassCount++;
+
                     if (info.PassCount < Config.TestCount)
+                    {
+                        info.PortOk = info.HttpOk = false;
                         Thread.Sleep(Config.PingTimeout / 2);
+                    }
 
                     socket.Close();
                 }
@@ -425,11 +404,27 @@ namespace GoGo_Tester
             var ubd = new StringBuilder();
             ubd.Append(string.Format("{0}://{1}/", protocol, host));
 
-            ubd.Append(string.Format("?{0}={1}", random.Next(), random.Next()));
+            ubd.Append(string.Format("?{0}={1}", GetParam(), GetParam()));
             for (int i = 10; i < 30; i++)
-                ubd.Append(string.Format("&{0}={1}", random.Next(), random.Next()));
+                ubd.Append(string.Format("&{0}={1}", GetParam(), GetParam()));
 
             return ubd.ToString();
+        }
+
+
+        private string GetParam()
+        {
+            switch (random.Next(0, 3))
+            {
+                case 0:
+                    return random.Next().ToString();
+                case 1:
+                    return random.Next().ToString("X8");
+                case 2:
+                    return random.Next().ToString("X");
+                default:
+                    return "00000000";
+            }
         }
 
         private string GetRequestHeaders(string method, string url, string host, int port, bool close = true, params string[] headers)
@@ -1140,9 +1135,7 @@ namespace GoGo_Tester
         private void mClearRndCache_Click(object sender, EventArgs e)
         {
             if (IsTesting())
-            {
                 return;
-            }
 
             CacheSet.Clear();
             if (File.Exists("gogo_cache"))

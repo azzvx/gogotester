@@ -198,7 +198,7 @@
             this.nTestCount.Tag = "";
             this.nTestCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nTestCount.Value = new decimal(new int[] {
-            2,
+            3,
             0,
             0,
             0});
@@ -612,7 +612,7 @@
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvIpData.Size = new System.Drawing.Size(452, 199);
             this.dgvIpData.TabIndex = 25;
-            this.dgvIpData.Tag = "表格数据中 Ping < 50ms 为优秀，HTTP/S < 300ms 为优秀。";
+            this.dgvIpData.Tag = "表格数据中 Ping < 50ms 为优秀。HTTP/S < 400ms 为优秀。Pass值即为通过测试的次数，一般应与你设置的测试次数一致。。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
