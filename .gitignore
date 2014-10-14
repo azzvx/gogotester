@@ -9,10 +9,10 @@
 # Build results
 
 [Dd]ebug/
-[Rr]elease/
+# [Rr]elease/
 x64/
 build/
-[Bb]in/
+# [Bb]in/
 [Oo]bj/
 
 # Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets
@@ -53,6 +53,8 @@ ipch/
 *.opensdf
 *.sdf
 *.cachefile
+*.vshost.*
+*.exe.config
 
 # Visual Studio profiler
 *.psess
