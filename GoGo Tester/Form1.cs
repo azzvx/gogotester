@@ -279,11 +279,9 @@ namespace GoGo_Tester
             var m = 2;
             var socket = GetSocket(info, m);
 
-            var time = Watch.ElapsedMilliseconds;
-
             try
             {
-                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout * m) && socket.Connected)
+                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout) && socket.Connected)
                 {
                     using (var nets = new NetworkStream(socket))
                     {
@@ -293,6 +291,9 @@ namespace GoGo_Tester
                             if (ssls.IsAuthenticated)
                             {
                                 var data = Encoding.UTF8.GetBytes(string.Format("GET /git/{0}.bmp HTTP/1.1\r\nHost: gogo-tester.googlecode.com\r\nConnection: Close\r\n\r\n", Config.FileSize));
+
+                                var time = Watch.ElapsedMilliseconds;
+
                                 ssls.Write(data, 0, data.Length);
                                 ssls.Flush();
                                 using (var sr = new StreamReader(ssls))
