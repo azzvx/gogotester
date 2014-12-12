@@ -84,7 +84,7 @@ namespace GoGo_Tester
             dgvIpData.Columns[1].Width = 60;
             dgvIpData.Columns[1].HeaderText = "端口";
             dgvIpData.Columns[2].Width = 60;
-            dgvIpData.Columns[2].HeaderText = "状态";
+            dgvIpData.Columns[2].HeaderText = "证书";
             dgvIpData.Columns[3].Width = 40;
             dgvIpData.Columns[3].HeaderText = "计数";
             dgvIpData.Columns[4].Width = 80;
@@ -184,7 +184,7 @@ namespace GoGo_Tester
 
                     var info = TestProcess(new TestInfo(addr));
 
-                    if (info.HttpOk)
+                    if (info.HttpOk || info.PassCount > (Config.PassCount * 0.9))
                     {
                         ImportIp(addr);
                         SetTestResult(info);
@@ -334,7 +334,7 @@ namespace GoGo_Tester
                     {
                         info.PassCount++;
                         if (info.PassCount < Config.PassCount)
-                            Thread.Sleep(Config.ConnTimeout / 2);
+                            Thread.Sleep(1000);
                     }
                     else
                         break;
@@ -374,9 +374,7 @@ namespace GoGo_Tester
             return info.PortOk;
         }
 
-
         private static readonly Regex RxIsGgcIp = new Regex(@"CN=(\*\.)?google\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
 
         private bool TestHttpViaSocket(Socket socket, TestInfo info)
         {
@@ -400,10 +398,7 @@ namespace GoGo_Tester
                             using (var sr = new StreamReader(ssls))
                             {
                                 var code = sr.ReadToEnd().Substring(9, 3);
-                                if (code == "200")//|| code == "301" || code == "302")
-                                    info.HttpMsg = "_OK ";
-                                else
-                                    info.HttpMsg = "_OK?";
+                                info.HttpMsg = code == "200" ? "_OK " : "_OK?";
                             }
                         }
                         else
