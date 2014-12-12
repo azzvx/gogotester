@@ -403,7 +403,7 @@ namespace GoGo_Tester
                             using (var sr = new StreamReader(ssls))
                             {
                                 var code = sr.ReadToEnd().Substring(9, 3);
-                                if (code == "200" || code == "301" || code == "302")
+                                if (code == "200")//|| code == "301" || code == "302")
                                     info.HttpMsg = "_OK ";
                                 else
                                     info.HttpMsg = "_OK?";
