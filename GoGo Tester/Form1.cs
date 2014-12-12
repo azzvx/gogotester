@@ -276,13 +276,14 @@ namespace GoGo_Tester
 
         private TestInfo TestBandwidth(TestInfo info)
         {
-            var socket = GetSocket(info, 3);
+            var m = 2;
+            var socket = GetSocket(info, m);
 
             var time = Watch.ElapsedMilliseconds;
 
             try
             {
-                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout) && socket.Connected)
+                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout * m) && socket.Connected)
                 {
                     using (var nets = new NetworkStream(socket))
                     {
