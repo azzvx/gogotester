@@ -395,7 +395,7 @@ namespace GoGo_Tester
                         {
                             info.HttpTime += (Watch.ElapsedMilliseconds - time);
                             info.HttpOk = true;
-                            var data = Encoding.UTF8.GetBytes("HEAD /favicon.ico HTTP/1.1\r\nHost: www.google.com\r\nConnection: close\r\n\r\n");
+                            var data = Encoding.UTF8.GetBytes("HEAD /_gh HTTP/1.1\r\nHost: azzvxgoagent0.appspot.com\r\nConnection: close\r\n\r\n");
 
                             ssls.Write(data);
                             ssls.Flush();
@@ -406,7 +406,7 @@ namespace GoGo_Tester
                                 if (code == "200" || code == "301" || code == "302")
                                     info.HttpMsg = "_OK ";
                                 else
-                                    info.HttpMsg = "_OK_";
+                                    info.HttpMsg = "_OK?";
                             }
                         }
                         else

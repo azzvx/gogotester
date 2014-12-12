@@ -604,7 +604,7 @@
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvIpData.Size = new System.Drawing.Size(452, 211);
             this.dgvIpData.TabIndex = 25;
-            this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。";
+            this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。【状态】里，_OK? 与 _OK 的区别为：_OK? 表示无法连接GAE，但两者都可以直连。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
@@ -667,7 +667,7 @@
             this.MinimumSize = new System.Drawing.Size(480, 400);
             this.Name = "Form1";
             this.Padding = new System.Windows.Forms.Padding(3);
-            this.Text = "GoGo Tester 2.3.6";
+            this.Text = "GoGo Tester";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tlpConfig.ResumeLayout(false);
