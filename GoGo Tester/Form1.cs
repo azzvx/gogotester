@@ -277,53 +277,50 @@ namespace GoGo_Tester
         private TestInfo TestBandwidth(TestInfo info)
         {
             var m = 2;
-            var socket = GetSocket(info, m);
-
-            try
+            using (var socket = GetSocket(info, m))
             {
-                if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout) && socket.Connected)
+                try
                 {
-                    using (var nets = new NetworkStream(socket))
+                    if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout * m) &&
+                        socket.Connected)
                     {
-                        using (var ssls = new SslStream(nets, false, (a, b, c, d) => true))
+                        using (var nets = new NetworkStream(socket))
                         {
-                            ssls.AuthenticateAsClient(string.Empty);
-                            if (ssls.IsAuthenticated)
+                            using (var ssls = new SslStream(nets, false, (a, b, c, d) => true))
                             {
-                                var data = Encoding.UTF8.GetBytes(string.Format("GET /git/{0}.bmp HTTP/1.1\r\nHost: gogo-tester.googlecode.com\r\nConnection: Close\r\n\r\n", Config.FileSize));
-
-                                var time = Watch.ElapsedMilliseconds;
-
-                                ssls.Write(data, 0, data.Length);
-                                ssls.Flush();
-                                using (var sr = new StreamReader(ssls))
+                                ssls.AuthenticateAsClient(string.Empty);
+                                if (ssls.IsAuthenticated)
                                 {
-                                    var buf = sr.ReadToEnd();
-                                    if (buf.Length < 1000000)
-                                        info.Bandwidth = buf.Substring(9, buf.IndexOf("\r"));
-                                    else
-                                        info.Bandwidth =
-                                            (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
+                                    var data = Encoding.UTF8.GetBytes(string.Format("GET /search?&tbm=isch&q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /git/{0}.bmp HTTP/1.1\r\nHost: gogo-tester.googlecode.com\r\nConnection: close\r\n\r\n", Config.FileSize));
+
+                                    var time = Watch.ElapsedMilliseconds;
+
+                                    ssls.Write(data, 0, data.Length);
+                                    ssls.Flush();
+                                    using (var sr = new StreamReader(ssls))
+                                    {
+                                        var buf = sr.ReadToEnd();
+                                        info.Bandwidth = buf.Length > 1024000 ? "_" : "?";
+                                        info.Bandwidth += (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                info.Bandwidth = "SslInvalid";
+                                else
+                                {
+                                    info.Bandwidth = "SslInvalid";
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        info.Bandwidth = "Timeout";
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    info.Bandwidth = "Timeout";
+                    info.Bandwidth = "Error: " + ex.Message;
                 }
             }
-            catch (Exception ex)
-            {
-                info.Bandwidth = "Error: " + ex.Message;
-            }
-
-            socket.Close();
             return info;
         }
 
@@ -395,7 +392,7 @@ namespace GoGo_Tester
                         {
                             info.HttpTime += (Watch.ElapsedMilliseconds - time);
                             info.HttpOk = true;
-                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
+                            var data = Encoding.UTF8.GetBytes(string.Format("GET /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
 
                             ssls.Write(data);
                             ssls.Flush();
