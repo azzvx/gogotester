@@ -299,7 +299,7 @@ namespace GoGo_Tester
                                 {
                                     var buf = sr.ReadToEnd();
                                     if (buf.Length < 1000000)
-                                        info.Bandwidth = buf.Substring(0, buf.IndexOf("\r"));
+                                        info.Bandwidth = buf.Substring(9, buf.IndexOf("\r"));
                                     else
                                         info.Bandwidth =
                                             (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
@@ -328,23 +328,21 @@ namespace GoGo_Tester
 
         private TestInfo TestProcess(TestInfo info)
         {
-            var socket = GetSocket(info);
             do
             {
-                if (TestPortViaSocket(socket, info) && TestHttpViaSocket(socket, info))
+                using (var socket = GetSocket(info))
                 {
-                    info.PassCount++;
-                    if (info.PassCount < Config.PassCount)
-                        Thread.Sleep(Config.ConnTimeout / 2);
+                    if (TestPortViaSocket(socket, info) && TestHttpViaSocket(socket, info))
+                    {
+                        info.PassCount++;
+                        if (info.PassCount < Config.PassCount)
+                            Thread.Sleep(Config.ConnTimeout / 2);
+                    }
+                    else
+                        break;
                 }
-                else
-                {
-                    break;
-                }
-
             } while (info.PassCount < Config.PassCount);
 
-            socket.Close();
             return info;
         }
         private bool TestPortViaSocket(Socket socket, TestInfo info)
