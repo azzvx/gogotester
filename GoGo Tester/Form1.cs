@@ -276,7 +276,7 @@ namespace GoGo_Tester
 
         private TestInfo TestBandwidth(TestInfo info)
         {
-            var socket = GetSocket(info, 2);
+            var socket = GetSocket(info, 3);
 
             var time = Watch.ElapsedMilliseconds;
 
@@ -298,9 +298,10 @@ namespace GoGo_Tester
                                 {
                                     var buf = sr.ReadToEnd();
                                     if (buf.Length < 1000000)
-                                        info.Bandwidth = "Unknow";
+                                        info.Bandwidth = buf.Substring(0, buf.IndexOf("\r"));
                                     else
-                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
+                                        info.Bandwidth =
+                                            (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
                                 }
                             }
                             else
@@ -333,7 +334,7 @@ namespace GoGo_Tester
                 {
                     info.PassCount++;
                     if (info.PassCount < Config.PassCount)
-                        Thread.Sleep(Config.ConnTimeout / 4);
+                        Thread.Sleep(Config.ConnTimeout / 2);
                 }
                 else
                 {
@@ -394,7 +395,19 @@ namespace GoGo_Tester
                         {
                             info.HttpTime += (Watch.ElapsedMilliseconds - time);
                             info.HttpOk = true;
-                            info.HttpMsg = "_OK ";
+                            var data = Encoding.UTF8.GetBytes("HEAD /favicon.ico HTTP/1.1\r\nHost: www.google.com\r\nConnection: close\r\n\r\n");
+
+                            ssls.Write(data);
+                            ssls.Flush();
+
+                            using (var sr = new StreamReader(ssls))
+                            {
+                                var code = sr.ReadToEnd().Substring(9, 3);
+                                if (code == "200" || code == "301" || code == "302")
+                                    info.HttpMsg = "_OK ";
+                                else
+                                    info.HttpMsg = "_OK_";
+                            }
                         }
                         else
                         {
@@ -424,8 +437,8 @@ namespace GoGo_Tester
                 var rows = SelectByIp(info.Target.Address);
                 if (rows.Length > 0)
                 {
-                    rows[0][1] = info.PortMsg + (info.PortOk ? (info.PortTime / info.PassCount).ToString("D4") : "");
-                    rows[0][2] = info.HttpMsg + (info.HttpOk ? (info.HttpTime / info.PassCount).ToString("D4") : "");
+                    rows[0][1] = info.PortMsg + (info.PortOk ? (info.PortTime / (info.PassCount == 0 ? 1 : info.PassCount)).ToString("D4") : "");
+                    rows[0][2] = info.HttpMsg + (info.HttpOk ? (info.HttpTime / (info.PassCount == 0 ? 1 : info.PassCount)).ToString("D4") : "");
                     rows[0][3] = info.PassCount.ToString();
                 }
             }
@@ -966,15 +979,10 @@ namespace GoGo_Tester
 
         private void mRemoveInvalidIps_Click(object sender, EventArgs e)
         {
-            if (IsTesting())
-            {
-                return;
-            }
+            if (IsTesting()) return;
 
             foreach (var row in GetInvalidIps())
-            {
                 IpTable.Rows.Remove(row);
-            }
         }
 
         private void linkLabel1_DoubleClick(object sender, EventArgs e)
@@ -1006,8 +1014,7 @@ namespace GoGo_Tester
 
         private void LoadTestCache()
         {
-            if (!File.Exists("gogo_cache"))
-                return;
+            if (!File.Exists("gogo_cache")) return;
 
             if (File.GetCreationTime("gogo_cache").AddDays(7) < DateTime.Now)
             {

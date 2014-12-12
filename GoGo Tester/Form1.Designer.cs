@@ -104,7 +104,7 @@
             this.tlpConfig.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tlpConfig.Controls.Add(this.cbPools, 3, 0);
             this.tlpConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpConfig.Location = new System.Drawing.Point(3, 249);
+            this.tlpConfig.Location = new System.Drawing.Point(3, 261);
             this.tlpConfig.Name = "tlpConfig";
             this.tlpConfig.RowCount = 2;
             this.tlpConfig.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -602,7 +602,7 @@
             this.dgvIpData.ReadOnly = true;
             this.dgvIpData.RowTemplate.Height = 23;
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIpData.Size = new System.Drawing.Size(452, 199);
+            this.dgvIpData.Size = new System.Drawing.Size(452, 211);
             this.dgvIpData.TabIndex = 25;
             this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
@@ -614,10 +614,10 @@
             this.tableLayoutPanel1.SetColumnSpan(this.lTip, 2);
             this.lTip.Dock = System.Windows.Forms.DockStyle.Top;
             this.lTip.ForeColor = System.Drawing.Color.DarkRed;
-            this.lTip.Location = new System.Drawing.Point(3, 313);
+            this.lTip.Location = new System.Drawing.Point(3, 325);
             this.lTip.Name = "lTip";
             this.lTip.Padding = new System.Windows.Forms.Padding(3);
-            this.lTip.Size = new System.Drawing.Size(452, 30);
+            this.lTip.Size = new System.Drawing.Size(452, 18);
             this.lTip.TabIndex = 12;
             // 
             // pbProgress
