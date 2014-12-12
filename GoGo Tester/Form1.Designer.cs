@@ -337,7 +337,8 @@
             this.cbPools.Name = "cbPools";
             this.cbPools.Size = new System.Drawing.Size(114, 20);
             this.cbPools.TabIndex = 28;
-            this.cbPools.Tag = "选择IP池，启动时加载个人IP池，命名格式为 name.ip.txt，必须以 .ip.txt 结尾。";
+            this.cbPools.Tag = "选择IP池，启动时加载个人IP池，命名格式为 name.ip.txt，必须以 .ip.txt 结尾。内容允许为 192.168.0-255.0-55 或 192." +
+    "168.0.0/16 或 www.google.com 。";
             this.cbPools.SelectedIndexChanged += new System.EventHandler(this.cbPools_SelectedIndexChanged);
             this.cbPools.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 

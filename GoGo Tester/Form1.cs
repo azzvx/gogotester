@@ -44,7 +44,7 @@ namespace GoGo_Tester
         {
             InitializeComponent();
         }
-
+        private static readonly Random Rand = new Random();
         private static readonly Regex RxMatchIPv4 = new Regex(@"(?<!:)((2(5[0-5]|[0-4]\d)|1?\d?\d)\.){3}(2(5[0-5]|[0-4]\d)|1?\d?\d)", RegexOptions.Compiled);
         private static readonly Regex RxMatchIPv6 = new Regex(@"(:|[\da-f]{1,4})(:?:[\da-f]{1,4})+(::)?", RegexOptions.Compiled);
 
@@ -395,7 +395,7 @@ namespace GoGo_Tester
                         {
                             info.HttpTime += (Watch.ElapsedMilliseconds - time);
                             info.HttpOk = true;
-                            var data = Encoding.UTF8.GetBytes("HEAD /_gh HTTP/1.1\r\nHost: azzvxgoagent0.appspot.com\r\nConnection: close\r\n\r\n");
+                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
 
                             ssls.Write(data);
                             ssls.Flush();
