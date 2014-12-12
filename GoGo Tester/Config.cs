@@ -2,10 +2,10 @@
 {
     static class Config
     {
-        public static bool HighSpeed = true;
-        public static int PingTimeout = 660;
-        public static int SocketTimeout = 1650;
+        public static int ConnTimeout = 1000;
         public static int MaxThreads = 5;
-        public static int TestCount = 3;
+        public static int PassCount = 1;
+        public static string FileSize = "1m";
+        public static string PoolName = "@Inner";
     }
 }

@@ -73,9 +73,10 @@
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
     <Compile Include="IniFile.cs" />
-    <Compile Include="IpRange.cs" />
+    <Compile Include="IpPool.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -120,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Windows Ding.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\InnerIpSet.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
