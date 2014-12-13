@@ -58,6 +58,8 @@
             this.mRemoveAllIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mRemoveIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mRemoveInvalidIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mApply = new System.Windows.Forms.ToolStripMenuItem();
             this.mApplySelectedIpsToUserConfig = new System.Windows.Forms.ToolStripMenuItem();
@@ -412,7 +414,9 @@
             this.toolStripSeparator4,
             this.mRemoveAllIps,
             this.toolStripSeparator8,
-            this.mRemoveIpsInClipbord});
+            this.mRemoveIpsInClipbord,
+            this.toolStripSeparator5,
+            this.mRemoveInvalidIps});
             this.mRemove.Name = "mRemove";
             this.mRemove.Size = new System.Drawing.Size(152, 22);
             this.mRemove.Text = "移除(&R)";
@@ -448,6 +452,18 @@
             this.mRemoveIpsInClipbord.Text = "剪切板中存在的IP(&C)";
             this.mRemoveIpsInClipbord.Click += new System.EventHandler(this.mRemoveIpsInClipbord_Click);
             // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(184, 6);
+            // 
+            // mRemoveInvalidIps
+            // 
+            this.mRemoveInvalidIps.Name = "mRemoveInvalidIps";
+            this.mRemoveInvalidIps.Size = new System.Drawing.Size(187, 22);
+            this.mRemoveInvalidIps.Text = "无效在的IP(&I)";
+            this.mRemoveInvalidIps.Click += new System.EventHandler(this.mRemoveInvalidIps_Click);
+            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -464,7 +480,7 @@
             // mApplySelectedIpsToUserConfig
             // 
             this.mApplySelectedIpsToUserConfig.Name = "mApplySelectedIpsToUserConfig";
-            this.mApplySelectedIpsToUserConfig.Size = new System.Drawing.Size(223, 22);
+            this.mApplySelectedIpsToUserConfig.Size = new System.Drawing.Size(222, 22);
             this.mApplySelectedIpsToUserConfig.Tag = "只支持IPv4。";
             this.mApplySelectedIpsToUserConfig.Text = "选中的IP到用户配置文件(&S)";
             this.mApplySelectedIpsToUserConfig.Click += new System.EventHandler(this.mApplySelectedIpsToUserConfig_Click);
@@ -700,6 +716,8 @@
         private System.Windows.Forms.ToolStripMenuItem mBandTest;
         private System.Windows.Forms.ComboBox cbFileSize;
         private System.Windows.Forms.ComboBox cbPools;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
     }
 }
 

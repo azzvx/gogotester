@@ -423,7 +423,7 @@ namespace GoGo_Tester
                         else
                         {
                             info.HttpOk = false;
-                            info.HttpMsg = "SslInvalid";
+                            info.HttpMsg = "NN: SslInvalid";
                         }
                     }
                 }
@@ -431,7 +431,7 @@ namespace GoGo_Tester
             catch (Exception ex)
             {
                 info.HttpOk = false;
-                info.HttpMsg = ex.Message;
+                info.HttpMsg = "NN: " + ex.Message;
             }
 
             return info.HttpOk;
@@ -985,6 +985,20 @@ namespace GoGo_Tester
             }
 
         }
+
+        private DataRow[] GetValidIps()
+        {
+            var rows = SelectByExpr(string.Format("sslc <> 'n/a' and sslc not like 'NN%'"), "port asc");
+            return rows.ToArray();
+        }
+
+        private DataRow[] GetInvalidIps()
+        {
+            return SelectByExpr(
+                string.Format("(port <> 'n/a' and port not like '_OK%') or (sslc <> 'n/a' and sslc like 'NN%')"));
+        }
+
+
         private void mClearRndCache_Click(object sender, EventArgs e)
         {
             if (IsTesting())
@@ -1010,6 +1024,14 @@ namespace GoGo_Tester
             CurPool = PoolDic[cbPools.SelectedItem.ToString()];
             Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurPool.Count);
             SetStdProgress(CurPool.Count, TestCaches.Count);
+        }
+
+        private void mRemoveInvalidIps_Click(object sender, EventArgs e)
+        {
+            if (IsTesting()) return;
+
+            foreach (var row in GetInvalidIps())
+                IpTable.Rows.Remove(row);
         }
     }
 }
