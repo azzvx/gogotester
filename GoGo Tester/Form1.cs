@@ -52,7 +52,7 @@ namespace GoGo_Tester
         private static readonly SoundPlayer SoundPlayer = new SoundPlayer { Stream = Resources.Windows_Ding };
 
         private readonly Dictionary<string, IpPool> PoolDic = new Dictionary<string, IpPool>();
-        private IpPool CurPool;
+        private List<IPAddress> CurAddrList;
         private readonly DataTable IpTable = new DataTable();
         private readonly Timer StdTestTimer = new Timer();
         private readonly Timer RndTestTimer = new Timer();
@@ -159,29 +159,26 @@ namespace GoGo_Tester
 
             if (RndTestRunning && waitCount < Form2.RandomNumber && threadCount < Config.MaxThreads)
             {
-                IPAddress addr;
-                Monitor.Enter(TestCaches);
-                var loops = 0;
-                do
+                Monitor.Enter(CurAddrList);
+                if (CurAddrList.Count == 0)
                 {
-                    addr = CurPool.GetRandomIp();
-                    loops++;
-                    if (loops > 1000000)
-                    {
-                        if (RndTestRunning)
-                            MessageBox.Show("发现死循环，测试终止！", "Error");
+                    RndTestRunning = false;
+                    Monitor.Exit(CurAddrList);
+                    return;
+                }
 
-                        Monitor.Exit(TestCaches);
-                        RndTestRunning = false;
-                        return;
-                    }
-                } while (!TestCaches.Add(addr));
+                var addr = CurAddrList[Rand.Next(CurAddrList.Count)];
+                CurAddrList.Remove(addr);
+
+                Monitor.Exit(CurAddrList);
+
+                Monitor.Enter(TestCaches);
+                TestCaches.Add(addr);
                 Monitor.Exit(TestCaches);
 
                 new Thread(() =>
                 {
                     EnCount(ThreadQueue);
-
                     var info = TestProcess(new TestInfo(addr));
 
                     if (info.HttpOk || info.PassCount > (Config.PassCount * 0.9))
@@ -276,7 +273,7 @@ namespace GoGo_Tester
         #region Test
         private TestInfo TestBandwidth(TestInfo info)
         {
-            var m = 2;
+            const int m = 2;
             using (var socket = GetSocket(info, m))
             {
                 try
@@ -299,7 +296,7 @@ namespace GoGo_Tester
                                     using (var sr = new StreamReader(ssls))
                                     {
                                         var buf = sr.ReadToEnd();
-                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D5") + "KB/s";
+                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D4") + " KB/s";
                                     }
                                 }
                                 else
@@ -336,8 +333,7 @@ namespace GoGo_Tester
                     }
                     else
                     {
-                        loops++;
-                        if (info.PassCount < 6 || loops > 2)
+                        if (info.PassCount < 6 || ++loops > 2)
                             break;
                         Thread.Sleep(1000);
                     }
@@ -375,9 +371,6 @@ namespace GoGo_Tester
             return info.PortOk;
         }
 
-        private static readonly Regex RxAppSpot = new Regex(@"GoAgent 服务端", RegexOptions.Compiled);
-        private static readonly Regex RxGoogle = new Regex(@"Server: gws", RegexOptions.Compiled);
-
         private bool TestHttpViaSocket(Socket socket, TestInfo info)
         {
             try
@@ -395,7 +388,7 @@ namespace GoGo_Tester
                         ssls.AuthenticateAsClient(string.Empty);
                         if (ssls.IsAuthenticated)
                         {
-                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /search?q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
+                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /search?q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /_gh/ HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
 
                             ssls.Write(data);
                             ssls.Flush();
@@ -404,26 +397,27 @@ namespace GoGo_Tester
                             {
                                 var text = sr.ReadToEnd();
 
-                                if (RxGoogle.IsMatch(text))
+                                var G = text.IndexOf("Server: gws");
+                                var A = text.IndexOf("Server: Google Frontend", G > 0 ? G : 0);
+
+                                if (G > 0)
                                 {
                                     info.HttpOk = true;
                                     info.HttpMsg = "G";
                                 }
-                                else
-                                    info.HttpMsg = "N";
-                                if (RxAppSpot.IsMatch(text))
+                                else info.HttpMsg = "N";
+                                if (A > 0)
                                 {
                                     info.HttpOk = true;
                                     info.HttpMsg += "A";
                                 }
-                                else
-                                    info.HttpMsg += "N";
+                                else info.HttpMsg += "N";
                             }
                         }
                         else
                         {
                             info.HttpOk = false;
-                            info.HttpMsg = "NN: SslInvalid";
+                            info.HttpMsg = "NN SslInvalid";
                         }
                     }
                 }
@@ -431,7 +425,7 @@ namespace GoGo_Tester
             catch (Exception ex)
             {
                 info.HttpOk = false;
-                info.HttpMsg = "NN: " + ex.Message;
+                info.HttpMsg = "NN " + ex.Message;
             }
 
             return info.HttpOk;
@@ -520,12 +514,19 @@ namespace GoGo_Tester
                 return IpTable.Select(string.Format("addr = '{0}'", addr));
         }
 
-        private DataRow[] SelectNa(string coln)
+        private DataRow[] SelectPortNa()
         {
             if (InvokeRequired)
-                return (DataRow[])Invoke(new MethodInvoker(() => SelectNa(coln)));
+                return (DataRow[])Invoke(new MethodInvoker(() => SelectPortNa()));
             else
-                return IpTable.Select(string.Format("{0} = 'n/a'", coln));
+                return IpTable.Select("port = 'n/a'");
+        }
+        private DataRow[] SelectBandNa()
+        {
+            if (InvokeRequired)
+                return (DataRow[])Invoke(new MethodInvoker(() => SelectBandNa()));
+            else
+                return IpTable.Select("band = 'n/a' and port like '_OK%' and sslc not like 'NN%'");
         }
         private void SetAllNa()
         {
@@ -583,11 +584,13 @@ namespace GoGo_Tester
 
             var pool = IpPool.CreateFromText(str);
             if (pool.Count == 0) return;
-            pool.Copes.ForEach(t =>
+
+            while (pool.Count > 0)
             {
-                for (uint i = t.Item1; i <= t.Item2; i++)
-                    ImportIp(new IPAddress(i.GetRevBytes()));
-            });
+                var addr = pool.First();
+                ImportIp(addr);
+                pool.Remove(addr);
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -636,7 +639,7 @@ namespace GoGo_Tester
 
             WaitQueue.Clear();
 
-            var rows = SelectNa("band");
+            var rows = SelectBandNa();
 
             if (rows.Length == 0)
                 if (MessageBox.Show(this, "没有发现未测试的IP！是否重复测试已测试的IP？", "请确认操作", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.OK)
@@ -644,7 +647,7 @@ namespace GoGo_Tester
                 else
                     return;
 
-            rows = SelectNa("band");
+            rows = SelectBandNa();
 
             pbProgress.Maximum = rows.Length;
             pbProgress.Value = 0;
@@ -666,7 +669,7 @@ namespace GoGo_Tester
             if (Form2.RandomNumber == 0)
                 return;
 
-            Form2.RandomNumber = Form2.RandomNumber > CurPool.Count ? CurPool.Count : Form2.RandomNumber;
+            Form2.RandomNumber = Form2.RandomNumber > CurAddrList.Count ? CurAddrList.Count : Form2.RandomNumber;
 
             pbProgress.Maximum = Form2.RandomNumber;
             pbProgress.Value = 0;
@@ -682,7 +685,7 @@ namespace GoGo_Tester
 
             WaitQueue.Clear();
 
-            var rows = SelectNa("port");
+            var rows = SelectPortNa();
 
             if (rows.Length == 0)
                 if (MessageBox.Show(this, "没有发现未测试的IP！是否重复测试已测试的IP？", "请确认操作", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.OK)
@@ -690,7 +693,7 @@ namespace GoGo_Tester
                 else
                     return;
 
-            rows = SelectNa("port");
+            rows = SelectPortNa();
 
             pbProgress.Maximum = rows.Length;
             pbProgress.Value = 0;
@@ -1003,8 +1006,8 @@ namespace GoGo_Tester
         {
             if (IsTesting())
                 return;
-
             TestCaches.Clear();
+            CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()]);
             if (File.Exists("gogo_cache"))
                 File.Delete("gogo_cache");
         }
@@ -1021,9 +1024,9 @@ namespace GoGo_Tester
 
         private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurPool = PoolDic[cbPools.SelectedItem.ToString()];
-            Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurPool.Count);
-            SetStdProgress(CurPool.Count, TestCaches.Count);
+            CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()].Except(TestCaches));
+            Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurAddrList.Count);
+            SetStdProgress(CurAddrList.Count, TestCaches.Count);
         }
 
         private void mRemoveInvalidIps_Click(object sender, EventArgs e)

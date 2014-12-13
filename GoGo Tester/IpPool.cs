@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace GoGo_Tester
@@ -24,17 +25,23 @@ namespace GoGo_Tester
             Array.Reverse(o);
         }
     }
-    class IpPool
+    class IpPool : HashSet<IPAddress>
     {
 
         private static readonly Regex RxIpv4 = new Regex(@"([\d\.]+\d)/(\d+)|([\d\.\-]+)|([\w\-\.]+)", RegexOptions.Compiled);
-        private static readonly Random Rand = new Random();
         public static IpPool CreateFromText(string text)
         {
-            var pool = new IpPool();
-            var ms = RxIpv4.Matches(text);
+            var pool = new IpPool { OString = text };
+            pool.LoadCopes();
+            return pool;
+        }
+
+        private void LoadCopes()
+        {
             try
             {
+                Clear();
+                var ms = RxIpv4.Matches(OString);
                 foreach (Match m in ms)
                 {
                     if (m.Groups[2].Value != string.Empty)
@@ -47,7 +54,8 @@ namespace GoGo_Tester
                         var num = BitConverter.ToUInt32(bs, 0);
                         var min = num & msk;
                         var max = num | (0xffffffff ^ msk);
-                        pool.Copes.Add(new Tuple<uint, uint>(min, max));
+
+                        ImportRange(min, max);
                     }
                     else if (m.Groups[3].Value != string.Empty)
                     {
@@ -77,40 +85,32 @@ namespace GoGo_Tester
                                 }
                             }
                             if ((min & 0xff000000) > 0)
-                                pool.Copes.Add(new Tuple<uint, uint>(min, max));
+                                ImportRange(min, max);
                         }
                     }
                     else if (m.Groups[4].Value != string.Empty)
                     {
-                        foreach (var num in from addr in Dns.GetHostAddresses(m.Groups[4].Value) select addr.GetAddressBytes() into data where data.Length == 4 select BitConverter.ToUInt32(data, 0))
-                            pool.Copes.Add(new Tuple<uint, uint>(num, num));
+                        foreach (var addr in from addr in Dns.GetHostAddresses(m.Groups[4].Value) where addr.AddressFamily == AddressFamily.InterNetwork let dat = addr.GetAddressBytes() where dat[3] != 0 && dat[3] != 255 select addr)
+                            Add(addr);
                     }
                 }
             }
             catch { }
-            return pool;
         }
-
         private IpPool() { }
 
-        public int Count
+        private string OString = string.Empty;
+
+        private void ImportRange(uint min, uint max)
         {
-            get { return (int)Copes.Sum(t => t.Item2 - t.Item1 + 1); }
+            for (var num = min; num <= max; num++)
+            {
+                var dat = num.GetRevBytes();
+
+                if (dat[3] == 0 || dat[3] == 255) continue;
+
+                Add(new IPAddress(dat));
+            }
         }
-
-        public List<Tuple<uint, uint>> Copes = new List<Tuple<uint, uint>>();
-        public IPAddress GetRandomIp()
-        {
-            var cope = Copes[Rand.Next(Copes.Count)];
-            var val = (cope.Item2 - cope.Item1) + 1;
-            var num = cope.Item1 + (uint)Rand.Next((int)val);
-
-            var data = num.GetRevBytes();
-            data[3] = (byte)((data[3] == 0) ? 1 : data[3]);
-            data[3] = (byte)((data[3] == 255) ? 254 : data[3]);
-
-            return new IPAddress(data);
-        }
-
     }
 }

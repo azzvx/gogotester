@@ -180,11 +180,6 @@
             // 
             this.nTestCount.Dock = System.Windows.Forms.DockStyle.Top;
             this.nTestCount.Location = new System.Drawing.Point(272, 3);
-            this.nTestCount.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
             this.nTestCount.Minimum = new decimal(new int[] {
             1,
             0,
@@ -219,11 +214,6 @@
             // 
             this.nMaxThreads.Dock = System.Windows.Forms.DockStyle.Top;
             this.nMaxThreads.Location = new System.Drawing.Point(38, 3);
-            this.nMaxThreads.Maximum = new decimal(new int[] {
-            60,
-            0,
-            0,
-            0});
             this.nMaxThreads.Minimum = new decimal(new int[] {
             1,
             0,
@@ -290,12 +280,12 @@
             0});
             this.nPingTimeout.Location = new System.Drawing.Point(155, 3);
             this.nPingTimeout.Maximum = new decimal(new int[] {
-            6000,
+            10000,
             0,
             0,
             0});
             this.nPingTimeout.Minimum = new decimal(new int[] {
-            150,
+            200,
             0,
             0,
             0});
@@ -351,14 +341,14 @@
             this.toolStripSeparator3,
             this.mApply});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(153, 132);
+            this.cmsIpData.Size = new System.Drawing.Size(117, 110);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(152, 22);
+            this.mImport.Size = new System.Drawing.Size(116, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -371,7 +361,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
             // 
             // mExport
             // 
@@ -380,7 +370,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(152, 22);
+            this.mExport.Size = new System.Drawing.Size(116, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -405,7 +395,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // mRemove
             // 
@@ -418,7 +408,7 @@
             this.toolStripSeparator5,
             this.mRemoveInvalidIps});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(152, 22);
+            this.mRemove.Size = new System.Drawing.Size(116, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -467,14 +457,14 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
             // 
             // mApply
             // 
             this.mApply.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mApplySelectedIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(152, 22);
+            this.mApply.Size = new System.Drawing.Size(116, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
@@ -586,7 +576,7 @@
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvIpData.Size = new System.Drawing.Size(452, 211);
             this.dgvIpData.TabIndex = 25;
-            this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。【状态】里，_OK? 与 _OK 的区别为：_OK? 表示无法连接GAE，但两者都可以直连。";
+            this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。G：可直连Google；A：可连接AppSpot，即GAE；NN：无效IP。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
             this.dgvIpData.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
