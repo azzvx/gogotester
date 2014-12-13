@@ -120,6 +120,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ver" />
     <None Include="Resources\Windows Ding.wav" />
   </ItemGroup>
   <ItemGroup>

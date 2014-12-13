@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -103,8 +104,37 @@ namespace GoGo_Tester
             LoadPools();
 
             Watch.Start();
+
+            CheckUpdate();
         }
 
+        private void CheckUpdate()
+        {
+            var req = WebRequest.Create(
+                    "https://raw.githubusercontent.com/azzvx/gogotester/2.3/GoGo%20Tester/bin/Release/ver");
+            req.BeginGetResponse(ar =>
+           {
+               if (!ar.IsCompleted) return;
+
+               var resps = req.EndGetResponse(ar).GetResponseStream();
+
+               if (resps == null) return;
+
+               using (var sr = new StreamReader(resps))
+               {
+                   if (long.Parse(sr.ReadToEnd()) > Config.Version)
+                       HasUpdate();
+               }
+           }, null);
+        }
+
+        private void HasUpdate()
+        {
+            if (InvokeRequired)
+                Invoke(new MethodInvoker(HasUpdate));
+            else
+                linkLabel1.Text += " - 有可用更新！";
+        }
         private void LoadPools()
         {
             PoolDic.Add("@Inner", IpPool.CreateFromText(Resources.InnerIpSet));
@@ -1018,7 +1048,7 @@ namespace GoGo_Tester
             TextRenderer.DrawText(e.Graphics, (e.RowIndex + 1).ToString(), dgvIpData.RowHeadersDefaultCellStyle.Font, bounds, dgvIpData.RowHeadersDefaultCellStyle.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
         }
 
-             private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
         {
             CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()].Except(TestCaches));
             Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurAddrList.Count);
