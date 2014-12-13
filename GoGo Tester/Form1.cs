@@ -360,12 +360,14 @@ namespace GoGo_Tester
                 {
                     info.PortOk = false;
                     info.PortMsg = "Timeout";
+                    info.HttpMsg = "NN PortInvalid";
                 }
             }
             catch (Exception ex)
             {
                 info.PortOk = false;
                 info.PortMsg = ex.Message;
+                info.HttpMsg = "NN PortInvalid";
             }
 
             return info.PortOk;
