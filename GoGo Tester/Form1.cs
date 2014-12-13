@@ -299,7 +299,7 @@ namespace GoGo_Tester
                                     using (var sr = new StreamReader(ssls))
                                     {
                                         var buf = sr.ReadToEnd();
-                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
+                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D5") + "KB/s";
                                     }
                                 }
                                 else
