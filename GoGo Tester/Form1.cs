@@ -288,8 +288,7 @@ namespace GoGo_Tester
                                 ssls.AuthenticateAsClient(string.Empty);
                                 if (ssls.IsAuthenticated)
                                 {
-                                    var data = Encoding.UTF8.GetBytes(string.Format("GET /search?&tbm=isch&q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /git/{0}.bmp HTTP/1.1\r\nHost: gogo-tester.googlecode.com\r\nConnection: close\r\n\r\n", Config.FileSize));
-
+                                    var data = Encoding.UTF8.GetBytes("GET /p/gogo-tester/source/browse/1m.wiki?repo=wiki HTTP/1.1\r\nHost: code.google.com\r\nConnection: close\r\n\r\n");
                                     var time = Watch.ElapsedMilliseconds;
                                     ssls.Write(data, 0, data.Length);
                                     ssls.Flush();
@@ -1019,12 +1018,7 @@ namespace GoGo_Tester
             TextRenderer.DrawText(e.Graphics, (e.RowIndex + 1).ToString(), dgvIpData.RowHeadersDefaultCellStyle.Font, bounds, dgvIpData.RowHeadersDefaultCellStyle.ForeColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Right);
         }
 
-        private void cbFileSize_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Config.FileSize = cbFileSize.Text;
-        }
-
-        private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
+             private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
         {
             CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()].Except(TestCaches));
             Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurAddrList.Count);

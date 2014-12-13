@@ -39,9 +39,7 @@
             this.nMaxThreads = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.nPingTimeout = new System.Windows.Forms.NumericUpDown();
-            this.cbFileSize = new System.Windows.Forms.ComboBox();
             this.cbPools = new System.Windows.Forms.ComboBox();
             this.cmsIpData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mImport = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,7 +100,7 @@
             this.tlpConfig.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tlpConfig.Controls.Add(this.cbPools, 3, 0);
             this.tlpConfig.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpConfig.Location = new System.Drawing.Point(3, 261);
+            this.tlpConfig.Location = new System.Drawing.Point(3, 234);
             this.tlpConfig.Name = "tlpConfig";
             this.tlpConfig.RowCount = 2;
             this.tlpConfig.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -150,24 +148,22 @@
             // 
             this.tableLayoutPanel2.AutoSize = true;
             this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 8;
+            this.tableLayoutPanel2.ColumnCount = 6;
             this.tlpConfig.SetColumnSpan(this.tableLayoutPanel2, 4);
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.00062F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 24.99812F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Controls.Add(this.nTestCount, 5, 0);
             this.tableLayoutPanel2.Controls.Add(this.label2, 4, 0);
             this.tableLayoutPanel2.Controls.Add(this.nMaxThreads, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.label1, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 6, 0);
             this.tableLayoutPanel2.Controls.Add(this.nPingTimeout, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cbFileSize, 7, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 31);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -179,19 +175,19 @@
             // nTestCount
             // 
             this.nTestCount.Dock = System.Windows.Forms.DockStyle.Top;
-            this.nTestCount.Location = new System.Drawing.Point(272, 3);
+            this.nTestCount.Location = new System.Drawing.Point(350, 3);
             this.nTestCount.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.nTestCount.Name = "nTestCount";
-            this.nTestCount.Size = new System.Drawing.Size(52, 21);
+            this.nTestCount.Size = new System.Drawing.Size(93, 21);
             this.nTestCount.TabIndex = 32;
             this.nTestCount.Tag = "";
             this.nTestCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nTestCount.Value = new decimal(new int[] {
-            2,
+            1,
             0,
             0,
             0});
@@ -201,7 +197,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label2.Location = new System.Drawing.Point(213, 0);
+            this.label2.Location = new System.Drawing.Point(291, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 27);
             this.label2.TabIndex = 31;
@@ -220,7 +216,7 @@
             0,
             0});
             this.nMaxThreads.Name = "nMaxThreads";
-            this.nMaxThreads.Size = new System.Drawing.Size(52, 21);
+            this.nMaxThreads.Size = new System.Drawing.Size(91, 21);
             this.nMaxThreads.TabIndex = 27;
             this.nMaxThreads.Tag = "随机测试和标准测试的最大线程数";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -248,7 +244,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label1.Location = new System.Drawing.Point(96, 0);
+            this.label1.Location = new System.Drawing.Point(135, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 27);
             this.label1.TabIndex = 29;
@@ -256,19 +252,6 @@
             this.label1.Text = "连接超时";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label4.Location = new System.Drawing.Point(330, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 27);
-            this.label4.TabIndex = 10;
-            this.label4.Tag = "带宽测试时的文件尺寸。";
-            this.label4.Text = "文件尺寸";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label4.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // nPingTimeout
             // 
@@ -278,7 +261,7 @@
             0,
             0,
             0});
-            this.nPingTimeout.Location = new System.Drawing.Point(155, 3);
+            this.nPingTimeout.Location = new System.Drawing.Point(194, 3);
             this.nPingTimeout.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -290,7 +273,7 @@
             0,
             0});
             this.nPingTimeout.Name = "nPingTimeout";
-            this.nPingTimeout.Size = new System.Drawing.Size(52, 21);
+            this.nPingTimeout.Size = new System.Drawing.Size(91, 21);
             this.nPingTimeout.TabIndex = 30;
             this.nPingTimeout.Tag = "Ping的延时。";
             this.nPingTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -300,22 +283,6 @@
             0,
             0});
             this.nPingTimeout.ValueChanged += new System.EventHandler(this.nPingTimeout_ValueChanged);
-            // 
-            // cbFileSize
-            // 
-            this.cbFileSize.Dock = System.Windows.Forms.DockStyle.Left;
-            this.cbFileSize.FormattingEnabled = true;
-            this.cbFileSize.Items.AddRange(new object[] {
-            "1m",
-            "3m",
-            "6m",
-            "9m"});
-            this.cbFileSize.Location = new System.Drawing.Point(389, 3);
-            this.cbFileSize.Name = "cbFileSize";
-            this.cbFileSize.Size = new System.Drawing.Size(54, 20);
-            this.cbFileSize.TabIndex = 33;
-            this.cbFileSize.Text = "1m";
-            this.cbFileSize.SelectedIndexChanged += new System.EventHandler(this.cbFileSize_SelectedIndexChanged);
             // 
             // cbPools
             // 
@@ -574,7 +541,7 @@
             this.dgvIpData.ReadOnly = true;
             this.dgvIpData.RowTemplate.Height = 23;
             this.dgvIpData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIpData.Size = new System.Drawing.Size(452, 211);
+            this.dgvIpData.Size = new System.Drawing.Size(452, 184);
             this.dgvIpData.TabIndex = 25;
             this.dgvIpData.Tag = "右键导入支持 IPv4 和 IPv6。G：可直连Google；A：可连接AppSpot，即GAE；NN：无效IP。";
             this.dgvIpData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvIpData_RowPostPaint);
@@ -582,14 +549,13 @@
             // 
             // lTip
             // 
-            this.lTip.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lTip, 2);
             this.lTip.Dock = System.Windows.Forms.DockStyle.Top;
             this.lTip.ForeColor = System.Drawing.Color.DarkRed;
-            this.lTip.Location = new System.Drawing.Point(3, 325);
+            this.lTip.Location = new System.Drawing.Point(3, 298);
             this.lTip.Name = "lTip";
             this.lTip.Padding = new System.Windows.Forms.Padding(3);
-            this.lTip.Size = new System.Drawing.Size(452, 18);
+            this.lTip.Size = new System.Drawing.Size(452, 45);
             this.lTip.TabIndex = 12;
             // 
             // pbProgress
@@ -668,7 +634,6 @@
         private System.Windows.Forms.Button bAddIpRange;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ContextMenuStrip cmsIpData;
         private System.Windows.Forms.ToolStripMenuItem mImport;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -704,7 +669,6 @@
         private System.Windows.Forms.NumericUpDown nTestCount;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ToolStripMenuItem mBandTest;
-        private System.Windows.Forms.ComboBox cbFileSize;
         private System.Windows.Forms.ComboBox cbPools;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
