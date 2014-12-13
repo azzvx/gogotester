@@ -79,11 +79,11 @@ namespace GoGo_Tester
             IpTable.Columns.Add(new DataColumn("band", typeof(string)));
 
             dgvIpData.DataSource = IpTable;
-            dgvIpData.Columns[0].Width = 160;
+            dgvIpData.Columns[0].Width = 140;
             dgvIpData.Columns[0].HeaderText = "地址";
             dgvIpData.Columns[1].Width = 60;
             dgvIpData.Columns[1].HeaderText = "端口";
-            dgvIpData.Columns[2].Width = 60;
+            dgvIpData.Columns[2].Width = 100;
             dgvIpData.Columns[2].HeaderText = "证书";
             dgvIpData.Columns[3].Width = 40;
             dgvIpData.Columns[3].HeaderText = "计数";
@@ -273,7 +273,7 @@ namespace GoGo_Tester
 
             return socket;
         }
-
+        #region Test
         private TestInfo TestBandwidth(TestInfo info)
         {
             var m = 2;
@@ -294,14 +294,12 @@ namespace GoGo_Tester
                                     var data = Encoding.UTF8.GetBytes(string.Format("GET /search?&tbm=isch&q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /git/{0}.bmp HTTP/1.1\r\nHost: gogo-tester.googlecode.com\r\nConnection: close\r\n\r\n", Config.FileSize));
 
                                     var time = Watch.ElapsedMilliseconds;
-
                                     ssls.Write(data, 0, data.Length);
                                     ssls.Flush();
                                     using (var sr = new StreamReader(ssls))
                                     {
                                         var buf = sr.ReadToEnd();
-                                        info.Bandwidth = buf.Length > 1024000 ? "_" : "?";
-                                        info.Bandwidth += (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
+                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D0") + " KB/s";
                                     }
                                 }
                                 else
@@ -318,7 +316,7 @@ namespace GoGo_Tester
                 }
                 catch (Exception ex)
                 {
-                    info.Bandwidth = "Error: " + ex.Message;
+                    info.Bandwidth = ex.Message;
                 }
             }
             return info;
@@ -326,31 +324,35 @@ namespace GoGo_Tester
 
         private TestInfo TestProcess(TestInfo info)
         {
-            do
+            using (var socket = GetSocket(info))
             {
-                using (var socket = GetSocket(info))
+                var loops = 0;
+                do
                 {
                     if (TestPortViaSocket(socket, info) && TestHttpViaSocket(socket, info))
                     {
                         info.PassCount++;
-                        if (info.PassCount < Config.PassCount)
-                            Thread.Sleep(1000);
+                        loops = 0;
                     }
                     else
-                        break;
-                }
-            } while (info.PassCount < Config.PassCount);
+                    {
+                        loops++;
+                        if (info.PassCount < 6 || loops > 2)
+                            break;
+                        Thread.Sleep(1000);
+                    }
 
+                } while (info.PassCount < Config.PassCount);
+            }
             return info;
         }
         private bool TestPortViaSocket(Socket socket, TestInfo info)
         {
             if (socket.Connected)
                 return true;
-
-            var time = Watch.ElapsedMilliseconds;
             try
             {
+                var time = Watch.ElapsedMilliseconds;
                 if (socket.BeginConnect(info.Target, null, null).AsyncWaitHandle.WaitOne(Config.ConnTimeout)
                     && socket.Connected)
                 {
@@ -368,37 +370,55 @@ namespace GoGo_Tester
             catch (Exception ex)
             {
                 info.PortOk = false;
-                info.PortMsg = "Error: " + ex.Message;
+                info.PortMsg = ex.Message;
             }
 
             return info.PortOk;
         }
 
-        private static readonly Regex RxIsGgcIp = new Regex(@"CN=(\*\.)?google\.com", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex RxAppSpot = new Regex(@"GoAgent 服务端", RegexOptions.Compiled);
+        private static readonly Regex RxGoogle = new Regex(@"Server: gws", RegexOptions.Compiled);
 
         private bool TestHttpViaSocket(Socket socket, TestInfo info)
         {
-            var time = Watch.ElapsedMilliseconds;
             try
             {
                 using (var nets = new NetworkStream(socket))
                 {
-                    using (var ssls = new SslStream(nets, false, (sender, cert, chain, sslpe) => RxIsGgcIp.IsMatch(cert.Subject)))
+                    using (var ssls = new SslStream(nets, false, (sender, cert, chain, sslpe) =>
+                    {
+                        var str = cert.Subject;
+                        var len = str.IndexOf(",", 3) - 3;
+                        info.CName = str.Substring(3, len > 0 ? len : str.Length - 3);
+                        return true;
+                    }))
                     {
                         ssls.AuthenticateAsClient(string.Empty);
                         if (ssls.IsAuthenticated)
                         {
-                            info.HttpTime += (Watch.ElapsedMilliseconds - time);
-                            info.HttpOk = true;
-                            var data = Encoding.UTF8.GetBytes(string.Format("GET /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
+                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /search?q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /_gh HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
 
                             ssls.Write(data);
                             ssls.Flush();
 
                             using (var sr = new StreamReader(ssls))
                             {
-                                var code = sr.ReadToEnd().Substring(9, 3);
-                                info.HttpMsg = code == "200" ? "_OK " : "_OK?";
+                                var text = sr.ReadToEnd();
+
+                                if (RxGoogle.IsMatch(text))
+                                {
+                                    info.HttpOk = true;
+                                    info.HttpMsg = "G";
+                                }
+                                else
+                                    info.HttpMsg = "N";
+                                if (RxAppSpot.IsMatch(text))
+                                {
+                                    info.HttpOk = true;
+                                    info.HttpMsg += "A";
+                                }
+                                else
+                                    info.HttpMsg += "N";
                             }
                         }
                         else
@@ -412,12 +432,12 @@ namespace GoGo_Tester
             catch (Exception ex)
             {
                 info.HttpOk = false;
-                info.HttpMsg = "Error: " + ex.Message;
+                info.HttpMsg = ex.Message;
             }
 
             return info.HttpOk;
         }
-
+        #endregion
         private void SetTestResult(TestInfo info)
         {
             if (InvokeRequired)
@@ -430,7 +450,7 @@ namespace GoGo_Tester
                 if (rows.Length > 0)
                 {
                     rows[0][1] = info.PortMsg + (info.PortOk ? (info.PortTime / (info.PassCount == 0 ? 1 : info.PassCount)).ToString("D4") : "");
-                    rows[0][2] = info.HttpMsg + (info.HttpOk ? (info.HttpTime / (info.PassCount == 0 ? 1 : info.PassCount)).ToString("D4") : "");
+                    rows[0][2] = info.HttpMsg + " " + info.CName;
                     rows[0][3] = info.PassCount.ToString();
                 }
             }
@@ -730,18 +750,6 @@ namespace GoGo_Tester
             return cells.ToArray();
         }
 
-        private string BuildIpString(IList<string> strs)
-        {
-            var sbd = new StringBuilder(strs[0]);
-
-            for (int i = 1; i < strs.Count; i++)
-            {
-                sbd.Append("|" + strs[i]);
-            }
-
-            return sbd.ToString();
-        }
-
         private string BuildIpString(DataGridViewCell[] cells)
         {
             var sbd = new StringBuilder(cells[0].Value.ToString());
@@ -865,34 +873,6 @@ namespace GoGo_Tester
             }
         }
 
-
-
-        private void mApplyValidIpsToUserConfig_Click(object sender, EventArgs e)
-        {
-            if (IsTesting())
-            {
-                return;
-            }
-
-            if (!File.Exists("proxy.py"))
-            {
-                MessageBox.Show("请将本程序放入GoAgent目录内！");
-                return;
-            }
-
-            var vips = GetValidIps();
-
-            if (vips.Length == 0)
-            {
-                MessageBox.Show("没有可用的IP！");
-                return;
-            }
-
-            var ipstr = BuildIpString(vips);
-
-            ApplyToUserConfig(ipstr);
-        }
-
         private void ApplyToUserConfig(string ipstr)
         {
             if (!File.Exists("proxy.user.ini"))
@@ -908,17 +888,6 @@ namespace GoGo_Tester
             inifile.WriteFile();
 
             MessageBox.Show("已写入proxy.user.ini！重新载入GoAgent就可生效！");
-        }
-
-        private string[] GetValidIps()
-        {
-            var rows = SelectByExpr(string.Format("sslc like '_OK%'"), "sslc asc");
-            return rows.Select(row => row[0].ToString()).ToArray();
-        }
-
-        private DataRow[] GetInvalidIps()
-        {
-            return SelectByExpr(string.Format("port <> 'n/a' and port not like '_OK%'"));
         }
 
         private IPAddress[] GetIpsInText(string str)
@@ -967,14 +936,6 @@ namespace GoGo_Tester
             var ipstr = BuildIpString(cells);
 
             ApplyToUserConfig(ipstr);
-        }
-
-        private void mRemoveInvalidIps_Click(object sender, EventArgs e)
-        {
-            if (IsTesting()) return;
-
-            foreach (var row in GetInvalidIps())
-                IpTable.Rows.Remove(row);
         }
 
         private void linkLabel1_DoubleClick(object sender, EventArgs e)

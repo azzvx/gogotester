@@ -58,13 +58,9 @@
             this.mRemoveAllIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.mRemoveIpsInClipbord = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.mRemoveInvalidIps = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mApply = new System.Windows.Forms.ToolStripMenuItem();
             this.mApplySelectedIpsToUserConfig = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mApplyValidIpsToUserConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.msMain = new System.Windows.Forms.MenuStrip();
             this.mRndTest = new System.Windows.Forms.ToolStripMenuItem();
@@ -353,14 +349,14 @@
             this.toolStripSeparator3,
             this.mApply});
             this.cmsIpData.Name = "cmsIpData";
-            this.cmsIpData.Size = new System.Drawing.Size(117, 110);
+            this.cmsIpData.Size = new System.Drawing.Size(153, 132);
             // 
             // mImport
             // 
             this.mImport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mImportIpsInClipbord});
             this.mImport.Name = "mImport";
-            this.mImport.Size = new System.Drawing.Size(116, 22);
+            this.mImport.Size = new System.Drawing.Size(152, 22);
             this.mImport.Text = "导入(&I)";
             // 
             // mImportIpsInClipbord
@@ -373,7 +369,7 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // mExport
             // 
@@ -382,7 +378,7 @@
             this.toolStripSeparator6,
             this.mExportAllIps});
             this.mExport.Name = "mExport";
-            this.mExport.Size = new System.Drawing.Size(116, 22);
+            this.mExport.Size = new System.Drawing.Size(152, 22);
             this.mExport.Text = "导出(&E)";
             // 
             // mExportSelectedIps
@@ -407,7 +403,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mRemove
             // 
@@ -416,11 +412,9 @@
             this.toolStripSeparator4,
             this.mRemoveAllIps,
             this.toolStripSeparator8,
-            this.mRemoveIpsInClipbord,
-            this.toolStripSeparator7,
-            this.mRemoveInvalidIps});
+            this.mRemoveIpsInClipbord});
             this.mRemove.Name = "mRemove";
-            this.mRemove.Size = new System.Drawing.Size(116, 22);
+            this.mRemove.Size = new System.Drawing.Size(152, 22);
             this.mRemove.Text = "移除(&R)";
             // 
             // mRemoveSelectedIps
@@ -454,31 +448,17 @@
             this.mRemoveIpsInClipbord.Text = "剪切板中存在的IP(&C)";
             this.mRemoveIpsInClipbord.Click += new System.EventHandler(this.mRemoveIpsInClipbord_Click);
             // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(184, 6);
-            // 
-            // mRemoveInvalidIps
-            // 
-            this.mRemoveInvalidIps.Name = "mRemoveInvalidIps";
-            this.mRemoveInvalidIps.Size = new System.Drawing.Size(187, 22);
-            this.mRemoveInvalidIps.Text = "无效的IP(&I)";
-            this.mRemoveInvalidIps.Click += new System.EventHandler(this.mRemoveInvalidIps_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(113, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // mApply
             // 
             this.mApply.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mApplySelectedIpsToUserConfig,
-            this.toolStripSeparator5,
-            this.mApplyValidIpsToUserConfig});
+            this.mApplySelectedIpsToUserConfig});
             this.mApply.Name = "mApply";
-            this.mApply.Size = new System.Drawing.Size(116, 22);
+            this.mApply.Size = new System.Drawing.Size(152, 22);
             this.mApply.Text = "应用(&A)";
             // 
             // mApplySelectedIpsToUserConfig
@@ -489,21 +469,6 @@
             this.mApplySelectedIpsToUserConfig.Text = "选中的IP到用户配置文件(&S)";
             this.mApplySelectedIpsToUserConfig.Click += new System.EventHandler(this.mApplySelectedIpsToUserConfig_Click);
             this.mApplySelectedIpsToUserConfig.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(220, 6);
-            this.toolStripSeparator5.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
-            // 
-            // mApplyValidIpsToUserConfig
-            // 
-            this.mApplyValidIpsToUserConfig.Name = "mApplyValidIpsToUserConfig";
-            this.mApplyValidIpsToUserConfig.Size = new System.Drawing.Size(223, 22);
-            this.mApplyValidIpsToUserConfig.Tag = "只支持IPv4。";
-            this.mApplyValidIpsToUserConfig.Text = "可用的IP到用户配置文件(&V)";
-            this.mApplyValidIpsToUserConfig.Click += new System.EventHandler(this.mApplyValidIpsToUserConfig_Click);
-            this.mApplyValidIpsToUserConfig.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
             // tableLayoutPanel1
             // 
@@ -725,13 +690,9 @@
         private System.Windows.Forms.ToolStripMenuItem mRndTest;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem mApply;
-        private System.Windows.Forms.ToolStripMenuItem mApplyValidIpsToUserConfig;
         private System.Windows.Forms.NumericUpDown nPingTimeout;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem mApplySelectedIpsToUserConfig;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripMenuItem mRemoveInvalidIps;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ToolStripMenuItem mClearRndCache;
         private System.Windows.Forms.NumericUpDown nTestCount;
