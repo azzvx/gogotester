@@ -341,15 +341,14 @@ namespace GoGo_Tester
                             break;
                         Thread.Sleep(1000);
                     }
-
+                    if (socket.Connected)
+                        socket.Disconnect(true);
                 } while (info.PassCount < Config.PassCount);
             }
             return info;
         }
         private bool TestPortViaSocket(Socket socket, TestInfo info)
         {
-            if (socket.Connected)
-                return true;
             try
             {
                 var time = Watch.ElapsedMilliseconds;
