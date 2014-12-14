@@ -221,7 +221,7 @@
             this.nMaxThreads.Tag = "随机测试和标准测试的最大线程数";
             this.nMaxThreads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nMaxThreads.Value = new decimal(new int[] {
-            12,
+            20,
             0,
             0,
             0});
@@ -293,7 +293,8 @@
             this.cbPools.Size = new System.Drawing.Size(114, 20);
             this.cbPools.TabIndex = 28;
             this.cbPools.Tag = "选择IP池，启动时加载个人IP池，命名格式为 name.ip.txt，必须以 .ip.txt 结尾。内容允许为 192.168.0-255.0-55 或 192." +
-    "168.0.0/16 或 www.google.com 。";
+    "168.0.0/16 或 www.google.com 。默认查询 google.com 的 spf 记录，可以新建 spf.txt 并写入域名更改查询的域名，" +
+    "域名间以空格分隔。";
             this.cbPools.SelectedIndexChanged += new System.EventHandler(this.cbPools_SelectedIndexChanged);
             this.cbPools.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
             // 
@@ -549,10 +550,12 @@
             // 
             // lTip
             // 
+            this.lTip.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lTip, 2);
             this.lTip.Dock = System.Windows.Forms.DockStyle.Top;
             this.lTip.ForeColor = System.Drawing.Color.DarkRed;
             this.lTip.Location = new System.Drawing.Point(3, 298);
+            this.lTip.MinimumSize = new System.Drawing.Size(0, 45);
             this.lTip.Name = "lTip";
             this.lTip.Padding = new System.Windows.Forms.Padding(3);
             this.lTip.Size = new System.Drawing.Size(452, 45);

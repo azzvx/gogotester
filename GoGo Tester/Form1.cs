@@ -1,13 +1,14 @@
-﻿using System;
+﻿using GoGo_Tester.Properties;
+using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Deployment.Application;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
@@ -15,7 +16,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
-using GoGo_Tester.Properties;
 using Timer = System.Timers.Timer;
 
 namespace GoGo_Tester
@@ -45,6 +45,7 @@ namespace GoGo_Tester
         {
             InitializeComponent();
         }
+
         private static readonly Random Rand = new Random();
         private static readonly Regex RxMatchIPv4 = new Regex(@"(?<!:)((2(5[0-5]|[0-4]\d)|1?\d?\d)\.){3}(2(5[0-5]|[0-4]\d)|1?\d?\d)", RegexOptions.Compiled);
         private static readonly Regex RxMatchIPv6 = new Regex(@"(:|[\da-f]{1,4})(:?:[\da-f]{1,4})+(::)?", RegexOptions.Compiled);
@@ -52,7 +53,7 @@ namespace GoGo_Tester
         private static readonly Stopwatch Watch = new Stopwatch();
         private static readonly SoundPlayer SoundPlayer = new SoundPlayer { Stream = Resources.Windows_Ding };
 
-        private readonly Dictionary<string, IpPool> PoolDic = new Dictionary<string, IpPool>();
+        private readonly Dictionary<string, HashSet<IPAddress>> PoolDic = new Dictionary<string, HashSet<IPAddress>>();
         private List<IPAddress> CurAddrList;
         private readonly DataTable IpTable = new DataTable();
         private readonly Timer StdTestTimer = new Timer();
@@ -101,12 +102,14 @@ namespace GoGo_Tester
             BndTestTimer.Elapsed += BndTestTimer_Elapsed;
 
             LoadTestCache();
-            LoadPools();
+            LoadIpPools();
 
             Watch.Start();
 
             CheckUpdate();
         }
+
+
 
         private void CheckUpdate()
         {
@@ -135,11 +138,27 @@ namespace GoGo_Tester
             else
                 linkLabel1.Text += " - 有可用更新！";
         }
-        private void LoadPools()
+
+        private void LoadIpPools()
         {
             PoolDic.Add("@Inner", IpPool.CreateFromText(Resources.InnerIpSet));
-            var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
 
+            var domains = new[] { "google.com" };
+            if (File.Exists("spf.txt"))
+                using (var sr = File.OpenText("spf.txt"))
+                    domains = sr.ReadToEnd().Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
+
+            //var laddrv6 = from adapter in NetworkInterface.GetAllNetworkInterfaces()
+            //              where adapter.NetworkInterfaceType == NetworkInterfaceType.Ethernet
+            //              from addrinfo in adapter.GetIPProperties().UnicastAddresses.OfType<UnicastIPAddressInformation>()
+            //              where addrinfo.Address.AddressFamily == AddressFamily.InterNetworkV6
+            //              select addrinfo.Address;
+            //if (laddrv6.Any())
+            //    PoolDic.Add("@Spf.Ipv6", IpPool.CreateFromDomains(domains, AddressFamily.InterNetworkV6));
+
+            var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
             foreach (var fn in fns)
                 using (var sr = File.OpenText(fn))
                 {
@@ -147,7 +166,6 @@ namespace GoGo_Tester
                     if (pool.Count > 0)
                         PoolDic.Add(Path.GetFileNameWithoutExtension(fn), pool);
                 }
-
 
             cbPools.DataSource = PoolDic.Keys.ToArray();
             cbPools.SelectedIndex = 0;
@@ -973,7 +991,7 @@ namespace GoGo_Tester
 
         private void linkLabel1_DoubleClick(object sender, EventArgs e)
         {
-            Process.Start(linkLabel1.Text);
+            Process.Start("https://code.google.com/p/gogo-tester/");
         }
 
         private void SaveTestCache()

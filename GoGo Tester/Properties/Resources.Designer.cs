@@ -61,6 +61,16 @@ namespace GoGo_Tester.Properties {
         }
         
         /// <summary>
+        ///   查找 System.Byte[] 类型的本地化资源。
+        /// </summary>
+        internal static byte[] ARSoft_Tools_Net {
+            get {
+                object obj = ResourceManager.GetObject("ARSoft_Tools_Net", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
         internal static System.Drawing.Icon GoGo_logo {
