@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
@@ -92,13 +91,13 @@ namespace GoGo_Tester
             dgvIpData.Columns[4].Width = 80;
             dgvIpData.Columns[4].HeaderText = "速度";
 
-            StdTestTimer.Interval = 200;
+            StdTestTimer.Interval = 50;
             StdTestTimer.Elapsed += StdTestTimerElapsed;
 
-            RndTestTimer.Interval = 200;
+            RndTestTimer.Interval = 50;
             RndTestTimer.Elapsed += RndTestTimerElapsed;
 
-            BndTestTimer.Interval = 200;
+            BndTestTimer.Interval = 50;
             BndTestTimer.Elapsed += BndTestTimer_Elapsed;
 
             LoadTestCache();
