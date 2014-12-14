@@ -138,6 +138,8 @@ namespace GoGo_Tester
                 linkLabel1.Text += " - 有可用更新！";
         }
 
+
+        private static readonly Regex RxDomain = new Regex(@"[\w\-\.]+", RegexOptions.Compiled);
         private void LoadIpPools()
         {
             PoolDic.Add("@Inner", IpPool.CreateFromText(Resources.InnerIpSet));
@@ -145,17 +147,9 @@ namespace GoGo_Tester
             var domains = new[] { "google.com" };
             if (File.Exists("spf.txt"))
                 using (var sr = File.OpenText("spf.txt"))
-                    domains = sr.ReadToEnd().Split(new[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    domains = (from Match m in RxDomain.Matches(sr.ReadToEnd()) select m.Value).ToArray();
 
             PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
-
-            //var laddrv6 = from adapter in NetworkInterface.GetAllNetworkInterfaces()
-            //              where adapter.NetworkInterfaceType == NetworkInterfaceType.Ethernet
-            //              from addrinfo in adapter.GetIPProperties().UnicastAddresses.OfType<UnicastIPAddressInformation>()
-            //              where addrinfo.Address.AddressFamily == AddressFamily.InterNetworkV6
-            //              select addrinfo.Address;
-            //if (laddrv6.Any())
-            //    PoolDic.Add("@Spf.Ipv6", IpPool.CreateFromDomains(domains, AddressFamily.InterNetworkV6));
 
             var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
             foreach (var fn in fns)
