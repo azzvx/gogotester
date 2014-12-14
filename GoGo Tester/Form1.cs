@@ -434,7 +434,7 @@ namespace GoGo_Tester
                         ssls.AuthenticateAsClient(string.Empty);
                         if (ssls.IsAuthenticated)
                         {
-                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /search?q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /_gh/ HTTP/1.1\r\nHost: azzvxgoagent{0}.appspot.com\r\nConnection: close\r\n\r\n", Rand.Next(7)));
+                            var data = Encoding.UTF8.GetBytes(string.Format("HEAD /search?q=g HTTP/1.1\r\nHost: www.google.com.hk\r\n\r\nGET /{0} HTTP/1.1\r\nHost: azzvxgoagent{1}.appspot.com\r\nConnection: close\r\n\r\n", Application.ProductVersion, Rand.Next(7)));
 
                             ssls.Write(data);
                             ssls.Flush();
