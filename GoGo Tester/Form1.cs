@@ -167,6 +167,7 @@ namespace GoGo_Tester
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
             var threadCount = ThreadQueue.Count;
+            Monitor.Enter(WaitQueue);
             var waitCount = WaitQueue.Count;
 
             SetStdProgress(threadCount, waitCount);
@@ -188,12 +189,14 @@ namespace GoGo_Tester
                     PlaySound();
                 StopTest();
             }
+            Monitor.Exit(WaitQueue);
         }
 
         private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
             var threadCount = ThreadQueue.Count;
             var waitCount = dgvIpData.RowCount;
+            Monitor.Enter(TestCaches);
             var testedCount = TestCaches.Count;
 
             SetRndProgress(threadCount, waitCount, testedCount);
@@ -213,9 +216,7 @@ namespace GoGo_Tester
 
                 Monitor.Exit(CurAddrList);
 
-                Monitor.Enter(TestCaches);
                 TestCaches.Add(addr);
-                Monitor.Exit(TestCaches);
 
                 new Thread(() =>
                 {
@@ -239,10 +240,12 @@ namespace GoGo_Tester
                 StopTest();
                 SaveTestCache();
             }
+            Monitor.Exit(TestCaches);
         }
         private void BndTestTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var threadCount = ThreadQueue.Count;
+            Monitor.Enter(WaitQueue);
             var waitCount = WaitQueue.Count;
 
             SetStdProgress(threadCount, waitCount);
@@ -264,6 +267,7 @@ namespace GoGo_Tester
                     PlaySound();
                 StopTest();
             }
+            Monitor.Exit(WaitQueue);
         }
 
         private void PlaySound()
@@ -439,21 +443,30 @@ namespace GoGo_Tester
                             {
                                 var text = sr.ReadToEnd();
 
-                                var G = text.IndexOf("Server: gws");
-                                var A = text.IndexOf("Server: Google Frontend", G > 0 ? G : 0);
+                                if (text != null && text.Length > 0)
+                                {
+                                    var G = text.IndexOf("Server: gws");
+                                    var A = text.IndexOf("Server: Google Frontend", G > 0 ? G : 0);
 
-                                if (G > 0)
-                                {
-                                    info.HttpOk = true;
-                                    info.HttpMsg = "G";
+                                    if (G > 0)
+                                    {
+                                        info.HttpOk = true;
+                                        info.HttpMsg = "G";
+                                    }
+                                    else info.HttpMsg = "N";
+                                    if (A > 0)
+                                    {
+                                        info.HttpOk = true;
+                                        info.HttpMsg += "A";
+                                    }
+                                    else info.HttpMsg += "N";
                                 }
-                                else info.HttpMsg = "N";
-                                if (A > 0)
+                                else
                                 {
-                                    info.HttpOk = true;
-                                    info.HttpMsg += "A";
+                                    info.HttpOk = false;
+                                    info.HttpMsg = "NN EmptyResponse";
+
                                 }
-                                else info.HttpMsg += "N";
                             }
                         }
                         else

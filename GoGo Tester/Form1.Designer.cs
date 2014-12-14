@@ -187,7 +187,7 @@
             this.nTestCount.Tag = "";
             this.nTestCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nTestCount.Value = new decimal(new int[] {
-            1,
+            3,
             0,
             0,
             0});
