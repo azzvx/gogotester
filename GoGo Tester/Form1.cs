@@ -112,22 +112,26 @@ namespace GoGo_Tester
 
         private void CheckUpdate()
         {
-            var req = WebRequest.Create(
+            try
+            {
+                var req = WebRequest.Create(
                     "https://raw.githubusercontent.com/azzvx/gogotester/2.3/GoGo%20Tester/bin/Release/ver");
-            req.BeginGetResponse(ar =>
-           {
-               if (!ar.IsCompleted) return;
+                req.BeginGetResponse(ar =>
+                {
+                    if (!ar.IsCompleted) return;
 
-               var resps = req.EndGetResponse(ar).GetResponseStream();
+                    var resps = req.EndGetResponse(ar).GetResponseStream();
 
-               if (resps == null) return;
+                    if (resps == null) return;
 
-               using (var sr = new StreamReader(resps))
-               {
-                   if (long.Parse(sr.ReadToEnd()) > Config.Version)
-                       HasUpdate();
-               }
-           }, null);
+                    using (var sr = new StreamReader(resps))
+                    {
+                        if (long.Parse(sr.ReadToEnd()) > Config.Version)
+                            HasUpdate();
+                    }
+                }, null);
+            }
+            catch { }
         }
 
         private void HasUpdate()
@@ -149,16 +153,20 @@ namespace GoGo_Tester
                 using (var sr = File.OpenText("spf.txt"))
                     domains = (from Match m in RxDomain.Matches(sr.ReadToEnd()) select m.Value).ToArray();
 
-            PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
+            try
+            {
+                PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
 
-            var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
-            foreach (var fn in fns)
-                using (var sr = File.OpenText(fn))
-                {
-                    var pool = IpPool.CreateFromText(sr.ReadToEnd());
-                    if (pool.Count > 0)
-                        PoolDic.Add(Path.GetFileNameWithoutExtension(fn), pool);
-                }
+                var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
+                foreach (var fn in fns)
+                    using (var sr = File.OpenText(fn))
+                    {
+                        var pool = IpPool.CreateFromText(sr.ReadToEnd());
+                        if (pool.Count > 0)
+                            PoolDic.Add(Path.GetFileNameWithoutExtension(fn), pool);
+                    }
+            }
+            catch { }
 
             cbPools.DataSource = PoolDic.Keys.ToArray();
             cbPools.SelectedIndex = 0;
@@ -166,7 +174,10 @@ namespace GoGo_Tester
 
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            Monitor.Enter(ThreadQueue);
             var threadCount = ThreadQueue.Count;
+            Monitor.Exit(ThreadQueue);
+
             Monitor.Enter(WaitQueue);
             var waitCount = WaitQueue.Count;
 
@@ -194,8 +205,12 @@ namespace GoGo_Tester
 
         private void RndTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            Monitor.Enter(ThreadQueue);
             var threadCount = ThreadQueue.Count;
+            Monitor.Exit(ThreadQueue);
+
             var waitCount = dgvIpData.RowCount;
+
             Monitor.Enter(TestCaches);
             var testedCount = TestCaches.Count;
 
@@ -244,13 +259,16 @@ namespace GoGo_Tester
         }
         private void BndTestTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            Monitor.Enter(ThreadQueue);
             var threadCount = ThreadQueue.Count;
+            Monitor.Exit(ThreadQueue);
+
             Monitor.Enter(WaitQueue);
             var waitCount = WaitQueue.Count;
 
             SetStdProgress(threadCount, waitCount);
 
-            if (BndTestRunning && waitCount > 0 && threadCount < 1)
+            if (BndTestRunning && waitCount > 0 && threadCount == 0)
             {
                 var addr = WaitQueue.Dequeue();
                 new Thread(() =>
@@ -416,7 +434,7 @@ namespace GoGo_Tester
 
             return info.PortOk;
         }
-
+        private static readonly Regex RxResult = new Regex(@"^(HTTP/... (\d+).*|Server:\s*(\w.*))$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
         private bool TestHttpViaSocket(Socket socket, TestInfo info)
         {
             try
@@ -443,29 +461,34 @@ namespace GoGo_Tester
                             {
                                 var text = sr.ReadToEnd();
 
-                                if (text != null && text.Length > 0)
+                                if (text.Length == 0)
                                 {
-                                    var G = text.IndexOf("Server: gws");
-                                    var A = text.IndexOf("Server: Google Frontend", G > 0 ? G : 0);
-
-                                    if (G > 0)
-                                    {
-                                        info.HttpOk = true;
-                                        info.HttpMsg = "G";
-                                    }
-                                    else info.HttpMsg = "N";
-                                    if (A > 0)
-                                    {
-                                        info.HttpOk = true;
-                                        info.HttpMsg += "A";
-                                    }
-                                    else info.HttpMsg += "N";
+                                    info.HttpOk = false;
+                                    info.HttpMsg = "NN BadResponse";
                                 }
                                 else
                                 {
-                                    info.HttpOk = false;
-                                    info.HttpMsg = "NN EmptyResponse";
+                                    info.HttpMsg = "NN";
 
+                                    var ms = RxResult.Matches(text);
+                                    for (var i = 0; i < ms.Count; i++)
+                                    {
+                                        if (ms[i].Groups[2].Value == "200" && ++i < ms.Count)
+                                            switch (ms[i].Groups[3].Value)
+                                            {
+                                                case "gws\r":
+                                                    info.HttpOk = true;
+                                                    info.HttpMsg = "G" + info.HttpMsg[1];
+                                                    break;
+                                                case "Google Frontend\r":
+                                                    info.HttpOk = true;
+                                                    info.HttpMsg = info.HttpMsg[0] + "A";
+                                                    break;
+                                                default:
+                                                    i--;
+                                                    break;
+                                            }
+                                    }
                                 }
                             }
                         }

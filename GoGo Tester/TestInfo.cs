@@ -4,7 +4,7 @@ namespace GoGo_Tester
 {
     class TestInfo
     {
-        public IPEndPoint Target { get; }
+        public IPEndPoint Target { get; private set; }
         public bool PortOk { get; set; }
         public long PortTime { get; set; }
         public string PortMsg { get; set; }
