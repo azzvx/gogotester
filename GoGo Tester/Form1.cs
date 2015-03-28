@@ -27,12 +27,14 @@ namespace GoGo_Tester
             val = val < max ? val : max;
             return val;
         }
+
         private static void EnCount(Queue<int> q)
         {
             Monitor.Enter(q);
             q.Enqueue(0);
             Monitor.Exit(q);
         }
+
         private static void DeCount(Queue<int> q)
         {
             Monitor.Enter(q);
@@ -52,15 +54,17 @@ namespace GoGo_Tester
         private static readonly Stopwatch Watch = new Stopwatch();
         private static readonly SoundPlayer SoundPlayer = new SoundPlayer { Stream = Resources.Windows_Ding };
 
-        private readonly Dictionary<string, HashSet<IPAddress>> PoolDic = new Dictionary<string, HashSet<IPAddress>>();
-        private List<IPAddress> CurAddrList;
+        private readonly Dictionary<string, IpPool> PoolDic = new Dictionary<string, IpPool>();
+        private string CurAddrPool;
+        private List<Ip> CurAddrList = new List<Ip>();
         private readonly DataTable IpTable = new DataTable();
         private readonly Timer StdTestTimer = new Timer();
         private readonly Timer RndTestTimer = new Timer();
         private readonly Timer BndTestTimer = new Timer();
 
-        public static HashSet<IPAddress> TestCaches = new HashSet<IPAddress>();
-        public static Queue<IPAddress> WaitQueue = new Queue<IPAddress>();
+        public static HashSet<Ip> TestCaches = new HashSet<Ip>();
+        public static HashSet<Ip> ExtraCaches = new HashSet<Ip>();
+        public static Queue<Ip> WaitQueue = new Queue<Ip>();
         public static Queue<int> ThreadQueue = new Queue<int>();
 
         private volatile bool StdTestRunning;
@@ -108,8 +112,6 @@ namespace GoGo_Tester
             CheckUpdate();
         }
 
-
-
         private void CheckUpdate()
         {
             try
@@ -142,21 +144,12 @@ namespace GoGo_Tester
                 linkLabel1.Text += " - 有可用更新！";
         }
 
-
         private static readonly Regex RxDomain = new Regex(@"[\w\-\.]+", RegexOptions.Compiled);
         private void LoadIpPools()
         {
             PoolDic.Add("@Inner", IpPool.CreateFromText(Resources.InnerIpSet));
-
-            var domains = new[] { "google.com" };
-            if (File.Exists("spf.txt"))
-                using (var sr = File.OpenText("spf.txt"))
-                    domains = (from Match m in RxDomain.Matches(sr.ReadToEnd()) select m.Value).ToArray();
-
             try
             {
-                PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
-
                 var fns = Directory.GetFiles(Path.GetDirectoryName(Application.ExecutablePath), "*.ip.txt");
                 foreach (var fn in fns)
                     using (var sr = File.OpenText(fn))
@@ -168,10 +161,37 @@ namespace GoGo_Tester
             }
             catch { }
 
-            cbPools.DataSource = PoolDic.Keys.ToArray();
+            SetPools();
             cbPools.SelectedIndex = 0;
+
+            new Thread(LoadSpfPools).Start();
         }
 
+        private void SetPools()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(SetPools));
+            }
+            else
+            {
+                cbPools.DataSource = PoolDic.Keys.ToArray();
+            }
+        }
+        private void LoadSpfPools()
+        {
+            try
+            {
+                var domains = new[] { "google.com" };
+                if (File.Exists("spf.txt"))
+                    using (var sr = File.OpenText("spf.txt"))
+                        domains = (from Match m in RxDomain.Matches(sr.ReadToEnd()) select m.Value).ToArray();
+                PoolDic.Add("@Spf.Ipv4", IpPool.CreateFromDomains(domains));
+
+                SetPools();
+            }
+            catch (Exception) { }
+        }
         private void StdTestTimerElapsed(object sender, ElapsedEventArgs e)
         {
             Monitor.Enter(ThreadQueue);
@@ -324,7 +344,7 @@ namespace GoGo_Tester
 
         private Socket GetSocket(TestInfo info, int m = 1)
         {
-            var socket = new Socket(info.Target.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+            var socket = new Socket(info.IP.GetAddressFamily(), SocketType.Stream, ProtocolType.Tcp)
             {
                 SendTimeout = Config.ConnTimeout * m,
                 ReceiveTimeout = Config.ConnTimeout * m
@@ -357,8 +377,17 @@ namespace GoGo_Tester
                                     ssls.Flush();
                                     using (var sr = new StreamReader(ssls))
                                     {
-                                        var buf = sr.ReadToEnd();
-                                        info.Bandwidth = (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D4") + " KB/s";
+                                        sr.BaseStream.ReadTimeout = 5000;
+                                        try
+                                        {
+                                            var buf = sr.ReadToEnd();
+                                            info.Bandwidth =
+                                                (buf.Length / (Watch.ElapsedMilliseconds - time)).ToString("D4") + " KB/s";
+                                        }
+                                        catch (Exception)
+                                        {
+                                            info.Bandwidth = "TimeOut!";
+                                        }
                                     }
                                 }
                                 else
@@ -517,7 +546,7 @@ namespace GoGo_Tester
             }
             else
             {
-                var rows = SelectByIp(info.Target.Address);
+                var rows = SelectByIp(info.IP);
                 if (rows.Length > 0)
                 {
                     rows[0][1] = info.PortMsg + (info.PortOk ? (info.PortTime / (info.PassCount == 0 ? 1 : info.PassCount)).ToString("D4") : "");
@@ -534,13 +563,13 @@ namespace GoGo_Tester
             }
             else
             {
-                var rows = SelectByIp(info.Target.Address);
+                var rows = SelectByIp(info.IP);
                 if (rows.Length > 0)
                     rows[0][4] = info.Bandwidth;
             }
         }
         #region IpTable
-        private void RemoveIp(IPAddress addr)
+        private void RemoveIp(Ip addr)
         {
             var row = SelectByIp(addr);
             if (row.Length > 0)
@@ -548,7 +577,7 @@ namespace GoGo_Tester
                 IpTable.Rows.Remove(row[0]);
             }
         }
-        private void ImportIp(IPAddress addr)
+        private void ImportIp(Ip addr)
         {
             if (InvokeRequired)
             {
@@ -569,7 +598,22 @@ namespace GoGo_Tester
                 catch (Exception) { }
             }
         }
+        private void ImportIps(IEnumerable<Ip> addrs)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() => ImportIps(addrs)));
+            }
+            else
+            {
+                dgvIpData.DataSource = null;
+                foreach (var addr in addrs)
+                    ImportIp(addr);
 
+                dgvIpData.DataSource = IpTable;
+
+            }
+        }
         private void RemoveAllIps()
         {
             IpTable.Clear();
@@ -584,7 +628,7 @@ namespace GoGo_Tester
                 return IpTable.Select(expr, order);
         }
 
-        private DataRow[] SelectByIp(IPAddress addr)
+        private DataRow[] SelectByIp(Ip addr)
         {
             if (InvokeRequired)
                 return (DataRow[])Invoke(new MethodInvoker(() => SelectByIp(addr)));
@@ -651,10 +695,7 @@ namespace GoGo_Tester
 
         private void bAddIpRange_Click(object sender, EventArgs e)
         {
-            if (IsTesting())
-            {
-                return;
-            }
+            if (IsTesting()) return;
 
             var str = tbIpRange.Text;
             tbIpRange.ResetText();
@@ -663,12 +704,7 @@ namespace GoGo_Tester
             var pool = IpPool.CreateFromText(str);
             if (pool.Count == 0) return;
 
-            while (pool.Count > 0)
-            {
-                var addr = pool.First();
-                ImportIp(addr);
-                pool.Remove(addr);
-            }
+            ImportIps(pool);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -707,8 +743,7 @@ namespace GoGo_Tester
                 return;
             }
 
-            foreach (var ip in ips)
-                ImportIp(ip);
+            ImportIps(ips);
         }
 
         private void mBandTest_Click(object sender, EventArgs e)
@@ -731,7 +766,7 @@ namespace GoGo_Tester
             pbProgress.Value = 0;
 
             foreach (var row in rows)
-                WaitQueue.Enqueue(IPAddress.Parse(row[0].ToString()));
+                WaitQueue.Enqueue(Ip.Parse(row[0].ToString()));
 
             BndTestRunning = true;
             BndTestTimer.Start();
@@ -777,7 +812,7 @@ namespace GoGo_Tester
             pbProgress.Value = 0;
 
             foreach (var row in rows)
-                WaitQueue.Enqueue(IPAddress.Parse(row[0].ToString()));
+                WaitQueue.Enqueue(Ip.Parse(row[0].ToString()));
 
             StdTestRunning = true;
             StdTestTimer.Start();
@@ -970,14 +1005,14 @@ namespace GoGo_Tester
             MessageBox.Show("已写入proxy.user.ini！重新载入GoAgent就可生效！");
         }
 
-        private IPAddress[] GetIpsInText(string str)
+        private Ip[] GetIpsInText(string str)
         {
-            var ls = new List<IPAddress>();
+            var ls = new List<Ip>();
             var hset = new HashSet<string>();
             var mcv4 = RxMatchIPv4.Matches(str);
             foreach (var m in from Match m in mcv4 where hset.Add(m.Value) select m)
             {
-                try { ls.Add(IPAddress.Parse(m.Value)); }
+                try { ls.Add(new Ip(IPAddress.Parse(m.Value).GetAddressBytes())); }
                 catch (Exception) { }
             }
 
@@ -985,7 +1020,7 @@ namespace GoGo_Tester
             var mcv6 = RxMatchIPv6.Matches(str);
             foreach (var m in from Match m in mcv6 where hset.Add(m.Value) select m)
             {
-                try { ls.Add(IPAddress.Parse(m.Value)); }
+                try { ls.Add(new Ip(IPAddress.Parse(m.Value).GetAddressBytes())); }
                 catch (Exception) { }
             }
 
@@ -994,10 +1029,7 @@ namespace GoGo_Tester
 
         private void mApplySelectedIpsToUserConfig_Click(object sender, EventArgs e)
         {
-            if (IsTesting())
-            {
-                return;
-            }
+            if (IsTesting()) return;
 
             if (!File.Exists("proxy.py"))
             {
@@ -1028,7 +1060,7 @@ namespace GoGo_Tester
             using (var fs = File.Create("gogo_cache", 25000 * 4))
             {
                 var count = 0;
-                foreach (var data in TestCaches.Select(addr => addr.GetAddressBytes()).Where(data => data.Length == 4))
+                foreach (var data in TestCaches.Select(addr => addr.AddressBytes).Where(data => data.Length == 4))
                 {
                     fs.Write(data, 0, data.Length);
                     count++;
@@ -1061,7 +1093,7 @@ namespace GoGo_Tester
                 for (int i = 0; i < (fs.Length / 4); i++)
                 {
                     fs.Read(buf, 0, 4);
-                    TestCaches.Add(new IPAddress(buf));
+                    TestCaches.Add(new Ip(buf));
                 }
             }
 
@@ -1085,7 +1117,9 @@ namespace GoGo_Tester
             if (IsTesting())
                 return;
             TestCaches.Clear();
-            CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()]);
+            CurAddrList.Clear();
+            CurAddrList.AddRange(PoolDic[cbPools.SelectedItem.ToString()]);
+            CurAddrList.TrimExcess();
             if (File.Exists("gogo_cache"))
                 File.Delete("gogo_cache");
         }
@@ -1097,7 +1131,13 @@ namespace GoGo_Tester
 
         private void cbPools_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurAddrList = new List<IPAddress>(PoolDic[cbPools.SelectedItem.ToString()].Except(TestCaches));
+            var addrpool = cbPools.SelectedItem.ToString();
+            if (addrpool == CurAddrPool) return;
+
+            CurAddrPool = addrpool;
+            CurAddrList.Clear();
+            CurAddrList.AddRange(PoolDic[CurAddrPool].Except(TestCaches));
+            CurAddrList.TrimExcess();
             Text = string.Format("GoGo Tester {0} - {1}", Application.ProductVersion, CurAddrList.Count);
             SetStdProgress(CurAddrList.Count, TestCaches.Count);
         }

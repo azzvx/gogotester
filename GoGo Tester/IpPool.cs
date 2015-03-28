@@ -21,13 +21,81 @@ namespace GoGo_Tester
             Array.Reverse(d);
             return d;
         }
+    }
 
-        public static void Reverse(this byte[] o)
+    public struct Ip
+    {
+        public byte[] AddressBytes;
+
+        public Ip(byte[] bytes, bool _le = false)
         {
-            Array.Reverse(o);
+            if (bytes.Length == 4 || bytes.Length == 16)
+            {
+                if (_le) Array.Reverse(bytes);
+                AddressBytes = bytes;
+            }
+            else
+            {
+                AddressBytes = new byte[] { 0, 0, 0, 0 };
+            }
+        }
+
+        public IPAddress GetIpAddress()
+        {
+            return new IPAddress(AddressBytes);
+        }
+
+        public AddressFamily GetAddressFamily()
+        {
+            return AddressBytes.Length == 4 ? AddressFamily.InterNetwork : AddressFamily.InterNetworkV6;
+        }
+
+        public override int GetHashCode()
+        {
+            ulong sum = 0;
+            for (var i = 0; i < AddressBytes.Length / 4; i++)
+                sum += BitConverter.ToUInt32(AddressBytes, i * 4);
+            var high = sum & 0xffffffff00000000;
+            return (int)(sum + high);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return GetHashCode() == obj.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            if (AddressBytes.Length == 4)
+                return string.Format("{0}.{1}.{2}.{3}",
+                    AddressBytes[0].ToString("D"), AddressBytes[1].ToString("D"), AddressBytes[2].ToString("D"), AddressBytes[3].ToString("D"));
+
+            var sbd = new StringBuilder();
+            for (int i = 0; i < AddressBytes.Length; i++)
+            {
+                if (i > 0 && i % 2 == 0)
+                    sbd.Append(":");
+                sbd.Append(AddressBytes[i].ToString("X02"));
+            }
+
+            while (sbd[0] == '0')
+                sbd.Remove(0, 1);
+
+            var fstr = sbd.Replace("0000", "").ToString();
+            while (fstr.Contains(":0"))
+                fstr = fstr.Replace(":0", ":");
+            while (fstr.Contains(":::"))
+                fstr = fstr.Replace(":::", "::");
+
+            return fstr;
+        }
+
+        public static Ip Parse(string str)
+        {
+            return new Ip(IPAddress.Parse(str).GetAddressBytes());
         }
     }
-    class IpPool : HashSet<IPAddress>
+    class IpPool : HashSet<Ip>
     {
         private static readonly Regex RxIpv4 = new Regex(@"(?<astr>(\d{1,3}\.){3}\d{1,3})/(?<mstr>\d{1,2})|(?<range>((\d{1,3}\-\d{1,3}|\d{1,3})\.){3}(\d{1,3}\-\d{1,3}|\d{1,3}))|(?<domain>[\w\-\.]+\.\w+)", RegexOptions.Compiled);
 
@@ -82,17 +150,13 @@ namespace GoGo_Tester
                     }
                     else if (domain != string.Empty)
                     {
-                        foreach (var addr in
-                            from addr in Dns.GetHostAddresses(domain)
-                            where addr.AddressFamily == AddressFamily.InterNetwork
-                            let dat = addr.GetAddressBytes()
-                            where dat[3] != 0 && dat[3] != 255
-                            select addr)
-                            pool.Add(addr);
+                        foreach (var ip in from addr in Dns.GetHostAddresses(domain) where addr.AddressFamily == AddressFamily.InterNetwork let dat = addr.GetAddressBytes() where dat[3] != 0 && dat[3] != 255 select new Ip(dat))
+                            pool.Add(ip);
                     }
                 }
             }
             catch { }
+            pool.TrimExcess();
             return pool;
         }
 
@@ -109,7 +173,7 @@ namespace GoGo_Tester
 
                 if (dat[3] == 0 || dat[3] == 255) continue;
 
-                Add(new IPAddress(dat));
+                Add(new Ip(dat));
             }
         }
 

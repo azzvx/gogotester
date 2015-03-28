@@ -419,7 +419,7 @@
             // 
             this.mRemoveInvalidIps.Name = "mRemoveInvalidIps";
             this.mRemoveInvalidIps.Size = new System.Drawing.Size(187, 22);
-            this.mRemoveInvalidIps.Text = "无效在的IP(&I)";
+            this.mRemoveInvalidIps.Text = "无效的IP(&I)";
             this.mRemoveInvalidIps.Click += new System.EventHandler(this.mRemoveInvalidIps_Click);
             // 
             // toolStripSeparator3
@@ -490,7 +490,7 @@
             // 
             this.mRndTest.Name = "mRndTest";
             this.mRndTest.Size = new System.Drawing.Size(84, 21);
-            this.mRndTest.Tag = "随机从P池中获取指定数量的可用IP。如果指定的数目过于庞大，可能会花费很长时间进行测试。";
+            this.mRndTest.Tag = "随机从IP池中获取指定数量的可用IP。如果指定的数目过于庞大，可能会花费很长时间进行测试。";
             this.mRndTest.Text = "随机测试(&R)";
             this.mRndTest.Click += new System.EventHandler(this.mRndTest_Click);
             this.mRndTest.MouseEnter += new System.EventHandler(this.Tip_MouseEnter);
